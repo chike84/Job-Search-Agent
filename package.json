@@ -1,6 +1,0 @@
-{
-  "name": "job-search-agent-proxy",
-  "version": "1.0.0",
-  "description": "Vercel edge proxy for the Senior TPM Job Search Agent",
-  "private": true
-}
