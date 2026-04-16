@@ -1,89 +1,76 @@
-export const config = {
-  runtime: 'nodejs',
-  maxDuration: 60,
-};
+const https = require('https');
 
-export default async function handler(req) {
-  // Handle CORS preflight
+module.exports = async function handler(req, res) {
+  // CORS headers on every response
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
+    res.status(204).end();
+    return;
   }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'API key not configured' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    res.status(500).json({ error: 'ANTHROPIC_API_KEY not set in Vercel environment variables' });
+    return;
   }
 
   try {
-    const body = await req.json();
-
-    // Only send the web-search beta header when the request actually uses that tool
-    const usesWebSearch = Array.isArray(body.tools) &&
-      body.tools.some(t => t.type === 'web_search_20250305');
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-    };
-    if (usesWebSearch) {
-      headers['anthropic-beta'] = 'web-search-2025-03-05';
-    }
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
+    const body = await new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', chunk => { data += chunk; });
+      req.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch (e) { reject(new Error('Invalid JSON body')); }
+      });
+      req.on('error', reject);
     });
 
-    const data = await response.json();
+    const payload = JSON.stringify(body);
 
-    // Surface Anthropic error details clearly for easier debugging
-    if (!response.ok) {
-      return new Response(JSON.stringify({
-        error: data.error || data,
-        status: response.status,
-        _debug: 'Anthropic API error',
-      }), {
-        status: response.status,
+    const data = await new Promise((resolve, reject) => {
+      const options = {
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'Content-Length': Buffer.byteLength(payload),
         },
-      });
-    }
+      };
 
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
+      const apiReq = https.request(options, (apiRes) => {
+        let responseData = '';
+        apiRes.on('data', chunk => { responseData += chunk; });
+        apiRes.on('end', () => {
+          try {
+            resolve({ status: apiRes.statusCode, body: JSON.parse(responseData) });
+          } catch (e) {
+            reject(new Error('Failed to parse Anthropic response'));
+          }
+        });
+      });
+
+      apiReq.on('error', reject);
+      apiReq.setTimeout(55000, () => {
+        apiReq.destroy(new Error('Anthropic request timed out after 55s'));
+      });
+      apiReq.write(payload);
+      apiReq.end();
     });
+
+    res.status(data.status).json(data.body);
+
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message, _debug: 'Proxy exception' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    res.status(500).json({ error: err.message, _debug: 'Proxy exception' });
   }
-}
+};
