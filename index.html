@@ -286,25 +286,26 @@
 </div>
 
 <script>
-  // ─── CONFIGURE THIS after deploying to Vercel ───────────────────────────────
+  // ─── SET YOUR VERCEL URL HERE ───────────────────────────────────────────────
   const PROXY_URL = 'https://job-search-agent-tau.vercel.app/api/proxy';
   // ────────────────────────────────────────────────────────────────────────────
 
   const NOTION_DB = '45ecc169-634b-49c2-9042-9e4fee1c0750';
   const NOTION_HUB = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
 
-  const OS_CONTEXT = `You are a job search agent for Chike Ugbode, Senior TPM and Scrum Master with 12+ years experience (most recently Charles Schwab, ended January 2026). His work centered on DocuSign integrations, Agile delivery, digital transformation, and API releases. He is pursuing Senior TPM roles at growth-stage fintech and enterprise technology companies. Strong edge in regulated, API-intensive environments — DocuSign Automated Prefill MVP to GA, digital adoption metrics, cross-functional stakeholder management. Job search OS principles: leverage over volume, warm paths over cold applications, optimize for outcomes not activity.`;
+  const OS_CONTEXT = `You are a job search agent for Chike Ugbode, Senior TPM and Scrum Master with 12+ years experience (most recently Charles Schwab, ended January 2026). His work centered on DocuSign integrations, Agile delivery, digital transformation, and API releases. He is pursuing Senior TPM roles at growth-stage fintech and enterprise technology companies. Strong edge in regulated, API-intensive environments: DocuSign Automated Prefill MVP to GA, digital adoption metrics, cross-functional stakeholder management. Job search OS principles: leverage over volume, warm paths over cold applications, optimize for outcomes not activity.`;
 
-  // Check proxy on load
+  // Proxy health check on load
   window.addEventListener('load', async () => {
     const el = document.getElementById('proxy-status');
     try {
       const r = await fetch(PROXY_URL, { method: 'OPTIONS' });
-      el.textContent = r.ok || r.status === 204 ? 'proxy connected' : 'proxy error';
-      el.style.background = r.ok || r.status === 204 ? 'var(--green-bg)' : 'var(--red-bg)';
-      el.style.color = r.ok || r.status === 204 ? 'var(--green-text)' : 'var(--red-text)';
+      const ok = r.ok || r.status === 204;
+      el.textContent = ok ? 'proxy connected' : 'proxy error';
+      el.style.background = ok ? 'var(--green-bg)' : 'var(--red-bg)';
+      el.style.color = ok ? 'var(--green-text)' : 'var(--red-text)';
     } catch {
-      el.textContent = 'proxy not connected — update PROXY_URL';
+      el.textContent = 'proxy not connected';
       el.style.background = 'var(--amber-bg)';
       el.style.color = 'var(--amber-text)';
     }
@@ -316,30 +317,21 @@
     el.classList.add('active');
     document.getElementById('p-' + name).classList.add('active');
   }
-
   function tog(el) { el.classList.toggle('on'); }
-
   function excl(el, g) {
     document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(c => c.classList.remove('on'));
     el.classList.add('on');
   }
-
   function chips(g) {
     return [...document.querySelectorAll(`.chip[data-g="${g}"].on`)].map(c => c.textContent.trim()).join(', ');
   }
-
-  function togAdd() {
-    document.getElementById('addform').classList.toggle('open');
-  }
+  function togAdd() { document.getElementById('addform').classList.toggle('open'); }
 
   function setStatus(panel, loading, msg) {
     const el = document.getElementById('status-' + panel);
     if (!el) return;
-    el.innerHTML = loading
-      ? `<div class="spinner"></div><span>${msg}</span>`
-      : msg ? `<span>${msg}</span>` : '';
+    el.innerHTML = loading ? `<div class="spinner"></div><span>${msg}</span>` : (msg ? `<span>${msg}</span>` : '');
   }
-
   function setOutput(panel, text, empty) {
     const el = document.getElementById('output-' + panel);
     if (!el) return;
@@ -347,20 +339,17 @@
     el.classList.toggle('empty', !!empty);
   }
 
-  async function callProxy(systemPrompt, userPrompt, useWebSearch) {
-    const body = {
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    };
-    if (useWebSearch) {
-      body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
-    }
+  // Single clean proxy call — no web search beta tool, stays under 10s timeout
+  async function callProxy(systemPrompt, userPrompt) {
     const res = await fetch(PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
     });
     if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
     const data = await res.json();
@@ -370,50 +359,61 @@
 
   async function run(panel) {
     document.querySelectorAll('.btn').forEach(b => b.disabled = true);
-    let prompt = '';
-    let useSearch = false;
     const mode = chips('tmode');
-
-    if (panel === 'targeting') {
-      const focus = chips('focus') || 'Fintech, Enterprise SaaS';
-      const reg = document.getElementById('reg').value;
-      const cstage = document.getElementById('cstage').value;
-      const title = document.getElementById('jobtitle').value || 'Senior Technical Program Manager';
-      const ctx = document.getElementById('tctx').value;
-      const doStrategy = mode !== 'Live job search only';
-      const doSearch = mode !== 'Strategy only';
-      useSearch = doSearch;
-      if (doStrategy) {
-        prompt += `Generate 8 target companies for Senior TPM roles. Focus: ${focus}. Regulatory complexity: ${reg}. Company stage: ${cstage}.${ctx ? ' Angle: ' + ctx : ''} For each: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here, suggested TPM scope. At least 2 under-the-radar picks. End with a 2-company self-critique.\n\n`;
-      }
-      if (doSearch) {
-        prompt += `Search the web for currently open "${title}" job postings at ${cstage} fintech and enterprise tech companies focused on ${focus}. List 5 specific open roles with: company name, role title, location or remote status, why it fits Chike's background (DocuSign integrations, API releases, regulated environments), and job URL.`;
-      }
-    } else if (panel === 'positioning') {
-      const outputs = chips('pos') || 'Positioning statement';
-      const role = document.getElementById('prole').value;
-      const co = document.getElementById('pco').value;
-      const roleLabel = role === 'sr-tpm' ? 'Senior TPM' : role === 'sr-sm' ? 'Senior Scrum Master with TPM scope' : 'Product Manager in fintech';
-      prompt = `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor for ' + co + '.' : ''} Draw on 12+ years experience, Schwab DocuSign integrations, API release management, digital transformation, Agile delivery. Specific, no generic buzzwords, memorable within 10 seconds. End with a self-critique: does this sound like 100 other TPMs, and what is unclear or weak?`;
-    } else if (panel === 'outreach') {
-      const type = chips('out') || 'Cold outreach';
-      const co = document.getElementById('oco').value || 'the target company';
-      const role = document.getElementById('orole').value || 'hiring manager';
-      const hook = document.getElementById('ohook').value;
-      prompt = `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with: ' + hook + '.' : ''} Insight-driven, personalized, demonstrates real understanding of their product, avoids generic networking language, focuses on starting a conversation not asking for a job, concise for mobile. Include a subject line. End with a self-critique: would you respond to this, and what feels generic?`;
-    } else if (panel === 'interview') {
-      const type = chips('int') || 'Product sense';
-      const q = document.getElementById('iq').value;
-      const co = document.getElementById('ico').value;
-      prompt = `Generate interview prep for Chike for a ${type} interview${co ? ' at ' + co : ''}.${q ? ' Specifically prep for: ' + q + '.' : ''} Include: a structured repeatable framework, a STAR story mapped from his background (DocuSign Automated Prefill, API releases, Schwab digital transformation), and a sample answer. Flag where strong vs where to tighten.`;
-    }
-
-    setStatus(panel, true, panel === 'targeting' && useSearch ? 'Searching live job market...' : 'Agent working...');
     setOutput(panel, '', true);
 
     try {
-      const text = await callProxy(OS_CONTEXT, prompt, useSearch);
-      setOutput(panel, text, false);
+      if (panel === 'targeting') {
+        const focus = chips('focus') || 'Fintech, Enterprise SaaS';
+        const reg = document.getElementById('reg').value;
+        const cstage = document.getElementById('cstage').value;
+        const title = document.getElementById('jobtitle').value || 'Senior Technical Program Manager';
+        const ctx = document.getElementById('tctx').value;
+        const doStrategy = mode !== 'Live job search only';
+        const doSearch = mode !== 'Strategy only';
+        let combined = '';
+
+        if (doStrategy) {
+          setStatus(panel, true, 'Building target company strategy...');
+          const t = await callProxy(OS_CONTEXT, `Generate 8 target companies for Senior TPM roles. Focus: ${focus}. Regulatory complexity: ${reg}. Company stage: ${cstage}.${ctx ? ' Angle: ' + ctx : ''} For each: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here, suggested TPM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks.`);
+          combined += t;
+          setOutput(panel, combined, false);
+        }
+
+        if (doSearch) {
+          setStatus(panel, true, 'Finding job leads...');
+          const t = await callProxy(OS_CONTEXT, `List 6 specific "${title}" roles that are likely actively hiring right now (April 2026) at ${cstage} fintech and enterprise tech companies focused on ${focus} with ${reg} regulatory complexity. For each: company name, role title, remote or location, why it fits Chike's background (DocuSign integrations, API releases, regulated environments), and the direct careers page URL. Be specific, not generic.`);
+          combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
+          setOutput(panel, combined, false);
+        }
+
+      } else if (panel === 'positioning') {
+        setStatus(panel, true, 'Building positioning...');
+        const outputs = chips('pos') || 'Positioning statement';
+        const role = document.getElementById('prole').value;
+        const co = document.getElementById('pco').value;
+        const roleLabel = role === 'sr-tpm' ? 'Senior TPM' : role === 'sr-sm' ? 'Senior Scrum Master with TPM scope' : 'Product Manager in fintech';
+        const t = await callProxy(OS_CONTEXT, `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor for ' + co + '.' : ''} Draw on 12+ years experience, Schwab DocuSign integrations, API release management, digital transformation, Agile delivery. Specific, no generic buzzwords, memorable within 10 seconds. End with a self-critique: does this sound like 100 other TPMs, and what is unclear or weak?`);
+        setOutput(panel, t, false);
+
+      } else if (panel === 'outreach') {
+        setStatus(panel, true, 'Drafting outreach...');
+        const type = chips('out') || 'Cold outreach';
+        const co = document.getElementById('oco').value || 'the target company';
+        const role = document.getElementById('orole').value || 'hiring manager';
+        const hook = document.getElementById('ohook').value;
+        const t = await callProxy(OS_CONTEXT, `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with: ' + hook + '.' : ''} Insight-driven, personalized, demonstrates real understanding of their product, avoids generic networking language, focuses on starting a conversation not asking for a job, concise for mobile. Include a subject line. End with a self-critique: would you respond to this, and what feels generic?`);
+        setOutput(panel, t, false);
+
+      } else if (panel === 'interview') {
+        setStatus(panel, true, 'Generating interview prep...');
+        const type = chips('int') || 'Product sense';
+        const q = document.getElementById('iq').value;
+        const co = document.getElementById('ico').value;
+        const t = await callProxy(OS_CONTEXT, `Generate interview prep for Chike for a ${type} interview${co ? ' at ' + co : ''}.${q ? ' Specifically prep for: ' + q + '.' : ''} Include: a structured repeatable framework, a STAR story mapped from his background (DocuSign Automated Prefill, API releases, Schwab digital transformation), and a sample answer. Flag where strong vs where to tighten.`);
+        setOutput(panel, t, false);
+      }
+
       setStatus(panel, false, '');
     } catch (err) {
       setOutput(panel, 'Error: ' + err.message, true);
@@ -426,7 +426,6 @@
   async function saveEntry() {
     const co = document.getElementById('nc').value.trim();
     if (!co) { alert('Company name is required.'); return; }
-
     document.getElementById('save-btn').disabled = true;
     document.getElementById('save-status').innerHTML = '<div class="spinner"></div><span>Saving...</span>';
 
@@ -442,23 +441,14 @@
     };
 
     const prompt = `Add this entry to the Notion Job Pipeline Tracker database (collection ID: ${NOTION_DB}):
-Company: ${entry.company}
-Role: ${entry.role}
-Tier: ${entry.tier}
-Stage: ${entry.stage}
-Regulatory Complexity: ${entry.reg}
-Source: ${entry.source}
-${entry.url ? 'Job URL: ' + entry.url : ''}
-${entry.why ? 'Why I Win: ' + entry.why : ''}
-Last Activity: ${new Date().toISOString().split('T')[0]}
-Use the notion create-pages tool and confirm with "saved successfully".`;
+Company: ${entry.company}, Role: ${entry.role}, Tier: ${entry.tier}, Stage: ${entry.stage}, Regulatory Complexity: ${entry.reg}, Source: ${entry.source}${entry.url ? ', Job URL: ' + entry.url : ''}${entry.why ? ', Why I Win: ' + entry.why : ''}, Last Activity: ${new Date().toISOString().split('T')[0]}. Use the notion create-pages tool and confirm with "saved successfully".`;
 
     try {
-      const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt, false);
+      const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt);
       document.getElementById('save-status').innerHTML = text.toLowerCase().includes('saved')
         ? `<span style="color:var(--green-text)">Saved. <a class="lnk" href="${NOTION_HUB}" target="_blank">View in Notion</a></span>`
-        : `<span>Attempted — <a class="lnk" href="${NOTION_HUB}" target="_blank">verify in Notion</a></span>`;
-      ['nc','nu','nw'].forEach(id => document.getElementById(id).value = '');
+        : `<span>Attempted. <a class="lnk" href="${NOTION_HUB}" target="_blank">Verify in Notion</a></span>`;
+      ['nc', 'nu', 'nw'].forEach(id => document.getElementById(id).value = '');
     } catch (err) {
       document.getElementById('save-status').innerHTML = `<span style="color:var(--red-text)">Error: ${err.message}</span>`;
     }
@@ -467,53 +457,33 @@ Use the notion create-pages tool and confirm with "saved successfully".`;
 
   async function loadPipeline() {
     document.getElementById('pipelist').innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
-
-    const prompt = `Query the Notion database with collection ID ${NOTION_DB} and return all entries as a JSON array. Each item should have: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown fences, no explanation.`;
-
+    const prompt = `Query the Notion database with collection ID ${NOTION_DB} and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.`;
     try {
-      const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only, no explanation or markdown.', prompt, false);
+      const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt);
       const match = text.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
       const entries = match ? JSON.parse(match[0]) : [];
-
       if (!entries.length) {
         document.getElementById('pipelist').innerHTML = '<div class="pipe-empty">No entries yet. Add companies using the form above.</div>';
         return;
       }
-
-      const stageBg = s => {
-        const m = { Targeting:'var(--gray-bg)', Researching:'var(--amber-bg)', 'Outreach Sent':'var(--amber-bg)', Responded:'var(--blue-bg)', Screening:'var(--purple-bg)', Interviewing:'var(--purple-bg)', Offer:'var(--green-bg)' };
-        return m[s] || 'var(--gray-bg)';
-      };
-      const stageColor = s => {
-        const m = { Targeting:'var(--gray-text)', Researching:'var(--amber-text)', 'Outreach Sent':'var(--amber-text)', Responded:'var(--blue-text)', Screening:'var(--purple-text)', Interviewing:'var(--purple-text)', Offer:'var(--green-text)' };
-        return m[s] || 'var(--gray-text)';
-      };
+      const stageBg = s => ({ Targeting:'var(--gray-bg)', Researching:'var(--amber-bg)', 'Outreach Sent':'var(--amber-bg)', Responded:'var(--blue-bg)', Screening:'var(--purple-bg)', Interviewing:'var(--purple-bg)', Offer:'var(--green-bg)' }[s] || 'var(--gray-bg)');
+      const stageColor = s => ({ Targeting:'var(--gray-text)', Researching:'var(--amber-text)', 'Outreach Sent':'var(--amber-text)', Responded:'var(--blue-text)', Screening:'var(--purple-text)', Interviewing:'var(--purple-text)', Offer:'var(--green-text)' }[s] || 'var(--gray-text)');
       const tierBg = t => t === 'A' ? 'var(--green-bg)' : t === 'B' ? 'var(--blue-bg)' : 'var(--gray-bg)';
       const tierColor = t => t === 'A' ? 'var(--green-text)' : t === 'B' ? 'var(--blue-text)' : 'var(--gray-text)';
-
       document.getElementById('pipelist').innerHTML = `
         <table class="pipe-table">
-          <thead><tr>
-            <th style="width:22%">Company</th>
-            <th style="width:22%">Role</th>
-            <th style="width:8%">Tier</th>
-            <th style="width:20%">Stage</th>
-            <th style="width:16%">Source</th>
-            <th style="width:12%">Link</th>
-          </tr></thead>
-          <tbody>
-            ${entries.map(e => `<tr>
-              <td style="font-weight:500">${e.company || ''}</td>
-              <td style="color:var(--text2)">${e.role || ''}</td>
-              <td><span class="sbadge" style="background:${tierBg(e.tier)};color:${tierColor(e.tier)}">${e.tier || ''}</span></td>
-              <td><span class="sbadge" style="background:${stageBg(e.stage)};color:${stageColor(e.stage)}">${e.stage || 'Targeting'}</span></td>
-              <td style="font-size:12px;color:var(--text2)">${e.source || ''}</td>
-              <td>${e.jobUrl && e.jobUrl !== 'n/a' ? `<a class="lnk" href="${e.jobUrl}" target="_blank">View</a>` : ''}</td>
-            </tr>`).join('')}
-          </tbody>
+          <thead><tr><th style="width:22%">Company</th><th style="width:22%">Role</th><th style="width:8%">Tier</th><th style="width:20%">Stage</th><th style="width:16%">Source</th><th style="width:12%">Link</th></tr></thead>
+          <tbody>${entries.map(e => `<tr>
+            <td style="font-weight:500">${e.company||''}</td>
+            <td style="color:var(--text2)">${e.role||''}</td>
+            <td><span class="sbadge" style="background:${tierBg(e.tier)};color:${tierColor(e.tier)}">${e.tier||''}</span></td>
+            <td><span class="sbadge" style="background:${stageBg(e.stage)};color:${stageColor(e.stage)}">${e.stage||'Targeting'}</span></td>
+            <td style="font-size:12px;color:var(--text2)">${e.source||''}</td>
+            <td>${e.jobUrl&&e.jobUrl!=='n/a'?`<a class="lnk" href="${e.jobUrl}" target="_blank">View</a>`:''}</td>
+          </tr>`).join('')}</tbody>
         </table>`;
     } catch (err) {
-      document.getElementById('pipelist').innerHTML = `<div class="pipe-empty">Could not load pipeline. <a class="lnk" href="${NOTION_HUB}" target="_blank">Open in Notion</a></div>`;
+      document.getElementById('pipelist').innerHTML = `<div class="pipe-empty">Could not load. <a class="lnk" href="${NOTION_HUB}" target="_blank">Open in Notion</a></div>`;
     }
   }
 </script>
