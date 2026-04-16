@@ -287,7 +287,7 @@
 
 <script>
   // ─── CONFIGURE THIS after deploying to Vercel ───────────────────────────────
-  const PROXY_URL = 'https://job-search-agent-tau.vercel.app/api/proxy';
+  const PROXY_URL = 'https://YOUR_VERCEL_APP.vercel.app/api/proxy';
   // ────────────────────────────────────────────────────────────────────────────
 
   const NOTION_DB = '45ecc169-634b-49c2-9042-9e4fee1c0750';
@@ -349,7 +349,7 @@
 
   async function callProxy(systemPrompt, userPrompt, useWebSearch) {
     const body = {
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 1500,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
