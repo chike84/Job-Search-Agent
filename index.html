@@ -419,16 +419,20 @@ Job search OS principles: leverage over volume, warm paths over cold application
     el.classList.toggle('empty', !!empty);
   }
 
-  async function callProxy(systemPrompt, userPrompt) {
+  async function callProxy(systemPrompt, userPrompt, useWebSearch = false) {
+    const body = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1200,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    };
+    if (useWebSearch) {
+      body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+    }
     const res = await fetch(PROXY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1200,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
     const data = await res.json();
@@ -461,9 +465,9 @@ Job search OS principles: leverage over volume, warm paths over cold application
         }
 
         if (doSearch) {
-          setStatus(panel, true, 'Finding job leads...');
+          setStatus(panel, true, 'Searching live job market...');
           const roleSearch = title || 'Senior Product Manager';
-          const t = await callProxy(OS_CONTEXT, `List 6 specific "${roleSearch}" roles that are likely actively hiring right now (April 2026) at ${cstage} companies in ${focus} with ${reg} regulatory complexity.${ctx ? ' Angle: ' + ctx : ''} For each: company name, role title, remote or location, why it specifically fits Chike's background, and the direct careers page URL. If you are not certain a role is currently open, say so and give the careers URL to check. Do not fabricate job listings.`);
+          const t = await callProxy(OS_CONTEXT, `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies in the ${focus} space with ${reg} regulatory complexity.${ctx ? ' Focus on: ' + ctx : ''} For each role found: company name, exact role title, location or remote status, why it fits Chike's background (DocuSign integrations, API product management, regulated fintech, 0-to-1 builds), and the direct job posting URL. Only list roles you can confirm are currently posted. If a search result is ambiguous about whether the role is still open, note that.`, true);
           combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
           setOutput(panel, combined, false);
         }
