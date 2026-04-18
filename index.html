@@ -124,13 +124,19 @@
     <div class="card">
       <div class="slabel">Focus area</div>
       <div class="chips">
-        <span class="chip on" data-g="focus" onclick="tog(this)">Fintech</span>
-        <span class="chip on" data-g="focus" onclick="tog(this)">Enterprise SaaS</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Fintech</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Enterprise SaaS</span>
         <span class="chip" data-g="focus" onclick="tog(this)">Capital markets</span>
         <span class="chip" data-g="focus" onclick="tog(this)">Payments</span>
         <span class="chip" data-g="focus" onclick="tog(this)">Regtech</span>
         <span class="chip" data-g="focus" onclick="tog(this)">Digital banking</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Fractional PM</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Biotech / Life sciences</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Healthcare</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Climate / Energy</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Oil &amp; gas</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Public sector / Govtech</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">AI / ML products</span>
+        <span class="chip" data-g="focus" onclick="tog(this)">Fractional / Cross-industry</span>
       </div>
       <div class="slabel">Mode</div>
       <div class="chips">
@@ -360,7 +366,7 @@ Background:
 - PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes
 - Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp
 
-Target roles: Senior PM, Head of Product, PM in fintech/regulated environments, and Fractional PM opportunities (embedded execution on retainer, across industries including early-stage and mature companies)
+Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities (embedded execution on retainer). Open to a wide range of industries including fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products. Fractional work in particular is explicitly cross-industry.
 
 Strengths: 0-to-1 product builds, API product management, regulated industry navigation, cross-functional stakeholder leadership, digital transformation, technical depth (API specs, system architecture, integration patterns)
 
@@ -459,7 +465,7 @@ Job search OS principles: leverage over volume, warm paths over cold application
         if (doStrategy) {
           setStatus(panel, true, 'Building target company strategy...');
           const roleLabel = title || 'Senior Product Manager';
-          const t = await callProxy(OS_CONTEXT, `Generate 8 target companies for ${roleLabel} roles. Focus: ${focus}. Regulatory complexity: ${reg}. Company stage: ${cstage}.${ctx ? ' Angle: ' + ctx : ''} For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background, suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and suggest better replacements.`);
+          const t = await callProxy(OS_CONTEXT, `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across fintech, biotech, oil and gas, and public sector.'} Regulatory complexity: ${reg}. Company stage: ${cstage}.${ctx ? ' Angle: ' + ctx : ''} For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background (DocuSign integrations, RMD Center 0-to-1 launch, API product management, digital transformation, cross-functional leadership), suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and suggest better replacements.`);
           combined += t;
           setOutput(panel, combined, false);
         }
@@ -467,7 +473,7 @@ Job search OS principles: leverage over volume, warm paths over cold application
         if (doSearch) {
           setStatus(panel, true, 'Searching live job market...');
           const roleSearch = title || 'Senior Product Manager';
-          const t = await callProxy(OS_CONTEXT, `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies in the ${focus} space with ${reg} regulatory complexity.${ctx ? ' Focus on: ' + ctx : ''} For each role found: company name, exact role title, location or remote status, why it fits Chike's background (DocuSign integrations, API product management, regulated fintech, 0-to-1 builds), and the direct job posting URL. Only list roles you can confirm are currently posted. If a search result is ambiguous about whether the role is still open, note that.`, true);
+          const t = await callProxy(OS_CONTEXT, `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${ctx ? ' Focus on: ' + ctx : ''} For each role found: company name, exact role title, location or remote status, why it fits Chike's background (0-to-1 product builds, API product management, digital transformation, regulated environments, cross-functional stakeholder leadership), and the direct job posting URL. Only list roles you can confirm are currently posted. If a search result is ambiguous about whether the role is still open, note that.`, true);
           combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
           setOutput(panel, combined, false);
         }
