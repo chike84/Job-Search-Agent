@@ -3,9 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ultimate Job Search OS</title>
+  <title>Job Search Agent</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── PM theme (warm neutral) ── */
+    :root[data-os="pm"] {
+      --accent: #6B5CFF;
+      --accent-bg: #F0EEFF;
+      --accent-text: #3D2FCC;
+      --toggle-bg: #6B5CFF;
+      --header-stripe: linear-gradient(135deg, #6B5CFF 0%, #9B8FFF 100%);
+    }
+    /* ── RM/DM theme (steel blue/slate) ── */
+    :root[data-os="rmdm"] {
+      --accent: #0F7490;
+      --accent-bg: #E8F6FA;
+      --accent-text: #0A4F63;
+      --toggle-bg: #0F7490;
+      --header-stripe: linear-gradient(135deg, #0F7490 0%, #38A3C0 100%);
+    }
+
     :root {
       --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0efec;
       --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
@@ -19,64 +37,76 @@
       --purple-bg: #EEEDFE; --purple-text: #3C3489;
     }
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #1a1a1a; --bg2: #222222; --bg3: #2a2a2a;
-        --text: #f0f0f0; --text2: #a0a0a0; --text3: #666;
-        --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
-      }
+      :root { --bg:#1a1a1a; --bg2:#222; --bg3:#2a2a2a; --text:#f0f0f0; --text2:#a0a0a0; --text3:#666; --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2); }
     }
+
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
-    .wrap { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem; }
+
+    /* ── OS Toggle ── */
+    .os-toggle-bar {
+      background: var(--header-stripe);
+      padding: 12px 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s;
+    }
+    .os-toggle-bar .bar-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
+    .os-toggle-wrap { display: flex; align-items: center; gap: 10px; }
+    .os-label { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; }
+    .os-label.active { color: #fff; font-weight: 700; }
+    .toggle-switch {
+      position: relative; width: 56px; height: 28px; cursor: pointer;
+      background: rgba(255,255,255,0.25); border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.5);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; transition: transform 0.22s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    :root[data-os="rmdm"] .toggle-switch::after { transform: translateX(28px); }
+
+    .wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.25rem; }
     h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
     .subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-md); border: 0.5px solid var(--border); color: var(--text2); background: var(--bg2); }
+    .badge-accent { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-text); }
+
     .tabs { display: flex; gap: 5px; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .tab { font-size: 13px; padding: 6px 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.12s; }
     .tab:hover { background: var(--bg2); color: var(--text); }
-    .tab.active { background: var(--bg); border-color: var(--border2); color: var(--text); font-weight: 500; }
+    .tab.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent-text); font-weight: 500; }
+
     .panel { display: none; }
     .panel.active { display: block; }
     .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
     label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 5px; }
-    select, input[type=text], textarea {
-      width: 100%; font-size: 14px; padding: 8px 10px;
-      border: 0.5px solid var(--border); border-radius: var(--radius-md);
-      background: var(--bg); color: var(--text); font-family: inherit;
-      transition: border-color 0.12s;
-    }
-    select:focus, input:focus, textarea:focus { outline: none; border-color: var(--border2); }
+    select, input[type=text], textarea { width: 100%; font-size: 14px; padding: 8px 10px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: inherit; transition: border-color 0.12s; }
+    select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent); }
     textarea { resize: vertical; min-height: 68px; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     .field { margin-bottom: 12px; position: relative; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px;
-      font-size: 13px; font-weight: 500; border: 0.5px solid var(--border2);
-      border-radius: var(--radius-md); background: transparent; color: var(--text);
-      cursor: pointer; transition: all 0.12s; font-family: inherit;
-    }
-    .btn:hover { background: var(--bg2); }
+
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--accent); border-radius: var(--radius-md); background: transparent; color: var(--accent-text); cursor: pointer; transition: all 0.12s; font-family: inherit; }
+    .btn:hover { background: var(--accent-bg); }
     .btn:active { transform: scale(0.98); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
     .btn-sm { font-size: 12px; padding: 5px 12px; }
     .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
     .slabel { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 7px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-    .chip {
-      font-size: 12px; padding: 4px 10px; border-radius: var(--radius-md);
-      border: 0.5px solid var(--border); background: var(--bg2);
-      color: var(--text2); cursor: pointer; user-select: none; transition: all 0.12s;
-    }
-    .chip.on { border-color: var(--border2); background: var(--bg); color: var(--text); font-weight: 500; }
-    .output-area {
-      background: var(--bg2); border-radius: var(--radius-lg);
-      border: 0.5px solid var(--border); padding: 1rem 1.25rem;
-      min-height: 120px; font-size: 13.5px; line-height: 1.75;
-      color: var(--text); white-space: pre-wrap; margin-top: 1rem; font-family: inherit;
-    }
+    .chip { font-size: 12px; padding: 4px 10px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg2); color: var(--text2); cursor: pointer; user-select: none; transition: all 0.12s; }
+    .chip.on { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); font-weight: 500; }
+
+    .output-area { background: var(--bg2); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 1rem 1.25rem; min-height: 120px; font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; margin-top: 1rem; font-family: inherit; }
     .output-area.empty { color: var(--text3); font-style: italic; }
     .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); margin-top: 8px; min-height: 20px; }
-    .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--text2); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
     .pipe-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
     .pipe-table th { text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); padding: 7px 8px; border-bottom: 0.5px solid var(--border); }
     .pipe-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -87,494 +117,683 @@
     .add-form { display: none; }
     .add-form.open { display: block; }
     .divider { border: none; border-top: 0.5px solid var(--border); margin: 12px 0; }
-    /* Autocomplete */
-    .autocomplete-list {
-      position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
-      background: var(--bg); border: 0.5px solid var(--border2);
-      border-radius: var(--radius-md); overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    .autocomplete-item {
-      padding: 8px 10px; font-size: 13px; color: var(--text2);
-      cursor: pointer; transition: background 0.1s;
-    }
-    .autocomplete-item:hover, .autocomplete-item.active { background: var(--bg2); color: var(--text); }
+
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .autocomplete-item { padding: 8px 10px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.1s; }
+    .autocomplete-item:hover, .autocomplete-item.active { background: var(--accent-bg); color: var(--accent-text); }
+
+    /* OS panels */
+    .os-content { display: none; }
+    .os-content.active { display: block; }
   </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Job Search Agent</h1>
-  <div class="subtitle">
-    Ultimate Job Search OS
-    <span class="badge">Notion pipeline</span>
-    <span class="badge">Live job search</span>
-    <span id="proxy-status" class="badge">checking proxy...</span>
-  </div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="sw('targeting',this)">Target companies</button>
-    <button class="tab" onclick="sw('positioning',this)">Positioning</button>
-    <button class="tab" onclick="sw('outreach',this)">Outreach</button>
-    <button class="tab" onclick="sw('interview',this)">Interview prep</button>
-    <button class="tab" onclick="sw('pipeline',this)">Pipeline tracker</button>
-  </div>
-
-  <!-- TARGET COMPANIES -->
-  <div id="p-targeting" class="panel active">
-    <div class="card">
-      <div class="slabel">Focus area</div>
-      <div class="chips">
-        <span class="chip" data-g="focus" onclick="tog(this)">Fintech</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Enterprise SaaS</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Capital markets</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Payments</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Regtech</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Digital banking</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Biotech / Life sciences</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Healthcare</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Climate / Energy</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Oil &amp; gas</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Public sector / Govtech</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">AI / ML products</span>
-        <span class="chip" data-g="focus" onclick="tog(this)">Fractional / Cross-industry</span>
-      </div>
-      <div class="slabel">Mode</div>
-      <div class="chips">
-        <span class="chip on" data-g="tmode" onclick="excl(this,'tmode')">Strategy + live jobs</span>
-        <span class="chip" data-g="tmode" onclick="excl(this,'tmode')">Strategy only</span>
-        <span class="chip" data-g="tmode" onclick="excl(this,'tmode')">Live job search only</span>
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label>Regulatory complexity</label>
-          <select id="reg"><option value="high" selected>High (preferred)</option><option value="medium">Medium+</option><option value="any">Any</option></select>
-        </div>
-        <div class="field">
-          <label>Company stage</label>
-          <select id="cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="both">Both</option><option value="fractional">Fractional / Embedded</option></select>
-        </div>
-      </div>
-      <div class="field" id="jobtitle-field">
-        <label>Role title to search</label>
-        <input type="text" id="jobtitle" placeholder="e.g. Senior Product Manager, Head of Product..." autocomplete="off" oninput="showSuggestions(this.value)" onkeydown="handleKey(event)" />
-        <div class="autocomplete-list" id="autocomplete-list" style="display:none;"></div>
-      </div>
-      <div class="field">
-        <label>Specific angle (optional)</label>
-        <textarea id="tctx" placeholder="e.g. API-first platforms, compliance workflow, 0-to-1 builds, fractional embedded PM..."></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="run('targeting')">Run search</button>
-      </div>
-    </div>
-    <div id="status-targeting" class="status-row"></div>
-    <div id="output-targeting" class="output-area empty">Results will appear here...</div>
-  </div>
-
-  <!-- POSITIONING -->
-  <div id="p-positioning" class="panel">
-    <div class="card">
-      <div class="slabel">Output needed</div>
-      <div class="chips">
-        <span class="chip on" data-g="pos" onclick="tog(this)">Positioning statement</span>
-        <span class="chip" data-g="pos" onclick="tog(this)">Tell me about yourself (90s)</span>
-        <span class="chip" data-g="pos" onclick="tog(this)">3 signature wins (STAR)</span>
-        <span class="chip" data-g="pos" onclick="tog(this)">Differentiation critique</span>
-      </div>
-      <div class="field">
-        <label>Target role</label>
-        <select id="prole">
-          <option value="sr-pm">Senior Product Manager</option>
-          <option value="head-pm">Head of Product</option>
-          <option value="pm-fintech">PM, Fintech / Regulated Industry</option>
-          <option value="fractional">Fractional PM</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Tailor for specific company? (optional)</label>
-        <input type="text" id="pco" placeholder="e.g. Stripe, Plaid, Brex" />
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="run('positioning')">Build positioning</button>
-      </div>
-    </div>
-    <div id="status-positioning" class="status-row"></div>
-    <div id="output-positioning" class="output-area empty">Positioning output will appear here...</div>
-  </div>
-
-  <!-- OUTREACH -->
-  <div id="p-outreach" class="panel">
-    <div class="card">
-      <div class="slabel">Outreach type</div>
-      <div class="chips">
-        <span class="chip on" data-g="out" onclick="tog(this)">Cold outreach</span>
-        <span class="chip" data-g="out" onclick="tog(this)">Warm intro request</span>
-        <span class="chip" data-g="out" onclick="tog(this)">Follow-up</span>
-        <span class="chip" data-g="out" onclick="tog(this)">Hiring manager DM</span>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Target company</label><input type="text" id="oco" placeholder="e.g. Brex, Marqeta, Affirm" /></div>
-        <div class="field"><label>Contact role</label><input type="text" id="orole" placeholder="e.g. VP Product, Head of PM" /></div>
-      </div>
-      <div class="field">
-        <label>Hook or insight to lead with (optional)</label>
-        <textarea id="ohook" placeholder="e.g. I saw they just launched X, their API docs suggest Y..."></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="run('outreach')">Draft outreach</button>
-      </div>
-    </div>
-    <div id="status-outreach" class="status-row"></div>
-    <div id="output-outreach" class="output-area empty">Outreach draft will appear here...</div>
-  </div>
-
-  <!-- INTERVIEW PREP -->
-  <div id="p-interview" class="panel">
-    <div class="card">
-      <div class="slabel">Interview type</div>
-      <div class="chips">
-        <span class="chip on" data-g="int" onclick="tog(this)">Product sense</span>
-        <span class="chip" data-g="int" onclick="tog(this)">Execution and delivery</span>
-        <span class="chip" data-g="int" onclick="tog(this)">Metrics and data</span>
-        <span class="chip" data-g="int" onclick="tog(this)">Stakeholder management</span>
-        <span class="chip" data-g="int" onclick="tog(this)">Leadership</span>
-        <span class="chip" data-g="int" onclick="tog(this)">Technical depth</span>
-      </div>
-      <div class="field"><label>Specific question (optional)</label><input type="text" id="iq" placeholder="e.g. Tell me about a 0-to-1 product you launched..." /></div>
-      <div class="field"><label>Company context (optional)</label><input type="text" id="ico" placeholder="e.g. Stripe, API-first payments infrastructure" /></div>
-      <div class="btn-row">
-        <button class="btn" onclick="run('interview')">Generate prep</button>
-      </div>
-    </div>
-    <div id="status-interview" class="status-row"></div>
-    <div id="output-interview" class="output-area empty">Interview prep will appear here...</div>
-  </div>
-
-  <!-- PIPELINE TRACKER -->
-  <div id="p-pipeline" class="panel">
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div>
-          <div class="slabel" style="margin-bottom:0">Pipeline</div>
-          <div style="font-size:12px;color:var(--text2);margin-top:2px;">
-            Notion synced &middot; <a class="lnk" href="https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6" target="_blank">Open hub</a>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-sm" onclick="loadPipeline()">Refresh</button>
-          <button class="btn btn-sm" onclick="togAdd()">+ Add entry</button>
-        </div>
-      </div>
-      <div class="add-form" id="addform">
-        <hr class="divider">
-        <div class="row2">
-          <div class="field"><label>Company</label><input type="text" id="nc" placeholder="e.g. Plaid" /></div>
-          <div class="field"><label>Role title</label><input type="text" id="nr" placeholder="e.g. Senior PM" /></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label>Tier</label><select id="nt"><option>A</option><option>B</option><option>C</option></select></div>
-          <div class="field"><label>Stage</label><select id="ns">
-            <option>Targeting</option><option>Researching</option><option>Outreach Sent</option>
-            <option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer</option>
-          </select></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label>Regulatory complexity</label><select id="nreg"><option>High</option><option>Medium</option><option>Low</option></select></div>
-          <div class="field"><label>Source</label><select id="nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
-        </div>
-        <div class="field"><label>Job URL (optional)</label><input type="text" id="nu" placeholder="https://..." /></div>
-        <div class="field"><label>Why I win (optional)</label><textarea id="nw" style="min-height:50px;" placeholder="2-3 bullets on your edge..."></textarea></div>
-        <div class="btn-row">
-          <button class="btn" id="save-btn" onclick="saveEntry()">Save to Notion</button>
-          <button class="btn" style="border-color:transparent;" onclick="togAdd()">Cancel</button>
-        </div>
-        <div id="save-status" class="status-row"></div>
-      </div>
-      <div id="pipelist" style="margin-top:12px;overflow-x:auto;">
-        <div class="pipe-empty">Click refresh to load your pipeline from Notion.</div>
-      </div>
-    </div>
+<!-- ── OS TOGGLE BAR ── -->
+<div class="os-toggle-bar">
+  <span class="bar-title" id="bar-title">Product Manager Job Search OS</span>
+  <div class="os-toggle-wrap">
+    <span class="os-label active" id="label-pm">PM OS</span>
+    <div class="toggle-switch" onclick="toggleOS()" role="switch" aria-label="Switch between PM and RM/DM OS"></div>
+    <span class="os-label" id="label-rmdm">RM/DM OS</span>
   </div>
 </div>
 
+<div class="wrap">
+
+  <!-- ════════════════════════════════════════════
+       PM OS
+  ════════════════════════════════════════════ -->
+  <div class="os-content active" id="os-pm">
+    <h1>Job Search Agent</h1>
+    <div class="subtitle">
+      Ultimate Job Search OS
+      <span class="badge">Notion pipeline</span>
+      <span class="badge">Live job search</span>
+      <span id="proxy-status-pm" class="badge">checking proxy...</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('pm','targeting',this)">Target companies</button>
+      <button class="tab" onclick="swTab('pm','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('pm','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('pm','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('pm','pipeline',this)">Pipeline tracker</button>
+    </div>
+
+    <!-- PM: TARGET -->
+    <div id="pm-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Focus area</div>
+        <div class="chips">
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Fintech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Enterprise SaaS</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Capital markets</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Payments</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Regtech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Digital banking</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Biotech / Life sciences</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Healthcare</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Climate / Energy</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Oil &amp; gas</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Public sector / Govtech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">AI / ML products</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+        </div>
+        <div class="slabel">Mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy + live jobs</span>
+          <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy only</span>
+          <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Live job search only</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Regulatory complexity</label><select id="pm-reg"><option value="high" selected>High (preferred)</option><option value="medium">Medium+</option><option value="any">Any</option></select></div>
+          <div class="field"><label>Company stage</label><select id="pm-cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="both">Both</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="field" id="pm-jobtitle-field">
+          <label>Role title to search</label>
+          <input type="text" id="pm-jobtitle" placeholder="e.g. Senior Product Manager, Head of Product..." autocomplete="off" oninput="showAC('pm',this.value)" onkeydown="handleKey(event,'pm')" />
+          <div class="autocomplete-list" id="pm-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field"><label>Specific angle (optional)</label><textarea id="pm-tctx" placeholder="e.g. API-first platforms, compliance workflow, 0-to-1 builds..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','targeting')">Run search</button></div>
+      </div>
+      <div id="pm-status-targeting" class="status-row"></div>
+      <div id="pm-output-targeting" class="output-area empty">Results will appear here...</div>
+    </div>
+
+    <!-- PM: POSITIONING -->
+    <div id="pm-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">Differentiation critique</span>
+        </div>
+        <div class="field"><label>Target role</label><select id="pm-prole"><option value="sr-pm">Senior Product Manager</option><option value="head-pm">Head of Product</option><option value="pm-fintech">PM, Fintech / Regulated Industry</option><option value="fractional">Fractional PM</option></select></div>
+        <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="pm-pco" placeholder="e.g. Stripe, Plaid, Brex" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','positioning')">Build positioning</button></div>
+      </div>
+      <div id="pm-status-positioning" class="status-row"></div>
+      <div id="pm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
+    </div>
+
+    <!-- PM: OUTREACH -->
+    <div id="pm-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Hiring manager DM</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Target company</label><input type="text" id="pm-oco" placeholder="e.g. Brex, Marqeta, Affirm" /></div>
+          <div class="field"><label>Contact role</label><input type="text" id="pm-orole" placeholder="e.g. VP Product, Head of PM" /></div>
+        </div>
+        <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="pm-ohook" placeholder="e.g. I saw they just launched X..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="pm-status-outreach" class="status-row"></div>
+      <div id="pm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
+    </div>
+
+    <!-- PM: INTERVIEW -->
+    <div id="pm-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview type</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-int" onclick="tog(this)">Product sense</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Execution and delivery</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Metrics and data</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Stakeholder management</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Leadership</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Technical depth</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="pm-iq" placeholder="e.g. Tell me about a 0-to-1 product you launched..." /></div>
+        <div class="field"><label>Company context (optional)</label><input type="text" id="pm-ico" placeholder="e.g. Stripe, API-first payments infrastructure" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','interview')">Generate prep</button></div>
+      </div>
+      <div id="pm-status-interview" class="status-row"></div>
+      <div id="pm-output-interview" class="output-area empty">Interview prep will appear here...</div>
+    </div>
+
+    <!-- PM: PIPELINE -->
+    <div id="pm-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('pm')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('pm')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="pm-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Company</label><input type="text" id="pm-nc" placeholder="e.g. Plaid" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="pm-nr" placeholder="e.g. Senior PM" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="pm-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Stage</label><select id="pm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Reg. complexity</label><select id="pm-nreg"><option>High</option><option>Medium</option><option>Low</option></select></div>
+            <div class="field"><label>Source</label><select id="pm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
+          </div>
+          <div class="field"><label>Job URL (optional)</label><input type="text" id="pm-nu" placeholder="https://..." /></div>
+          <div class="field"><label>Why I win (optional)</label><textarea id="pm-nw" style="min-height:50px;"></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="pm-save-btn" onclick="saveEntry('pm')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('pm')">Cancel</button>
+          </div>
+          <div id="pm-save-status" class="status-row"></div>
+        </div>
+        <div id="pm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
+      </div>
+    </div>
+  </div><!-- /os-pm -->
+
+
+  <!-- ════════════════════════════════════════════
+       RM/DM OS
+  ════════════════════════════════════════════ -->
+  <div class="os-content" id="os-rmdm">
+    <h1>Job Search Agent</h1>
+    <div class="subtitle">
+      Release Manager and Delivery Manager Job Search OS
+      <span class="badge">Notion pipeline</span>
+      <span class="badge">Live job search</span>
+      <span id="proxy-status-rmdm" class="badge">checking proxy...</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('rmdm','targeting',this)">Target companies</button>
+      <button class="tab" onclick="swTab('rmdm','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('rmdm','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('rmdm','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('rmdm','pipeline',this)">Pipeline tracker</button>
+    </div>
+
+    <!-- RMDM: TARGET -->
+    <div id="rmdm-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Industry focus</div>
+        <div class="chips">
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fintech / Financial services</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Enterprise SaaS</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Biotech / Life sciences</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Healthcare / Health tech</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Climate / Energy</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Oil &amp; gas</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Public sector / Govtech</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">DevOps / Platform engineering</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Clinical / Pharma software</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+        </div>
+        <div class="slabel">Mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy + live jobs</span>
+          <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy only</span>
+          <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Live job search only</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Regulatory environment</label><select id="rmdm-reg"><option value="high" selected>High (SOX / FDA / HIPAA)</option><option value="medium">Medium</option><option value="any">Any</option></select></div>
+          <div class="field"><label>Company stage</label><select id="rmdm-cstage"><option value="enterprise" selected>Enterprise</option><option value="growth">Growth-stage</option><option value="both">Both</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="field" id="rmdm-jobtitle-field">
+          <label>Role title to search</label>
+          <input type="text" id="rmdm-jobtitle" placeholder="e.g. Senior Technical Release Manager, Delivery Manager..." autocomplete="off" oninput="showAC('rmdm',this.value)" onkeydown="handleKey(event,'rmdm')" />
+          <div class="autocomplete-list" id="rmdm-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field"><label>Specific angle (optional)</label><textarea id="rmdm-tctx" placeholder="e.g. CI/CD pipeline ownership, DORA metrics, multi-team program coordination, FDA compliance..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','targeting')">Run search</button></div>
+      </div>
+      <div id="rmdm-status-targeting" class="status-row"></div>
+      <div id="rmdm-output-targeting" class="output-area empty">Results will appear here...</div>
+    </div>
+
+    <!-- RMDM: POSITIONING -->
+    <div id="rmdm-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Differentiation critique</span>
+        </div>
+        <div class="field"><label>Target role</label><select id="rmdm-prole">
+          <option value="trl">Technical Release Manager</option>
+          <option value="sr-trl">Senior Technical Release Manager</option>
+          <option value="dm">Delivery Manager</option>
+          <option value="tpm">Technical Program Manager (TPM)</option>
+          <option value="fractional">Fractional Release / Delivery Manager</option>
+        </select></div>
+        <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="rmdm-pco" placeholder="e.g. Veeva, Workday, ServiceNow" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','positioning')">Build positioning</button></div>
+      </div>
+      <div id="rmdm-status-positioning" class="status-row"></div>
+      <div id="rmdm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
+    </div>
+
+    <!-- RMDM: OUTREACH -->
+    <div id="rmdm-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Hiring manager DM</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Target company</label><input type="text" id="rmdm-oco" placeholder="e.g. Veeva, Palantir, Workday" /></div>
+          <div class="field"><label>Contact role (their title)</label><input type="text" id="rmdm-orole" placeholder="e.g. VP Engineering, Director of DevOps" /></div>
+        </div>
+        <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="rmdm-ohook" placeholder="e.g. I saw their incident post-mortem blog, their compliance certification, their release cadence..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="rmdm-status-outreach" class="status-row"></div>
+      <div id="rmdm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
+    </div>
+
+    <!-- RMDM: INTERVIEW -->
+    <div id="rmdm-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview type</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-int" onclick="tog(this)">Release scenario / go-no-go</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Post-release incident and RCA</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">CI/CD and tooling depth</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Program delivery and coordination</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">DORA metrics and process improvement</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Leadership / VP round</span>
+        </div>
+        <div class="slabel">Interview mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Technical practitioner screen</span>
+          <span class="chip" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Leadership round (VP/Director)</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="rmdm-iq" placeholder="e.g. Walk me through a go/no-go decision where you pushed back..." /></div>
+        <div class="field"><label>Company context (optional)</label><input type="text" id="rmdm-ico" placeholder="e.g. Veeva Systems, life sciences SaaS, FDA-regulated" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','interview')">Generate prep</button></div>
+      </div>
+      <div id="rmdm-status-interview" class="status-row"></div>
+      <div id="rmdm-output-interview" class="output-area empty">Interview prep will appear here...</div>
+    </div>
+
+    <!-- RMDM: PIPELINE -->
+    <div id="rmdm-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">RM/DM Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34862cd4a7c5814181c8c872da969822" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('rmdm')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('rmdm')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="rmdm-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Company</label><input type="text" id="rmdm-nc" placeholder="e.g. Veeva Systems" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="rmdm-nr" placeholder="e.g. Senior Technical Release Manager" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Role type</label><select id="rmdm-ntype"><option>Technical Release Manager</option><option>Delivery Manager</option><option>TPM</option><option>Scrum Master</option><option>Fractional RM/DM</option><option>DevOps/Platform</option></select></div>
+            <div class="field"><label>Stage</label><select id="rmdm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="rmdm-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Regulatory env</label><select id="rmdm-nreg"><option>SEC/FINRA + SOX</option><option>FDA 21 CFR Part 11</option><option>HIPAA</option><option>FedRAMP/Govtech</option><option>GxP</option><option>Standard SaaS</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Source</label><select id="rmdm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
+            <div class="field"><label>Job URL (optional)</label><input type="text" id="rmdm-nu" placeholder="https://..." /></div>
+          </div>
+          <div class="field"><label>Why I win (optional)</label><textarea id="rmdm-nw" style="min-height:50px;"></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="rmdm-save-btn" onclick="saveEntry('rmdm')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('rmdm')">Cancel</button>
+          </div>
+          <div id="rmdm-save-status" class="status-row"></div>
+        </div>
+        <div id="rmdm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
+      </div>
+    </div>
+  </div><!-- /os-rmdm -->
+
+</div><!-- /wrap -->
+
 <script>
-  const PROXY_URL = 'https://job-search-agent-tau.vercel.app/api/proxy';
-  const NOTION_DB = '45ecc169-634b-49c2-9042-9e4fee1c0750';
-  const NOTION_HUB = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
+// ── Config ──────────────────────────────────────────────────────────────────
+const PROXY_URL = 'https://job-search-agent-tau.vercel.app/api/proxy';
+const PM_NOTION_DB   = '45ecc169-634b-49c2-9042-9e4fee1c0750';
+const RMDM_NOTION_DB = '831f5122-169b-462e-bb34-fb55a4400582';
+const PM_HUB   = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
+const RMDM_HUB = 'https://www.notion.so/34862cd4a7c5814181c8c872da969822';
 
-  // Role suggestions for autocomplete
-  const ROLE_SUGGESTIONS = [
-    'Senior Product Manager',
-    'Senior PM, Platform',
-    'Senior PM, API Products',
-    'Senior PM, Fintech',
-    'Head of Product',
-    'Director of Product Management',
-    'Principal Product Manager',
-    'Product Manager, Growth',
-    'PM, Regulated Products',
-    'PM, Digital Transformation',
-    'Fractional Product Manager',
-    'Embedded PM',
-    'VP of Product',
-    'Group Product Manager',
-    'PM, Open Banking',
-    'PM, Payments',
-  ];
+// ── OS Context ──────────────────────────────────────────────────────────────
+const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries.
 
-  let acIndex = -1;
+Background: Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp.
 
-  function showSuggestions(val) {
-    const list = document.getElementById('autocomplete-list');
-    if (!val.trim()) { list.style.display = 'none'; acIndex = -1; return; }
-    const matches = ROLE_SUGGESTIONS.filter(s => s.toLowerCase().includes(val.toLowerCase()));
-    if (!matches.length) { list.style.display = 'none'; return; }
-    list.innerHTML = matches.map((m, i) =>
-      `<div class="autocomplete-item" data-i="${i}" onclick="selectSuggestion('${m}')">${m}</div>`
-    ).join('');
-    list.style.display = 'block';
-    acIndex = -1;
-  }
+Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities. Open to fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products.
 
-  function selectSuggestion(val) {
-    document.getElementById('jobtitle').value = val;
-    document.getElementById('autocomplete-list').style.display = 'none';
-  }
+Communication rules: No em dashes. No AI tells (no "It's important to note", "As a result", "In conclusion"). Practical and direct. Conversational tone. No filler content. If you only have partial information, give what you can and ask for the rest. Never hallucinate facts about companies or people.`;
 
-  function handleKey(e) {
-    const list = document.getElementById('autocomplete-list');
-    const items = list.querySelectorAll('.autocomplete-item');
-    if (!items.length) return;
-    if (e.key === 'ArrowDown') { acIndex = Math.min(acIndex + 1, items.length - 1); }
-    else if (e.key === 'ArrowUp') { acIndex = Math.max(acIndex - 1, 0); }
-    else if (e.key === 'Enter' && acIndex >= 0) { e.preventDefault(); selectSuggestion(items[acIndex].textContent); return; }
-    else if (e.key === 'Escape') { list.style.display = 'none'; return; }
-    items.forEach((el, i) => el.classList.toggle('active', i === acIndex));
-  }
-
-  document.addEventListener('click', e => {
-    if (!document.getElementById('jobtitle-field').contains(e.target)) {
-      document.getElementById('autocomplete-list').style.display = 'none';
-    }
-  });
-
-  const OS_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries.
+const RMDM_CONTEXT = `You are a job search agent for Chike Ugbode, a Technical Release Manager and Delivery Manager with 10+ years driving predictable, zero-incident software delivery in regulated enterprise SaaS environments.
 
 Background:
-- Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors
-- Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs
-- PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes
-- Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp
+- Charles Schwab (2023-2025): Senior Scrum Master and Technical Release Manager for DocuSign API integration platform serving 4,000+ financial reps across 400 branches. Owned Bamboo CI/CD pipeline oversight, Remedy/JDAS change management, go/no-go facilitation, Scrum of Scrums across 11 integration partner teams. 31+ releases, zero major incidents, 32% digital adoption increase, 24% error reduction, 99.99% availability.
+- Charles Schwab (2019-2023): Senior Scrum Master for RMD Center (1.6M users). Built DORA metrics framework from scratch, drove change failure rate from 5% to 1.3%, coordinated 4 concurrent scrum teams, led disaster recovery dry runs. 90+ releases, 95.5% satisfaction, $0.7M cost savings.
+- Charles Schwab (2018-2019): Product Operations Lead. Established release management and delivery framework for 7+ scrum teams. 40% improvement in on-time delivery.
+- BioMarin Pharmaceuticals (2017): Scrum Master and Release Coordinator. Clinical software releases under FDA 21 CFR Part 11. 60% SLA improvement, 100% NPS.
+- University of California, Office of the President (2017-2018): Scrum Master and Release Coordinator. Multi-campus e-Procurement platform across time zones.
+- Chevron Corporation (2014-2017): Release Coordinator and Business Analyst. Enterprise application releases for globally distributed teams across Americas, EMEA, and Asia-Pacific.
 
-Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities (embedded execution on retainer). Open to a wide range of industries including fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products. Fractional work in particular is explicitly cross-industry.
+Total: 120+ production releases, zero major production incidents, change failure rate driven from 5% to 1.3%, availability held at 99.99%.
 
-Strengths: 0-to-1 product builds, API product management, regulated industry navigation, cross-functional stakeholder leadership, digital transformation, technical depth (API specs, system architecture, integration patterns)
+Toolchain: Bamboo CI/CD, JIRA (SME-level), Confluence, Remedy/JDAS, Git/Bitbucket, SonarQube, Splunk, Moogsoft, xMatters, Grafana/Argus, InfluxDB, Kibana, AWS, Rally, HP ALM.
+Regulated environments: SEC/FINRA, SOX, FDA 21 CFR Part 11, GxP, audit trail documentation.
+Certifications: CSPO, DevOps Leader (DOL), Certified Agile Coach (ICP-ACC), Certified Agile Team Facilitator (ICP-ATF), AI Fluency (Anthropic Academy).
 
-Communication rules (apply to ALL outputs):
-- No em dashes anywhere
-- No AI tells: avoid "It's important to note", "As a result", "In conclusion", "Certainly", "Absolutely"
-- Practical and direct: focus on what was built and the problem it solved
-- Conversational tone, not corporate
-- Metrics-aware but not metrics-obsessed: customer outcomes matter more than numbers
-- No generic filler content or buzzwords
-- If you only have partial information, give what you can and ask for the rest
-- Never hallucinate facts about companies or people. If you don't know something, say so
+Target roles: Senior Technical Release Manager, Senior Delivery Manager, TPM, Scrum Master, Fractional Release/Delivery Manager. Open to fintech, biotech/life sciences, healthcare, govtech, climate/energy, enterprise SaaS, clinical/pharma software, DevOps/platform engineering.
 
-Job search OS principles: leverage over volume, warm paths over cold applications, optimize for outcomes not activity, treat yourself as a product in a competitive market.`;
+Communication rules: No em dashes. No AI tells. Lead with practitioner specificity in technical screens (name tools, describe exact actions). Lead with outcomes and risk reduction in leadership rounds. Never abstract when specificity is available. Never hallucinate facts. If partial information, give what you can and ask for the rest.`;
 
-  window.addEventListener('load', async () => {
-    const el = document.getElementById('proxy-status');
-    try {
-      const r = await fetch(PROXY_URL, { method: 'OPTIONS' });
-      const ok = r.ok || r.status === 204;
-      el.textContent = ok ? 'proxy connected' : 'proxy error';
-      el.style.background = ok ? 'var(--green-bg)' : 'var(--red-bg)';
-      el.style.color = ok ? 'var(--green-text)' : 'var(--red-text)';
-    } catch {
-      el.textContent = 'proxy not connected';
-      el.style.background = 'var(--amber-bg)';
-      el.style.color = 'var(--amber-text)';
-    }
+// ── Role suggestions ─────────────────────────────────────────────────────────
+const PM_ROLES = ['Senior Product Manager','Senior PM, Platform','Senior PM, API Products','Senior PM, Fintech','Head of Product','Director of Product Management','Principal Product Manager','Product Manager, Growth','PM, Regulated Products','PM, Digital Transformation','Fractional Product Manager','Embedded PM','VP of Product','Group Product Manager','PM, Open Banking','PM, Payments'];
+const RMDM_ROLES = ['Senior Technical Release Manager','Technical Release Manager','Senior Delivery Manager','Delivery Manager','Technical Program Manager','Senior TPM','Senior Scrum Master','Release and Delivery Manager','DevOps Delivery Lead','Engineering Program Manager','Fractional Release Manager','Fractional Delivery Manager','Director of Release Engineering','Head of Delivery','Release Train Engineer','Program Manager, Regulated SaaS'];
+
+let acIndexes = { pm: -1, rmdm: -1 };
+
+// ── OS Toggle ────────────────────────────────────────────────────────────────
+function toggleOS() {
+  const root = document.documentElement;
+  const current = root.getAttribute('data-os') || 'pm';
+  const next = current === 'pm' ? 'rmdm' : 'pm';
+  setOS(next);
+  localStorage.setItem('preferredOS', next);
+}
+
+function setOS(os) {
+  const root = document.documentElement;
+  root.setAttribute('data-os', os);
+  document.getElementById('os-pm').classList.toggle('active', os === 'pm');
+  document.getElementById('os-rmdm').classList.toggle('active', os === 'rmdm');
+  document.getElementById('bar-title').textContent = os === 'pm' ? 'Product Manager Job Search OS' : 'Release Manager and Delivery Manager Job Search OS';
+  document.getElementById('label-pm').classList.toggle('active', os === 'pm');
+  document.getElementById('label-rmdm').classList.toggle('active', os === 'rmdm');
+}
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function swTab(os, name, el) {
+  const prefix = os + '-';
+  document.querySelectorAll(`#os-${os} .tab`).forEach(t => t.classList.remove('active'));
+  document.querySelectorAll(`#os-${os} .panel`).forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(prefix + name).classList.add('active');
+  if (name === 'pipeline') loadPipeline(os);
+}
+
+function tog(el) { el.classList.toggle('on'); }
+function excl(el, g) {
+  document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+function chips(g) {
+  return [...document.querySelectorAll(`.chip[data-g="${g}"].on`)].map(c => c.textContent.trim()).join(', ');
+}
+function togAdd(os) { document.getElementById(os + '-addform').classList.toggle('open'); }
+
+function setStatus(os, panel, loading, msg) {
+  const el = document.getElementById(`${os}-status-${panel}`);
+  if (!el) return;
+  el.innerHTML = loading ? `<div class="spinner"></div><span>${msg}</span>` : (msg ? `<span>${msg}</span>` : '');
+}
+function setOutput(os, panel, text, empty) {
+  const el = document.getElementById(`${os}-output-${panel}`);
+  if (!el) return;
+  el.textContent = text;
+  el.classList.toggle('empty', !!empty);
+}
+
+// ── Autocomplete ─────────────────────────────────────────────────────────────
+function showAC(os, val) {
+  const list = document.getElementById(`${os}-ac-list`);
+  const roles = os === 'pm' ? PM_ROLES : RMDM_ROLES;
+  if (!val.trim()) { list.style.display = 'none'; acIndexes[os] = -1; return; }
+  const matches = roles.filter(s => s.toLowerCase().includes(val.toLowerCase()));
+  if (!matches.length) { list.style.display = 'none'; return; }
+  list.innerHTML = matches.map((m, i) => `<div class="autocomplete-item" data-i="${i}" onclick="selectAC('${os}','${m}')">${m}</div>`).join('');
+  list.style.display = 'block';
+  acIndexes[os] = -1;
+}
+function selectAC(os, val) {
+  document.getElementById(`${os}-jobtitle`).value = val;
+  document.getElementById(`${os}-ac-list`).style.display = 'none';
+}
+function handleKey(e, os) {
+  const list = document.getElementById(`${os}-ac-list`);
+  const items = list.querySelectorAll('.autocomplete-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { acIndexes[os] = Math.min(acIndexes[os] + 1, items.length - 1); }
+  else if (e.key === 'ArrowUp') { acIndexes[os] = Math.max(acIndexes[os] - 1, 0); }
+  else if (e.key === 'Enter' && acIndexes[os] >= 0) { e.preventDefault(); selectAC(os, items[acIndexes[os]].textContent); return; }
+  else if (e.key === 'Escape') { list.style.display = 'none'; return; }
+  items.forEach((el, i) => el.classList.toggle('active', i === acIndexes[os]));
+}
+document.addEventListener('click', e => {
+  ['pm','rmdm'].forEach(os => {
+    const field = document.getElementById(`${os}-jobtitle-field`);
+    if (field && !field.contains(e.target)) document.getElementById(`${os}-ac-list`).style.display = 'none';
   });
+});
 
-  function sw(name, el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('p-' + name).classList.add('active');
-  }
-  function tog(el) { el.classList.toggle('on'); }
-  function excl(el, g) {
-    document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(c => c.classList.remove('on'));
-    el.classList.add('on');
-  }
-  function chips(g) {
-    return [...document.querySelectorAll(`.chip[data-g="${g}"].on`)].map(c => c.textContent.trim()).join(', ');
-  }
-  function togAdd() { document.getElementById('addform').classList.toggle('open'); }
+// ── Proxy call ───────────────────────────────────────────────────────────────
+async function callProxy(systemPrompt, userPrompt, useWebSearch = false) {
+  const body = {
+    model: 'claude-sonnet-4-6',
+    max_tokens: 1200,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userPrompt }],
+  };
+  if (useWebSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+  const res = await fetch(PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || 'No response.';
+}
 
-  function setStatus(panel, loading, msg) {
-    const el = document.getElementById('status-' + panel);
-    if (!el) return;
-    el.innerHTML = loading ? `<div class="spinner"></div><span>${msg}</span>` : (msg ? `<span>${msg}</span>` : '');
-  }
-  function setOutput(panel, text, empty) {
-    const el = document.getElementById('output-' + panel);
-    if (!el) return;
-    el.textContent = text;
-    el.classList.toggle('empty', !!empty);
-  }
+// ── Run agent ────────────────────────────────────────────────────────────────
+async function run(os, panel) {
+  document.querySelectorAll('.btn').forEach(b => b.disabled = true);
+  const ctx = os === 'pm' ? PM_CONTEXT : RMDM_CONTEXT;
+  const mode = chips(`${os}-tmode`);
+  setOutput(os, panel, '', true);
 
-  async function callProxy(systemPrompt, userPrompt, useWebSearch = false) {
-    const body = {
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1200,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-    };
-    if (useWebSearch) {
-      body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
-    }
-    const res = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-    return data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || 'No response.';
-  }
+  try {
+    if (panel === 'targeting') {
+      const focus = chips(`${os}-focus`);
+      const reg   = document.getElementById(`${os}-reg`).value;
+      const cstage = document.getElementById(`${os}-cstage`).value;
+      const title = document.getElementById(`${os}-jobtitle`).value.trim();
+      const tctx  = document.getElementById(`${os}-tctx`).value;
+      const doStrategy = mode !== 'Live job search only';
+      const doSearch   = mode !== 'Strategy only';
+      let combined = '';
 
-  async function run(panel) {
-    document.querySelectorAll('.btn').forEach(b => b.disabled = true);
-    const mode = chips('tmode');
-    setOutput(panel, '', true);
-
-    try {
-      if (panel === 'targeting') {
-        const focus = chips('focus') || 'Fintech, Enterprise SaaS';
-        const reg = document.getElementById('reg').value;
-        const cstage = document.getElementById('cstage').value;
-        const title = document.getElementById('jobtitle').value.trim();
-        const ctx = document.getElementById('tctx').value;
-        const doStrategy = mode !== 'Live job search only';
-        const doSearch = mode !== 'Strategy only';
-        let combined = '';
-
-        if (doStrategy) {
-          setStatus(panel, true, 'Building target company strategy...');
-          const roleLabel = title || 'Senior Product Manager';
-          const t = await callProxy(OS_CONTEXT, `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across fintech, biotech, oil and gas, and public sector.'} Regulatory complexity: ${reg}. Company stage: ${cstage}.${ctx ? ' Angle: ' + ctx : ''} For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background (DocuSign integrations, RMD Center 0-to-1 launch, API product management, digital transformation, cross-functional leadership), suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and suggest better replacements.`);
-          combined += t;
-          setOutput(panel, combined, false);
+      if (doStrategy) {
+        setStatus(os, panel, true, 'Building target company strategy...');
+        const roleLabel = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+        let stratPrompt = '';
+        if (os === 'pm') {
+          stratPrompt = `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across fintech, biotech, oil and gas, and public sector.'} Regulatory complexity: ${reg}. Company stage: ${cstage}.${tctx ? ' Angle: ' + tctx : ''} For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background (DocuSign integrations, RMD Center 0-to-1 launch, API product management, digital transformation), suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks.`;
+        } else {
+          stratPrompt = `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across financial services, life sciences, higher education, and energy.'} Regulatory environment: ${reg}. Company stage: ${cstage}.${tctx ? ' Angle: ' + tctx : ''} For each company: name, tier (A/B/C), platform/product type, regulatory complexity, release and delivery context (cadence, team scale, known delivery challenges), 2-3 specific bullets on why Chike wins here (anchor to 120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain, multi-team program coordination), likely RM/DM ownership scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and better replacements.`;
         }
-
-        if (doSearch) {
-          setStatus(panel, true, 'Searching live job market...');
-          const roleSearch = title || 'Senior Product Manager';
-          const t = await callProxy(OS_CONTEXT, `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${ctx ? ' Focus on: ' + ctx : ''} For each role found: company name, exact role title, location or remote status, why it fits Chike's background (0-to-1 product builds, API product management, digital transformation, regulated environments, cross-functional stakeholder leadership), and the direct job posting URL. Only list roles you can confirm are currently posted. If a search result is ambiguous about whether the role is still open, note that.`, true);
-          combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
-          setOutput(panel, combined, false);
-        }
-
-      } else if (panel === 'positioning') {
-        setStatus(panel, true, 'Building positioning...');
-        const outputs = chips('pos') || 'Positioning statement';
-        const role = document.getElementById('prole').value;
-        const co = document.getElementById('pco').value;
-        const roleLabels = { 'sr-pm': 'Senior Product Manager', 'head-pm': 'Head of Product', 'pm-fintech': 'PM in fintech/regulated industry', 'fractional': 'Fractional PM' };
-        const roleLabel = roleLabels[role] || 'Senior Product Manager';
-        const t = await callProxy(OS_CONTEXT, `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor specifically for ' + co + '.' : ''} Draw on his actual background: RMD Center 0-to-1 launch, DocuSign Automated Prefill, Salesforce API integration, crypto asset transfer product definition. Specific, no generic PM buzzwords, memorable within 10 seconds. No em dashes. End with a self-critique: does this sound like 100 other PMs, and what is unclear or weak?`);
-        setOutput(panel, t, false);
-
-      } else if (panel === 'outreach') {
-        setStatus(panel, true, 'Drafting outreach...');
-        const type = chips('out') || 'Cold outreach';
-        const co = document.getElementById('oco').value || 'the target company';
-        const role = document.getElementById('orole').value || 'hiring manager';
-        const hook = document.getElementById('ohook').value;
-        const t = await callProxy(OS_CONTEXT, `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with this hook: ' + hook + '.' : ''} Requirements: insight-driven and specific to this company, demonstrates real product understanding, focuses on starting a conversation not asking for a job, warm and direct not corporate, concise enough to read on mobile. No em dashes. Include a subject line. End with a self-critique: would you respond to this, and what feels generic or low-effort?`);
-        setOutput(panel, t, false);
-
-      } else if (panel === 'interview') {
-        setStatus(panel, true, 'Generating interview prep...');
-        const type = chips('int') || 'Product sense';
-        const q = document.getElementById('iq').value;
-        const co = document.getElementById('ico').value;
-        const t = await callProxy(OS_CONTEXT, `Generate interview prep for Chike for a ${type} interview${co ? ' at ' + co : ''}.${q ? ' Specifically prep for this question: ' + q + '.' : ''} Include: a structured repeatable framework for this type, a STAR story mapped from his real background (RMD Center launch, DocuSign Automated Prefill, Salesforce API integration), and a sample answer. No em dashes. Flag where the answer is strong and where it needs tightening. Keep language direct and conversational, not textbook.`);
-        setOutput(panel, t, false);
+        const t = await callProxy(ctx, stratPrompt);
+        combined += t;
+        setOutput(os, panel, combined, false);
       }
 
-      setStatus(panel, false, '');
-    } catch (err) {
-      setOutput(panel, 'Error: ' + err.message, true);
-      setStatus(panel, false, '');
-    }
-
-    document.querySelectorAll('.btn').forEach(b => b.disabled = false);
-  }
-
-  async function saveEntry() {
-    const co = document.getElementById('nc').value.trim();
-    if (!co) { alert('Company name is required.'); return; }
-    document.getElementById('save-btn').disabled = true;
-    document.getElementById('save-status').innerHTML = '<div class="spinner"></div><span>Saving...</span>';
-    const entry = {
-      company: co,
-      role: document.getElementById('nr').value.trim() || 'Senior PM',
-      tier: document.getElementById('nt').value,
-      stage: document.getElementById('ns').value,
-      reg: document.getElementById('nreg').value,
-      source: document.getElementById('nsrc').value,
-      url: document.getElementById('nu').value.trim(),
-      why: document.getElementById('nw').value.trim(),
-    };
-    const prompt = `Add this entry to the Notion Job Pipeline Tracker database (collection ID: ${NOTION_DB}): Company: ${entry.company}, Role: ${entry.role}, Tier: ${entry.tier}, Stage: ${entry.stage}, Regulatory Complexity: ${entry.reg}, Source: ${entry.source}${entry.url ? ', Job URL: ' + entry.url : ''}${entry.why ? ', Why I Win: ' + entry.why : ''}, Last Activity: ${new Date().toISOString().split('T')[0]}. Use the notion create-pages tool and confirm with "saved successfully".`;
-    try {
-      const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt);
-      document.getElementById('save-status').innerHTML = text.toLowerCase().includes('saved')
-        ? `<span style="color:var(--green-text)">Saved. <a class="lnk" href="${NOTION_HUB}" target="_blank">View in Notion</a></span>`
-        : `<span>Attempted. <a class="lnk" href="${NOTION_HUB}" target="_blank">Verify in Notion</a></span>`;
-      ['nc', 'nu', 'nw'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('nr').value = '';
-    } catch (err) {
-      document.getElementById('save-status').innerHTML = `<span style="color:var(--red-text)">Error: ${err.message}</span>`;
-    }
-    document.getElementById('save-btn').disabled = false;
-  }
-
-  async function loadPipeline() {
-    document.getElementById('pipelist').innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
-    const prompt = `Query the Notion database with collection ID ${NOTION_DB} and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.`;
-    try {
-      const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt);
-      const match = text.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
-      const entries = match ? JSON.parse(match[0]) : [];
-      if (!entries.length) {
-        document.getElementById('pipelist').innerHTML = '<div class="pipe-empty">No entries yet. Add companies using the form above.</div>';
-        return;
+      if (doSearch) {
+        setStatus(os, panel, true, 'Searching live job market...');
+        const roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+        const searchPrompt = os === 'pm'
+          ? `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${tctx ? ' Focus on: ' + tctx : ''} For each role: company name, exact role title, location or remote status, why it fits Chike's background (0-to-1 product builds, API product management, digital transformation, regulated environments), and direct job posting URL. Only list roles you can confirm are currently posted.`
+          : `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${tctx ? ' Focus on: ' + tctx : ''} For each role: company name, exact role title, location or remote status, why it fits Chike's background (120+ releases zero incidents, DORA metrics, Bamboo/Remedy/Splunk toolchain, SEC/FINRA/SOX/FDA regulated environments, multi-team program coordination), and direct job posting URL. Only list roles you can confirm are currently posted.`;
+        const t = await callProxy(ctx, searchPrompt, true);
+        combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
+        setOutput(os, panel, combined, false);
       }
-      const stageBg = s => ({ Targeting:'var(--gray-bg)', Researching:'var(--amber-bg)', 'Outreach Sent':'var(--amber-bg)', Responded:'var(--blue-bg)', Screening:'var(--purple-bg)', Interviewing:'var(--purple-bg)', Offer:'var(--green-bg)' }[s] || 'var(--gray-bg)');
-      const stageColor = s => ({ Targeting:'var(--gray-text)', Researching:'var(--amber-text)', 'Outreach Sent':'var(--amber-text)', Responded:'var(--blue-text)', Screening:'var(--purple-text)', Interviewing:'var(--purple-text)', Offer:'var(--green-text)' }[s] || 'var(--gray-text)');
-      const tierBg = t => t === 'A' ? 'var(--green-bg)' : t === 'B' ? 'var(--blue-bg)' : 'var(--gray-bg)';
-      const tierColor = t => t === 'A' ? 'var(--green-text)' : t === 'B' ? 'var(--blue-text)' : 'var(--gray-text)';
-      document.getElementById('pipelist').innerHTML = `
-        <table class="pipe-table">
-          <thead><tr><th style="width:22%">Company</th><th style="width:22%">Role</th><th style="width:8%">Tier</th><th style="width:20%">Stage</th><th style="width:16%">Source</th><th style="width:12%">Link</th></tr></thead>
-          <tbody>${entries.map(e => `<tr>
-            <td style="font-weight:500">${e.company||''}</td>
-            <td style="color:var(--text2)">${e.role||''}</td>
-            <td><span class="sbadge" style="background:${tierBg(e.tier)};color:${tierColor(e.tier)}">${e.tier||''}</span></td>
-            <td><span class="sbadge" style="background:${stageBg(e.stage)};color:${stageColor(e.stage)}">${e.stage||'Targeting'}</span></td>
-            <td style="font-size:12px;color:var(--text2)">${e.source||''}</td>
-            <td>${e.jobUrl&&e.jobUrl!=='n/a'?`<a class="lnk" href="${e.jobUrl}" target="_blank">View</a>`:''}</td>
-          </tr>`).join('')}</tbody>
-        </table>`;
-    } catch (err) {
-      document.getElementById('pipelist').innerHTML = `<div class="pipe-empty">Could not load. <a class="lnk" href="${NOTION_HUB}" target="_blank">Open in Notion</a></div>`;
+
+    } else if (panel === 'positioning') {
+      setStatus(os, panel, true, 'Building positioning...');
+      const outputs   = chips(`${os}-pos`) || 'Positioning statement';
+      const co        = document.getElementById(`${os}-pco`).value;
+      let prompt = '';
+      if (os === 'pm') {
+        const roleMap = { 'sr-pm':'Senior Product Manager','head-pm':'Head of Product','pm-fintech':'PM in fintech/regulated industry','fractional':'Fractional PM' };
+        const roleLabel = roleMap[document.getElementById('pm-prole').value] || 'Senior Product Manager';
+        prompt = `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor specifically for ' + co + '.' : ''} Draw on his actual background: RMD Center 0-to-1 launch, DocuSign Automated Prefill, Salesforce API integration, crypto asset transfer product definition. Specific, no generic PM buzzwords, memorable within 10 seconds. No em dashes. End with a self-critique: does this sound like 100 other PMs, and what is unclear or weak?`;
+      } else {
+        const roleMap = { 'trl':'Technical Release Manager','sr-trl':'Senior Technical Release Manager','dm':'Delivery Manager','tpm':'Technical Program Manager','fractional':'Fractional Release/Delivery Manager' };
+        const roleLabel = roleMap[document.getElementById('rmdm-prole').value] || 'Senior Technical Release Manager';
+        prompt = `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor specifically for ' + co + '.' : ''} Draw on his actual release and delivery outcomes: 31+ DocuSign platform releases zero incidents, RMD Center 90+ releases change fail from 5% to 1.3%, FDA 21 CFR Part 11 compliant releases at BioMarin, Chevron global deployments. Every story must demonstrate ownership of a delivery outcome, not just participation. Specific, no generic buzzwords. No em dashes. End with a self-critique: does this sound like every other release coordinator with a Scrum cert, and what is genuinely differentiated?`;
+      }
+      const t = await callProxy(ctx, prompt);
+      setOutput(os, panel, t, false);
+
+    } else if (panel === 'outreach') {
+      setStatus(os, panel, true, 'Drafting outreach...');
+      const type = chips(`${os}-out`) || 'Cold outreach';
+      const co   = document.getElementById(`${os}-oco`).value || 'the target company';
+      const role = document.getElementById(`${os}-orole`).value || 'hiring manager';
+      const hook = document.getElementById(`${os}-ohook`).value;
+      let prompt = '';
+      if (os === 'pm') {
+        prompt = `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with: ' + hook + '.' : ''} Insight-driven, specific to this company, demonstrates real product understanding, focuses on starting a conversation not asking for a job, warm and direct, concise for mobile. No em dashes. Include a subject line. End with a self-critique: would you respond to this, and what feels generic?`;
+      } else {
+        prompt = `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with this hook: ' + hook + '.' : ''} Requirements: references something specific about their delivery context (release frequency, compliance environment, team scale, known incident, engineering blog post). Demonstrates real understanding of what a TRM or Delivery Manager does on their specific team. Does not open with "I saw your role" or "I am interested in opportunities". Focuses on starting a conversation about delivery challenges. Warm, direct, concise for mobile. No em dashes. Include a subject line. End with a self-critique: would a VP of Engineering respond to this, and what feels generic or low-effort?`;
+      }
+      const t = await callProxy(ctx, prompt);
+      setOutput(os, panel, t, false);
+
+    } else if (panel === 'interview') {
+      setStatus(os, panel, true, 'Generating interview prep...');
+      const type  = chips(`${os}-int`) || (os === 'pm' ? 'Product sense' : 'Release scenario / go-no-go');
+      const q     = document.getElementById(`${os}-iq`).value;
+      const co    = document.getElementById(`${os}-ico`).value;
+      let prompt = '';
+      if (os === 'pm') {
+        prompt = `Generate interview prep for Chike for a ${type} interview${co ? ' at ' + co : ''}.${q ? ' Specifically prep for: ' + q + '.' : ''} Include: a structured repeatable framework, a STAR story mapped from his real background (RMD Center launch, DocuSign Automated Prefill, Salesforce API integration), and a sample answer. No em dashes. Flag where strong vs where to tighten.`;
+      } else {
+        const imode = chips('rmdm-imode') || 'Technical practitioner screen';
+        prompt = `Generate interview prep for Chike for a ${type} interview in ${imode} mode${co ? ' at ' + co : ''}.${q ? ' Specifically prep for this question: ' + q + '.' : ''} Include: a structured framework for this question type, a STAR story mapped from his real background (DocuSign platform releases, RMD Center DORA metrics, BioMarin FDA releases), and a sample answer calibrated for ${imode} (${imode.includes('Technical') ? 'name tools explicitly, describe exact actions in the pipeline, show mechanical knowledge of release execution' : 'lead with outcomes and risk reduction, demonstrate influence without authority, show program-level thinking'}). No em dashes. Flag where the answer is strong and where it needs tightening. No filler openers.`;
+      }
+      const t = await callProxy(ctx, prompt);
+      setOutput(os, panel, t, false);
     }
+
+    setStatus(os, panel, false, '');
+  } catch (err) {
+    setOutput(os, panel, 'Error: ' + err.message, true);
+    setStatus(os, panel, false, '');
   }
+  document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+}
+
+// ── Pipeline ─────────────────────────────────────────────────────────────────
+async function saveEntry(os) {
+  const co = document.getElementById(`${os}-nc`).value.trim();
+  if (!co) { alert('Company name is required.'); return; }
+  document.getElementById(`${os}-save-btn`).disabled = true;
+  document.getElementById(`${os}-save-status`).innerHTML = '<div class="spinner"></div><span>Saving...</span>';
+
+  const dbId = os === 'pm' ? PM_NOTION_DB : RMDM_NOTION_DB;
+  const today = new Date().toISOString().split('T')[0];
+  let entryLines = '';
+
+  if (os === 'pm') {
+    entryLines = `Company: ${co}, Role: ${document.getElementById('pm-nr').value||'Senior PM'}, Tier: ${document.getElementById('pm-nt').value}, Stage: ${document.getElementById('pm-ns').value}, Regulatory Complexity: ${document.getElementById('pm-nreg').value}, Source: ${document.getElementById('pm-nsrc').value}${document.getElementById('pm-nu').value ? ', Job URL: '+document.getElementById('pm-nu').value : ''}${document.getElementById('pm-nw').value ? ', Why I Win: '+document.getElementById('pm-nw').value : ''}, Last Activity: ${today}`;
+  } else {
+    entryLines = `Company: ${co}, Role Title: ${document.getElementById('rmdm-nr').value||'Senior Technical Release Manager'}, Role Type: ${document.getElementById('rmdm-ntype').value}, Tier: ${document.getElementById('rmdm-nt').value}, Stage: ${document.getElementById('rmdm-ns').value}, Regulatory Environment: ${document.getElementById('rmdm-nreg').value}, Source: ${document.getElementById('rmdm-nsrc').value}${document.getElementById('rmdm-nu').value ? ', Job URL: '+document.getElementById('rmdm-nu').value : ''}${document.getElementById('rmdm-nw').value ? ', Why I Win: '+document.getElementById('rmdm-nw').value : ''}, Last Activity: ${today}`;
+  }
+
+  const prompt = `Add this entry to the Notion database (collection ID: ${dbId}): ${entryLines}. Use the notion create-pages tool and confirm with "saved successfully".`;
+  const hub = os === 'pm' ? PM_HUB : RMDM_HUB;
+  const ctx = os === 'pm' ? PM_CONTEXT : RMDM_CONTEXT;
+
+  try {
+    const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt);
+    document.getElementById(`${os}-save-status`).innerHTML = text.toLowerCase().includes('saved')
+      ? `<span style="color:var(--green-text)">Saved. <a class="lnk" href="${hub}" target="_blank">View in Notion</a></span>`
+      : `<span>Attempted. <a class="lnk" href="${hub}" target="_blank">Verify in Notion</a></span>`;
+    [`${os}-nc`,`${os}-nr`,`${os}-nu`,`${os}-nw`].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  } catch (err) {
+    document.getElementById(`${os}-save-status`).innerHTML = `<span style="color:var(--red-text)">Error: ${err.message}</span>`;
+  }
+  document.getElementById(`${os}-save-btn`).disabled = false;
+}
+
+async function loadPipeline(os) {
+  const listEl = document.getElementById(`${os}-pipelist`);
+  listEl.innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
+  const dbId = os === 'pm' ? PM_NOTION_DB : RMDM_NOTION_DB;
+  const hub  = os === 'pm' ? PM_HUB : RMDM_HUB;
+  const prompt = `Query the Notion database with collection ID ${dbId} and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.`;
+  try {
+    const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt);
+    const match = text.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
+    const entries = match ? JSON.parse(match[0]) : [];
+    if (!entries.length) { listEl.innerHTML = '<div class="pipe-empty">No entries yet. Add companies using the form above.</div>'; return; }
+    const stageBg = s => ({'Targeting':'var(--gray-bg)','Researching':'var(--amber-bg)','Outreach Sent':'var(--amber-bg)','Responded':'var(--blue-bg)','Screening':'var(--purple-bg)','Interviewing':'var(--purple-bg)','Offer':'var(--green-bg)'}[s]||'var(--gray-bg)');
+    const stageColor = s => ({'Targeting':'var(--gray-text)','Researching':'var(--amber-text)','Outreach Sent':'var(--amber-text)','Responded':'var(--blue-text)','Screening':'var(--purple-text)','Interviewing':'var(--purple-text)','Offer':'var(--green-text)'}[s]||'var(--gray-text)');
+    const tierBg = t => t==='A'?'var(--green-bg)':t==='B'?'var(--blue-bg)':'var(--gray-bg)';
+    const tierColor = t => t==='A'?'var(--green-text)':t==='B'?'var(--blue-text)':'var(--gray-text)';
+    listEl.innerHTML = `<table class="pipe-table"><thead><tr><th style="width:22%">Company</th><th style="width:22%">Role</th><th style="width:8%">Tier</th><th style="width:20%">Stage</th><th style="width:16%">Source</th><th style="width:12%">Link</th></tr></thead><tbody>${entries.map(e=>`<tr><td style="font-weight:500">${e.company||''}</td><td style="color:var(--text2)">${e.role||''}</td><td><span class="sbadge" style="background:${tierBg(e.tier)};color:${tierColor(e.tier)}">${e.tier||''}</span></td><td><span class="sbadge" style="background:${stageBg(e.stage)};color:${stageColor(e.stage)}">${e.stage||'Targeting'}</span></td><td style="font-size:12px;color:var(--text2)">${e.source||''}</td><td>${e.jobUrl&&e.jobUrl!=='n/a'?`<a class="lnk" href="${e.jobUrl}" target="_blank">View</a>`:''}</td></tr>`).join('')}</tbody></table>`;
+  } catch (err) {
+    listEl.innerHTML = `<div class="pipe-empty">Could not load. <a class="lnk" href="${hub}" target="_blank">Open in Notion</a></div>`;
+  }
+}
+
+// ── Proxy health check ────────────────────────────────────────────────────────
+async function checkProxy(os) {
+  const el = document.getElementById(`proxy-status-${os}`);
+  try {
+    const r = await fetch(PROXY_URL, { method: 'OPTIONS' });
+    const ok = r.ok || r.status === 204;
+    el.textContent = ok ? 'proxy connected' : 'proxy error';
+    el.style.background = ok ? 'var(--green-bg)' : 'var(--red-bg)';
+    el.style.color = ok ? 'var(--green-text)' : 'var(--red-text)';
+    el.style.borderColor = ok ? 'var(--green-text)' : 'var(--red-text)';
+  } catch {
+    el.textContent = 'proxy not connected';
+    el.style.background = 'var(--amber-bg)';
+    el.style.color = 'var(--amber-text)';
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('preferredOS') || 'pm';
+  setOS(saved);
+  checkProxy('pm');
+  checkProxy('rmdm');
+});
 </script>
 </body>
 </html>
