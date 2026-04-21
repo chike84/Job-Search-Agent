@@ -703,347 +703,548 @@
 </div><!-- /wrap -->
 
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
-const PROXY_URL = 'https://job-search-agent-tau.vercel.app/api/proxy';
-const PM_NOTION_DB   = '45ecc169-634b-49c2-9042-9e4fee1c0750';
-const RMDM_NOTION_DB = '831f5122-169b-462e-bb34-fb55a4400582';
-const PM_HUB   = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
-const RMDM_HUB = 'https://www.notion.so/34862cd4a7c5814181c8c872da969822';
-const NP_NOTION_DB = '8927f682-8c46-4c46-b54e-fe9280229c05';
-const NP_HUB   = 'https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35';
+  const PROXY_URL    = 'https://job-search-agent-tau.vercel.app/api/proxy';
+  const PM_NOTION_DB   = '45ecc169-634b-49c2-9042-9e4fee1c0750';
+  const RMDM_NOTION_DB = '831f5122-169b-462e-bb34-fb55a4400582';
+  const NP_NOTION_DB   = '8927f682-8c46-4c46-b54e-fe9280229c05';
+  const PM_HUB   = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
+  const RMDM_HUB = 'https://www.notion.so/34862cd4a7c5814181c8c872da969822';
+  const NP_HUB   = 'https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35';
 
-// ── OS Context ──────────────────────────────────────────────────────────────
-const NP_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager and Technical Release/Delivery Manager with 10+ years of experience, now exploring purpose-driven roles in the nonprofit and social impact sector.
+  const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries. Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp. Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities. Open to fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products. Communication rules: No em dashes. No AI tells. Practical and direct. Conversational tone. No filler content. Never hallucinate facts. If partial information, give what you can and ask for the rest.`;
 
-Background summary: Led DocuSign API integration platform at Charles Schwab serving 4,000+ field advisors. Built the RMD Center 0-to-1 serving 1.6M+ users. Coordinated 120+ production releases with zero major incidents. Drove change failure rate from 5% to 1.3%. Experience spans fintech, life sciences (BioMarin FDA-regulated software), higher education (UC Office of the President), and energy (Chevron global deployments).
+  const RMDM_CONTEXT = `You are a job search agent for Chike Ugbode, a Technical Release Manager and Delivery Manager with 10+ years driving predictable, zero-incident software delivery in regulated enterprise SaaS environments. Charles Schwab (2023-2025): Senior Scrum Master and Technical Release Manager for DocuSign API integration platform serving 4,000+ financial reps across 400 branches. Owned Bamboo CI/CD pipeline oversight, Remedy/JDAS change management, go/no-go facilitation, Scrum of Scrums across 11 integration partner teams. 31+ releases, zero major incidents, 32% digital adoption increase, 24% error reduction, 99.99% availability. Charles Schwab (2019-2023): Senior Scrum Master for RMD Center (1.6M users). Built DORA metrics framework from scratch, drove change failure rate from 5% to 1.3%, coordinated 4 concurrent scrum teams, led disaster recovery dry runs. 90+ releases. BioMarin Pharmaceuticals (2017): FDA 21 CFR Part 11. Chevron Corporation (2014-2017): global deployments across Americas, EMEA, and Asia-Pacific. Total: 120+ production releases, zero major production incidents. Toolchain: Bamboo CI/CD, JIRA, Confluence, Remedy/JDAS, Git/Bitbucket, SonarQube, Splunk, Moogsoft, xMatters, Grafana, InfluxDB, Kibana, AWS. Regulated environments: SEC/FINRA, SOX, FDA 21 CFR Part 11, GxP. Target roles: Senior Technical Release Manager, Senior Delivery Manager, TPM, Scrum Master, Fractional Release/Delivery Manager. Open to fintech, biotech/life sciences, healthcare, govtech, climate/energy, enterprise SaaS, clinical/pharma software, DevOps/platform engineering. Communication rules: No em dashes. No AI tells. Lead with practitioner specificity in technical screens. Lead with outcomes in leadership rounds. Never hallucinate.`;
 
-Why nonprofits: Chike is genuinely interested in applying his delivery and product rigor to organizations working on meaningful problems — not just adding nonprofit to a resume. He brings skills that most nonprofits cannot afford to hire internally: API product management, release discipline, Agile transformation, digital adoption strategy. Open to paid roles, Director/VP-level titles, fractional engagements, and volunteer opportunities via Catchafire that could lead to something greater.
+  const NP_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager and Technical Release/Delivery Manager with 10+ years of experience, now exploring purpose-driven roles in the nonprofit and social impact sector. Background summary: Led DocuSign API integration platform at Charles Schwab serving 4,000+ field advisors. Built the RMD Center 0-to-1 serving 1.6M+ users. Coordinated 120+ production releases with zero major incidents. Drove change failure rate from 5% to 1.3%. Experience spans fintech, life sciences (BioMarin FDA-regulated software), higher education (UC Office of the President), and energy (Chevron global deployments). Why nonprofits: Chike is genuinely interested in applying his delivery and product rigor to organizations working on meaningful problems. He brings skills most nonprofits cannot afford to hire internally: API product management, release discipline, Agile transformation, digital adoption strategy. Open to paid roles, Director/VP-level titles, fractional engagements, and volunteer opportunities via Catchafire that could lead to something greater. Job boards in scope: Idealist (idealist.org), Tech Jobs for Good (techjobsforgood.com), 80,000 Hours (80000hours.org/job-board), WorkForGood (workforgood.org), Catchafire (catchafire.org - volunteer/project-based), LinkedIn Nonprofit filter. Volunteer opportunities: Catchafire engagements are unpaid but project-based and should be surfaced alongside paid roles, clearly labeled as volunteer. They are legitimate strategic moves. Communication rules: No em dashes. No AI tells. Conversational and direct. When writing mission alignment content, be genuine and specific. Never hallucinate org names or mission details.`;
 
-Job boards in scope: Idealist (idealist.org), Tech Jobs for Good (techjobsforgood.com), 80,000 Hours (80000hours.org/job-board), WorkForGood (workforgood.org), Catchafire (catchafire.org — volunteer/project-based), LinkedIn Nonprofit filter.
+  const PM_ROLES   = ['Senior Product Manager','Senior PM, Platform','Senior PM, API Products','Senior PM, Fintech','Head of Product','Director of Product Management','Principal Product Manager','Product Manager, Growth','PM, Regulated Products','PM, Digital Transformation','Fractional Product Manager','Embedded PM','VP of Product','Group Product Manager','PM, Open Banking','PM, Payments'];
+  const RMDM_ROLES = ['Senior Technical Release Manager','Technical Release Manager','Senior Delivery Manager','Delivery Manager','Technical Program Manager','Senior TPM','Senior Scrum Master','Release and Delivery Manager','DevOps Delivery Lead','Engineering Program Manager','Fractional Release Manager','Fractional Delivery Manager','Director of Release Engineering','Head of Delivery','Release Train Engineer','Program Manager, Regulated SaaS'];
+  const NP_ROLES   = ['Senior Product Manager','Director of Product','Head of Product','Director of Technology','VP of Technology','Chief Technology Officer','Chief Product Officer','Agile Coach','Senior Scrum Master','Program Manager','Delivery Manager','Technical Program Manager','Fractional PM','Fractional CTO','Head of Digital Transformation','Director of Engineering'];
 
-Volunteer opportunities: Catchafire engagements are unpaid but project-based (typically 5-15 hours) and should be surfaced alongside paid roles, clearly labeled as volunteer. They are legitimate strategic moves, not charity — many lead to board positions, consulting relationships, or paid roles.
+  let acIndexes = { pm: -1, rmdm: -1, np: -1 };
 
-Communication rules: No em dashes. No AI tells. Conversational and direct. When writing mission alignment content, be genuine and specific — not generic nonprofit enthusiasm. Never hallucinate org names, leaders, or mission details. If partial information, give what you can and ask for the rest.`;
+  function toggleOS() {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-os') || 'pm';
+    const cycle = { pm: 'rmdm', rmdm: 'np', np: 'pm' };
+    const next = cycle[current];
+    setOS(next);
+    localStorage.setItem('preferredOS', next);
+  }
 
-const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries.
+  function setOS(os) {
+    const root = document.documentElement;
+    root.setAttribute('data-os', os);
+    ['pm','rmdm','np'].forEach(function(id) {
+      var osEl = document.getElementById('os-' + id);
+      if (osEl) osEl.classList.toggle('active', id === os);
+      var labelEl = document.getElementById('label-' + id);
+      if (labelEl) labelEl.classList.toggle('active', id === os);
+      var dotEl = document.getElementById('dot-' + id);
+      if (dotEl) dotEl.classList.toggle('active', id === os);
+    });
+    var titles = { pm: 'Product Manager Job Search OS', rmdm: 'Release Manager and Delivery Manager Job Search OS', np: 'Nonprofit and Social Impact Job Search OS' };
+    document.getElementById('bar-title').textContent = titles[os];
+  }
 
-Background: Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp.
+  function swTab(os, name, el) {
+    var prefix = os + '-';
+    document.querySelectorAll('#os-' + os + ' .tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('#os-' + os + ' .panel').forEach(function(p) { p.classList.remove('active'); });
+    el.classList.add('active');
+    var panelEl = document.getElementById(prefix + name);
+    if (panelEl) panelEl.classList.add('active');
+    if (name === 'pipeline') loadPipeline(os);
+  }
 
-Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities. Open to fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products.
+  function tog(el) { el.classList.toggle('on'); }
+  function excl(el, g) {
+    document.querySelectorAll('.chip[data-g="' + g + '"]').forEach(function(c) { c.classList.remove('on'); });
+    el.classList.add('on');
+  }
+  function chips(g) {
+    return Array.from(document.querySelectorAll('.chip[data-g="' + g + '"].on')).map(function(c) { return c.textContent.trim(); }).join(', ');
+  }
+  function togAdd(os) { document.getElementById(os + '-addform').classList.toggle('open'); }
 
-Communication rules: No em dashes. No AI tells (no "It's important to note", "As a result", "In conclusion"). Practical and direct. Conversational tone. No filler content. If you only have partial information, give what you can and ask for the rest. Never hallucinate facts about companies or people.`;
+  function setStatus(os, panel, loading, msg) {
+    var el = document.getElementById(os + '-status-' + panel);
+    if (!el) return;
+    el.innerHTML = loading ? '<div class="spinner"></div><span>' + msg + '</span>' : (msg ? '<span>' + msg + '</span>' : '');
+  }
+  function setOutput(os, panel, text, empty) {
+    var el = document.getElementById(os + '-output-' + panel);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.toggle('empty', !!empty);
+  }
 
-const RMDM_CONTEXT = `You are a job search agent for Chike Ugbode, a Technical Release Manager and Delivery Manager with 10+ years driving predictable, zero-incident software delivery in regulated enterprise SaaS environments.
-
-Background:
-- Charles Schwab (2023-2025): Senior Scrum Master and Technical Release Manager for DocuSign API integration platform serving 4,000+ financial reps across 400 branches. Owned Bamboo CI/CD pipeline oversight, Remedy/JDAS change management, go/no-go facilitation, Scrum of Scrums across 11 integration partner teams. 31+ releases, zero major incidents, 32% digital adoption increase, 24% error reduction, 99.99% availability.
-- Charles Schwab (2019-2023): Senior Scrum Master for RMD Center (1.6M users). Built DORA metrics framework from scratch, drove change failure rate from 5% to 1.3%, coordinated 4 concurrent scrum teams, led disaster recovery dry runs. 90+ releases, 95.5% satisfaction, $0.7M cost savings.
-- Charles Schwab (2018-2019): Product Operations Lead. Established release management and delivery framework for 7+ scrum teams. 40% improvement in on-time delivery.
-- BioMarin Pharmaceuticals (2017): Scrum Master and Release Coordinator. Clinical software releases under FDA 21 CFR Part 11. 60% SLA improvement, 100% NPS.
-- University of California, Office of the President (2017-2018): Scrum Master and Release Coordinator. Multi-campus e-Procurement platform across time zones.
-- Chevron Corporation (2014-2017): Release Coordinator and Business Analyst. Enterprise application releases for globally distributed teams across Americas, EMEA, and Asia-Pacific.
-
-Total: 120+ production releases, zero major production incidents, change failure rate driven from 5% to 1.3%, availability held at 99.99%.
-
-Toolchain: Bamboo CI/CD, JIRA (SME-level), Confluence, Remedy/JDAS, Git/Bitbucket, SonarQube, Splunk, Moogsoft, xMatters, Grafana/Argus, InfluxDB, Kibana, AWS, Rally, HP ALM.
-Regulated environments: SEC/FINRA, SOX, FDA 21 CFR Part 11, GxP, audit trail documentation.
-Certifications: CSPO, DevOps Leader (DOL), Certified Agile Coach (ICP-ACC), Certified Agile Team Facilitator (ICP-ATF), AI Fluency (Anthropic Academy).
-
-Target roles: Senior Technical Release Manager, Senior Delivery Manager, TPM, Scrum Master, Fractional Release/Delivery Manager. Open to fintech, biotech/life sciences, healthcare, govtech, climate/energy, enterprise SaaS, clinical/pharma software, DevOps/platform engineering.
-
-Communication rules: No em dashes. No AI tells. Lead with practitioner specificity in technical screens (name tools, describe exact actions). Lead with outcomes and risk reduction in leadership rounds. Never abstract when specificity is available. Never hallucinate facts. If partial information, give what you can and ask for the rest.`;
-
-// ── Role suggestions ─────────────────────────────────────────────────────────
-const PM_ROLES = ['Senior Product Manager','Senior PM, Platform','Senior PM, API Products','Senior PM, Fintech','Head of Product','Director of Product Management','Principal Product Manager','Product Manager, Growth','PM, Regulated Products','PM, Digital Transformation','Fractional Product Manager','Embedded PM','VP of Product','Group Product Manager','PM, Open Banking','PM, Payments'];
-const RMDM_ROLES = ['Senior Technical Release Manager','Technical Release Manager','Senior Delivery Manager','Delivery Manager','Technical Program Manager','Senior TPM','Senior Scrum Master','Release and Delivery Manager','DevOps Delivery Lead','Engineering Program Manager','Fractional Release Manager','Fractional Delivery Manager','Director of Release Engineering','Head of Delivery','Release Train Engineer','Program Manager, Regulated SaaS'];
-const NP_ROLES = ['Senior Product Manager','Director of Product','Head of Product','Director of Technology','VP of Technology','Chief Technology Officer','Chief Product Officer','Agile Coach','Senior Scrum Master','Program Manager','Delivery Manager','Technical Program Manager','Fractional PM','Fractional CTO','Head of Digital Transformation','Director of Engineering'];
-
-let acIndexes = { pm: -1, rmdm: -1 };
-
-// ── OS Toggle ────────────────────────────────────────────────────────────────
-function toggleOS() {
-  const root = document.documentElement;
-  const current = root.getAttribute('data-os') || 'pm';
-  const cycle = { pm: 'rmdm', rmdm: 'np', np: 'pm' };
-  const next = cycle[current];
-  setOS(next);
-  localStorage.setItem('preferredOS', next);
-}
-
-function setOS(os) {
-  const root = document.documentElement;
-  root.setAttribute('data-os', os);
-  document.getElementById('os-pm').classList.toggle('active', os === 'pm');
-  document.getElementById('os-rmdm').classList.toggle('active', os === 'rmdm');
-  document.getElementById('os-np').classList.toggle('active', os === 'np');
-  const titles = { pm: 'Product Manager Job Search OS', rmdm: 'Release Manager and Delivery Manager Job Search OS', np: 'Nonprofit and Social Impact Job Search OS' };
-  document.getElementById('bar-title').textContent = titles[os];
-  ['pm','rmdm','np'].forEach(id => {
-    document.getElementById('label-' + id).classList.toggle('active', id === os);
-    document.getElementById('dot-' + id).classList.toggle('active', id === os);
+  function showAC(os, val) {
+    var list = document.getElementById(os + '-ac-list');
+    var roles = os === 'pm' ? PM_ROLES : os === 'rmdm' ? RMDM_ROLES : NP_ROLES;
+    if (!val.trim()) { list.style.display = 'none'; acIndexes[os] = -1; return; }
+    var matches = roles.filter(function(s) { return s.toLowerCase().includes(val.toLowerCase()); });
+    if (!matches.length) { list.style.display = 'none'; return; }
+    list.innerHTML = matches.map(function(m, i) {
+      return '<div class="autocomplete-item" data-i="' + i + '" onclick="selectAC(\'' + os + '\',\'' + m.replace(/'/g, "\\'") + '\')">' + m + '</div>';
+    }).join('');
+    list.style.display = 'block';
+    acIndexes[os] = -1;
+  }
+  function selectAC(os, val) {
+    document.getElementById(os + '-jobtitle').value = val;
+    document.getElementById(os + '-ac-list').style.display = 'none';
+  }
+  function handleKey(e, os) {
+    var list = document.getElementById(os + '-ac-list');
+    var items = list.querySelectorAll('.autocomplete-item');
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') { acIndexes[os] = Math.min(acIndexes[os] + 1, items.length - 1); }
+    else if (e.key === 'ArrowUp') { acIndexes[os] = Math.max(acIndexes[os] - 1, 0); }
+    else if (e.key === 'Enter' && acIndexes[os] >= 0) { e.preventDefault(); selectAC(os, items[acIndexes[os]].textContent); return; }
+    else if (e.key === 'Escape') { list.style.display = 'none'; return; }
+    items.forEach(function(el, i) { el.classList.toggle('active', i === acIndexes[os]); });
+  }
+  document.addEventListener('click', function(e) {
+    ['pm','rmdm','np'].forEach(function(os) {
+      var field = document.getElementById(os + '-jobtitle-field');
+      if (field && !field.contains(e.target)) {
+        var acList = document.getElementById(os + '-ac-list');
+        if (acList) acList.style.display = 'none';
+      }
+    });
   });
-}
 
-// ── Tab switching ────────────────────────────────────────────────────────────
-function swTab(os, name, el) {
-  const prefix = os + '-';
-  document.querySelectorAll(`#os-${os} .tab`).forEach(t => t.classList.remove('active'));
-  document.querySelectorAll(`#os-${os} .panel`).forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById(prefix + name).classList.add('active');
-  if (name === 'pipeline') loadPipeline(os);
-}
+  async function callProxy(systemPrompt, userPrompt, useWebSearch) {
+    var body = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 1200,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
+    };
+    if (useWebSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+    var res = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error('Proxy returned ' + res.status);
+    var data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    return (data.content || []).filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('') || 'No response.';
+  }
 
-function tog(el) { el.classList.toggle('on'); }
-function excl(el, g) {
-  document.querySelectorAll(`.chip[data-g="${g}"]`).forEach(c => c.classList.remove('on'));
-  el.classList.add('on');
-}
-function chips(g) {
-  return [...document.querySelectorAll(`.chip[data-g="${g}"].on`)].map(c => c.textContent.trim()).join(', ');
-}
-function togAdd(os) { document.getElementById(os + '-addform').classList.toggle('open'); }
+  async function run(os, panel) {
+    document.querySelectorAll('.btn').forEach(function(b) { b.disabled = true; });
+    var ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
+    setOutput(os, panel, '', true);
 
-function setStatus(os, panel, loading, msg) {
-  const el = document.getElementById(`${os}-status-${panel}`);
-  if (!el) return;
-  el.innerHTML = loading ? `<div class="spinner"></div><span>${msg}</span>` : (msg ? `<span>${msg}</span>` : '');
-}
-function setOutput(os, panel, text, empty) {
-  const el = document.getElementById(`${os}-output-${panel}`);
-  if (!el) return;
-  el.textContent = text;
-  el.classList.toggle('empty', !!empty);
-}
+    try {
 
-// ── Autocomplete ─────────────────────────────────────────────────────────────
-function showAC(os, val) {
-  const list = document.getElementById(`${os}-ac-list`);
-  const roles = os === 'pm' ? PM_ROLES : os === 'rmdm' ? RMDM_ROLES : NP_ROLES;
-  if (!val.trim()) { list.style.display = 'none'; acIndexes[os] = -1; return; }
-  const matches = roles.filter(s => s.toLowerCase().includes(val.toLowerCase()));
-  if (!matches.length) { list.style.display = 'none'; return; }
-  list.innerHTML = matches.map((m, i) => `<div class="autocomplete-item" data-i="${i}" onclick="selectAC('${os}','${m}')">${m}</div>`).join('');
-  list.style.display = 'block';
-  acIndexes[os] = -1;
-}
-function selectAC(os, val) {
-  document.getElementById(`${os}-jobtitle`).value = val;
-  document.getElementById(`${os}-ac-list`).style.display = 'none';
-}
-function handleKey(e, os) {
-  const list = document.getElementById(`${os}-ac-list`);
-  const items = list.querySelectorAll('.autocomplete-item');
-  if (!items.length) return;
-  if (e.key === 'ArrowDown') { acIndexes[os] = Math.min(acIndexes[os] + 1, items.length - 1); }
-  else if (e.key === 'ArrowUp') { acIndexes[os] = Math.max(acIndexes[os] - 1, 0); }
-  else if (e.key === 'Enter' && acIndexes[os] >= 0) { e.preventDefault(); selectAC(os, items[acIndexes[os]].textContent); return; }
-  else if (e.key === 'Escape') { list.style.display = 'none'; return; }
-  items.forEach((el, i) => el.classList.toggle('active', i === acIndexes[os]));
-}
-document.addEventListener('click', e => {
-  ['pm','rmdm'].forEach(os => {
-    const field = document.getElementById(`${os}-jobtitle-field`);
-    if (field && !field.contains(e.target)) document.getElementById(`${os}-ac-list`).style.display = 'none';
-  });
-});
+      if (os === 'pm' || os === 'rmdm') {
 
-// ── Proxy call ───────────────────────────────────────────────────────────────
-async function callProxy(systemPrompt, userPrompt, useWebSearch = false) {
-  const body = {
-    model: 'claude-sonnet-4-6',
-    max_tokens: 1200,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  };
-  if (useWebSearch) body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
-  const res = await fetch(PROXY_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-  if (!res.ok) throw new Error(`Proxy returned ${res.status}`);
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-  return data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || 'No response.';
-}
+        if (panel === 'targeting') {
+          var mode    = chips(os + '-tmode');
+          var focus   = chips(os + '-focus');
+          var reg     = document.getElementById(os + '-reg').value;
+          var cstage  = document.getElementById(os + '-cstage').value;
+          var title   = document.getElementById(os + '-jobtitle').value.trim();
+          var tctx    = document.getElementById(os + '-tctx').value;
+          var doStrat = mode !== 'Live job search only';
+          var doSearch= mode !== 'Strategy only';
+          var combined= '';
 
-// ── Run agent ────────────────────────────────────────────────────────────────
-async function run(os, panel) {
-  document.querySelectorAll('.btn').forEach(b => b.disabled = true);
-  const ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
-  const mode = chips(`${os}-tmode`);
-  setOutput(os, panel, '', true);
+          if (doStrat) {
+            setStatus(os, panel, true, 'Building target company strategy...');
+            var roleLabel = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+            var stratPrompt;
+            if (os === 'pm') {
+              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across fintech, biotech, oil and gas, and public sector.") + ' Regulatory complexity: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here, suggested PM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest picks.';
+            } else {
+              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across financial services, life sciences, higher education, and energy.") + ' Regulatory environment: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), platform type, regulatory complexity, release and delivery context, 2-3 bullets on why Chike wins (120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain), likely RM/DM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest.';
+            }
+            var t1 = await callProxy(ctx, stratPrompt, false);
+            combined += t1;
+            setOutput(os, panel, combined, false);
+          }
 
-  try {
-    if (panel === 'targeting' && os !== 'np') {
-      const focus = chips(`${os}-focus`);
-      const reg   = document.getElementById(`${os}-reg`).value;
-      const cstage = document.getElementById(`${os}-cstage`).value;
-      const title = document.getElementById(`${os}-jobtitle`).value.trim();
-      const tctx  = document.getElementById(`${os}-tctx`).value;
-      const doStrategy = mode !== 'Live job search only';
-      const doSearch   = mode !== 'Strategy only';
-      let combined = '';
+          if (doSearch) {
+            setStatus(os, panel, true, 'Searching live job market...');
+            var roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+            var searchPrompt = os === 'pm'
+              ? 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus: ' + tctx : '') + " For each role: company name, exact role title, location or remote, why it fits Chike's background, direct job URL. Only confirmed current postings."
+              : 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus: ' + tctx : '') + " For each role: company name, role title, location or remote, why it fits Chike's background (120+ releases zero incidents, DORA, Bamboo/Remedy/Splunk, SEC/FINRA/SOX/FDA), direct job URL. Only confirmed current postings.";
+            var t2 = await callProxy(ctx, searchPrompt, true);
+            combined += (doStrat ? '\n\n---\n\nJOB LEADS\n\n' : '') + t2;
+            setOutput(os, panel, combined, false);
+          }
 
-      if (doStrategy) {
-        setStatus(os, panel, true, 'Building target company strategy...');
-        const roleLabel = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
-        let stratPrompt = '';
-        if (os === 'pm') {
-          stratPrompt = `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across fintech, biotech, oil and gas, and public sector.'} Regulatory complexity: ${reg}. Company stage: ${cstage}.${tctx ? ' Angle: ' + tctx : ''} For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background (DocuSign integrations, RMD Center 0-to-1 launch, API product management, digital transformation), suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks.`;
-        } else {
-          stratPrompt = `Generate 8 target companies for ${roleLabel} roles.${focus ? ' Industry focus: ' + focus + '.' : ' Be cross-industry, drawing on Chike\'s background across financial services, life sciences, higher education, and energy.'} Regulatory environment: ${reg}. Company stage: ${cstage}.${tctx ? ' Angle: ' + tctx : ''} For each company: name, tier (A/B/C), platform/product type, regulatory complexity, release and delivery context (cadence, team scale, known delivery challenges), 2-3 specific bullets on why Chike wins here (anchor to 120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain, multi-team program coordination), likely RM/DM ownership scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and better replacements.`;
+        } else if (panel === 'positioning') {
+          setStatus(os, panel, true, 'Building positioning...');
+          var posOutputs = chips(os + '-pos') || 'Positioning statement';
+          var pCo = document.getElementById(os + '-pco').value;
+          var posPrompt;
+          if (os === 'pm') {
+            var pmRoleMap = { 'sr-pm':'Senior Product Manager','head-pm':'Head of Product','pm-fintech':'PM in fintech/regulated industry','fractional':'Fractional PM' };
+            var pmRL = pmRoleMap[document.getElementById('pm-prole').value] || 'Senior Product Manager';
+            posPrompt = 'Generate the following for Chike as a ' + pmRL + ': ' + posOutputs + '.' + (pCo ? ' Tailor specifically for ' + pCo + '.' : '') + " Draw on his actual background: RMD Center 0-to-1 launch, DocuSign Automated Prefill, Salesforce API integration, crypto asset transfer product definition. Specific, no generic PM buzzwords, memorable within 10 seconds. No em dashes. Self-critique: does this sound like 100 other PMs?";
+          } else {
+            var rmRoleMap = { 'trl':'Technical Release Manager','sr-trl':'Senior Technical Release Manager','dm':'Delivery Manager','tpm':'Technical Program Manager','fractional':'Fractional Release/Delivery Manager' };
+            var rmRL = rmRoleMap[document.getElementById('rmdm-prole').value] || 'Senior Technical Release Manager';
+            posPrompt = 'Generate the following for Chike as a ' + rmRL + ': ' + posOutputs + '.' + (pCo ? ' Tailor specifically for ' + pCo + '.' : '') + " Draw on his actual release and delivery outcomes: 31+ DocuSign platform releases zero incidents, RMD Center 90+ releases change fail from 5% to 1.3%, FDA 21 CFR Part 11 at BioMarin, Chevron global deployments. Every story must demonstrate ownership of a delivery outcome. No em dashes. Self-critique: does this sound like every other release coordinator with a Scrum cert?";
+          }
+          var pt = await callProxy(ctx, posPrompt, false);
+          setOutput(os, panel, pt, false);
+
+        } else if (panel === 'outreach') {
+          setStatus(os, panel, true, 'Drafting outreach...');
+          var outType = chips(os + '-out') || 'Cold outreach';
+          var outCo   = document.getElementById(os + '-oco').value || 'the target company';
+          var outRole = document.getElementById(os + '-orole').value || 'hiring manager';
+          var outHook = document.getElementById(os + '-ohook').value;
+          var outPrompt;
+          if (os === 'pm') {
+            outPrompt = 'Draft a ' + outType + ' message from Chike Ugbode to a ' + outRole + ' at ' + outCo + '.' + (outHook ? ' Lead with: ' + outHook + '.' : '') + " Insight-driven, specific to this company, demonstrates real product understanding, focuses on starting a conversation not asking for a job, warm and direct, concise for mobile. No em dashes. Include a subject line. Self-critique: would you respond to this?";
+          } else {
+            outPrompt = 'Draft a ' + outType + ' message from Chike Ugbode to a ' + outRole + ' at ' + outCo + '.' + (outHook ? ' Lead with this hook: ' + outHook + '.' : '') + " References something specific about their delivery context. Demonstrates real understanding of what a TRM or Delivery Manager does on their team. Does not open with 'I saw your role'. Focuses on starting a conversation about delivery challenges. Warm, direct, concise for mobile. No em dashes. Include a subject line. Self-critique at end.";
+          }
+          var ot = await callProxy(ctx, outPrompt, false);
+          setOutput(os, panel, ot, false);
+
+        } else if (panel === 'interview') {
+          setStatus(os, panel, true, 'Generating interview prep...');
+          var intType = chips(os + '-int') || (os === 'pm' ? 'Product sense' : 'Release scenario / go-no-go');
+          var intQ    = document.getElementById(os + '-iq').value;
+          var intCo   = document.getElementById(os + '-ico').value;
+          var intPrompt;
+          if (os === 'pm') {
+            intPrompt = 'Generate interview prep for Chike for a ' + intType + ' interview' + (intCo ? ' at ' + intCo : '') + '.' + (intQ ? ' Specifically prep for: ' + intQ + '.' : '') + " Include: a structured repeatable framework, a STAR story from his real background (RMD Center launch, DocuSign Automated Prefill, Salesforce API integration), and a sample answer. No em dashes. Flag where strong vs where to tighten.";
+          } else {
+            var imode = chips('rmdm-imode') || 'Technical practitioner screen';
+            intPrompt = 'Generate interview prep for Chike for a ' + intType + ' interview in ' + imode + ' mode' + (intCo ? ' at ' + intCo : '') + '.' + (intQ ? ' Specifically prep for: ' + intQ + '.' : '') + ' Include: a structured framework, a STAR story from his background (DocuSign platform releases, RMD Center DORA metrics, BioMarin FDA releases), and a sample answer calibrated for ' + imode + '. No em dashes. Flag where strong and where to tighten.';
+          }
+          var it = await callProxy(ctx, intPrompt, false);
+          setOutput(os, panel, it, false);
         }
-        const t = await callProxy(ctx, stratPrompt);
-        combined += t;
-        setOutput(os, panel, combined, false);
+
+        setStatus(os, panel, false, '');
+
+      } else if (os === 'np') {
+
+        if (panel === 'targeting') {
+          var npMission = chips('np-mission') || 'any mission area';
+          var npRoles   = chips('np-role') || 'Product Manager, Scrum Master, Release Manager, Delivery Manager, Director of Technology';
+          var npEngage  = chips('np-engage') || 'Paid roles, Volunteer, Catchafire';
+          var npBoards  = chips('np-boards') || 'Idealist, Tech Jobs for Good, 80000 Hours, WorkForGood, Catchafire, LinkedIn Nonprofit';
+          var npSize    = document.getElementById('np-orgsize') ? document.getElementById('np-orgsize').value : 'any';
+          var npLoc     = document.getElementById('np-location') ? document.getElementById('np-location').value : 'remote';
+          var npTitle   = document.getElementById('np-jobtitle') ? document.getElementById('np-jobtitle').value.trim() : '';
+          var npWhy     = document.getElementById('np-why') ? document.getElementById('np-why').value : '';
+          var npSearch  = npTitle || npRoles;
+          setStatus('np', 'targeting', true, 'Searching nonprofit job boards...');
+          var npt = await callProxy(NP_CONTEXT,
+            'Search the web right now for currently open opportunities matching "' + npSearch + '" roles at nonprofit, social impact, and purpose-driven organizations in the ' + npMission + ' space. Search specifically on these boards: ' + npBoards + '. Engagement types to include: ' + npEngage + '. Org size: ' + npSize + '. Location: ' + npLoc + '.' + (npWhy ? ' Context on why this matters to Chike: ' + npWhy : '') + ' For each opportunity: org name and mission (1 sentence), role title, clearly label PAID or VOLUNTEER (unpaid/Catchafire), location or remote, why it fits Chike specifically (his product/delivery background applied to their context), direct URL. Only confirmed current opportunities. Never fabricate listings. If a board has no current matches say so and give the direct board URL.',
+            true
+          );
+          setOutput('np', 'targeting', npt, false);
+          setStatus('np', 'targeting', false, '');
+
+        } else if (panel === 'positioning') {
+          setStatus('np', 'positioning', true, 'Building nonprofit positioning...');
+          var npPosOut  = chips('np-pos') || 'Positioning statement';
+          var npPRoleEl = document.getElementById('np-prole');
+          var npRoleMap2= { pm:'Product Manager', sm:'Scrum Master / Agile Coach', rm:'Release / Delivery Manager', dir:'Director of Technology', vp:'VP of Technology', fractional:'Fractional / Embedded' };
+          var npRL      = npPRoleEl ? (npRoleMap2[npPRoleEl.value] || 'Product Manager') : 'Product Manager';
+          var npOrgCtx  = document.getElementById('np-pco') ? document.getElementById('np-pco').value : '';
+          var npPWhy    = document.getElementById('np-pwhy') ? document.getElementById('np-pwhy').value : '';
+          var npp = await callProxy(NP_CONTEXT,
+            'Generate the following for Chike as a ' + npRL + ' in the nonprofit/social impact sector: ' + npPosOut + '.' + (npOrgCtx ? ' Tailor for ' + npOrgCtx + '.' : '') + (npPWhy ? ' His motivation: ' + npPWhy + '.' : '') + " Draw on his real background: RMD Center 1.6M users, DocuSign platform zero incidents, BioMarin FDA releases, Chevron global deployments. Connect his private sector track record to a genuine reason for nonprofit work. No em dashes. Avoid generic mission-wash. Self-critique: authentic or padding a resume?",
+            false
+          );
+          setOutput('np', 'positioning', npp, false);
+          setStatus('np', 'positioning', false, '');
+
+        } else if (panel === 'outreach') {
+          setStatus('np', 'outreach', true, 'Drafting outreach...');
+          var npOutT  = chips('np-out') || 'Cold outreach';
+          var npOrg   = document.getElementById('np-oco') ? document.getElementById('np-oco').value : 'the organization';
+          var npOR    = document.getElementById('np-orole') ? document.getElementById('np-orole').value : 'Executive Director';
+          var npOHook = document.getElementById('np-ohook') ? document.getElementById('np-ohook').value : '';
+          var npWC    = document.getElementById('np-owhycare') ? document.getElementById('np-owhycare').value : '';
+          var isCF    = npOutT.includes('Catchafire');
+          var npo = await callProxy(NP_CONTEXT,
+            'Draft a ' + npOutT + ' message from Chike Ugbode to a ' + npOR + ' at ' + npOrg + '.' + (npOHook ? ' Lead with: ' + npOHook + '.' : '') + (npWC ? ' His motivation: ' + npWC + '.' : '') + ' ' + (isCF ? 'This is a Catchafire volunteer project proposal. Frame as a skilled volunteer offering a specific deliverable. Be concrete about what Chike delivers and in how many hours.' : "Frame around what Chike can do for the org's delivery or product challenges.") + " Warm, direct, genuine. No em dashes. Concise for mobile. Include a subject line. Self-critique at end: genuine mission alignment or resume-building?",
+            false
+          );
+          setOutput('np', 'outreach', npo, false);
+          setStatus('np', 'outreach', false, '');
+
+        } else if (panel === 'interview') {
+          setStatus('np', 'interview', true, 'Generating interview prep...');
+          var npIT  = chips('np-int') || 'Mission alignment and values fit';
+          var npIQ  = document.getElementById('np-iq') ? document.getElementById('np-iq').value : '';
+          var npICo = document.getElementById('np-ico') ? document.getElementById('np-ico').value : '';
+          var npi = await callProxy(NP_CONTEXT,
+            'Generate interview prep for Chike for a nonprofit interview focused on ' + npIT + (npICo ? ' at ' + npICo : '') + '.' + (npIQ ? ' Prep for: ' + npIQ + '.' : '') + " Include: a framework for this question type in a nonprofit context, a STAR story from his background (RMD Center 1.6M users, DocuSign platform, BioMarin FDA compliance), and a sample answer. No em dashes. No filler openers. Flag where strong and where it could sound inauthentic.",
+            false
+          );
+          setOutput('np', 'interview', npi, false);
+          setStatus('np', 'interview', false, '');
+        }
+
       }
 
-      if (doSearch) {
-        setStatus(os, panel, true, 'Searching live job market...');
-        const roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
-        const searchPrompt = os === 'pm'
-          ? `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${tctx ? ' Focus on: ' + tctx : ''} For each role: company name, exact role title, location or remote status, why it fits Chike's background (0-to-1 product builds, API product management, digital transformation, regulated environments), and direct job posting URL. Only list roles you can confirm are currently posted.`
-          : `Search the web right now for currently open "${roleSearch}" job postings at ${cstage} companies${focus ? ' in the ' + focus + ' space' : ''} with ${reg} regulatory complexity.${tctx ? ' Focus on: ' + tctx : ''} For each role: company name, exact role title, location or remote status, why it fits Chike's background (120+ releases zero incidents, DORA metrics, Bamboo/Remedy/Splunk toolchain, SEC/FINRA/SOX/FDA regulated environments, multi-team program coordination), and direct job posting URL. Only list roles you can confirm are currently posted.`;
-        const t = await callProxy(ctx, searchPrompt, true);
-        combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t;
-        setOutput(os, panel, combined, false);
-      }
-
-    } else if (panel === 'positioning' && os !== 'np') {
-      setStatus(os, panel, true, 'Building positioning...');
-      const outputs   = chips(`${os}-pos`) || 'Positioning statement';
-      const co        = document.getElementById(`${os}-pco`).value;
-      let prompt = '';
-      if (os === 'pm') {
-        const roleMap = { 'sr-pm':'Senior Product Manager','head-pm':'Head of Product','pm-fintech':'PM in fintech/regulated industry','fractional':'Fractional PM' };
-        const roleLabel = roleMap[document.getElementById('pm-prole').value] || 'Senior Product Manager';
-        prompt = `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor specifically for ' + co + '.' : ''} Draw on his actual background: RMD Center 0-to-1 launch, DocuSign Automated Prefill, Salesforce API integration, crypto asset transfer product definition. Specific, no generic PM buzzwords, memorable within 10 seconds. No em dashes. End with a self-critique: does this sound like 100 other PMs, and what is unclear or weak?`;
-      } else {
-        const roleMap = { 'trl':'Technical Release Manager','sr-trl':'Senior Technical Release Manager','dm':'Delivery Manager','tpm':'Technical Program Manager','fractional':'Fractional Release/Delivery Manager' };
-        const roleLabel = roleMap[document.getElementById('rmdm-prole').value] || 'Senior Technical Release Manager';
-        prompt = `Generate the following for Chike as a ${roleLabel}: ${outputs}.${co ? ' Tailor specifically for ' + co + '.' : ''} Draw on his actual release and delivery outcomes: 31+ DocuSign platform releases zero incidents, RMD Center 90+ releases change fail from 5% to 1.3%, FDA 21 CFR Part 11 compliant releases at BioMarin, Chevron global deployments. Every story must demonstrate ownership of a delivery outcome, not just participation. Specific, no generic buzzwords. No em dashes. End with a self-critique: does this sound like every other release coordinator with a Scrum cert, and what is genuinely differentiated?`;
-      }
-      const t = await callProxy(ctx, prompt);
-      setOutput(os, panel, t, false);
-
-    } else if (panel === 'outreach' && os !== 'np') {
-      setStatus(os, panel, true, 'Drafting outreach...');
-      const type = chips(`${os}-out`) || 'Cold outreach';
-      const co   = document.getElementById(`${os}-oco`).value || 'the target company';
-      const role = document.getElementById(`${os}-orole`).value || 'hiring manager';
-      const hook = document.getElementById(`${os}-ohook`).value;
-      let prompt = '';
-      if (os === 'pm') {
-        prompt = `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with: ' + hook + '.' : ''} Insight-driven, specific to this company, demonstrates real product understanding, focuses on starting a conversation not asking for a job, warm and direct, concise for mobile. No em dashes. Include a subject line. End with a self-critique: would you respond to this, and what feels generic?`;
-      } else {
-        prompt = `Draft a ${type} message from Chike Ugbode to a ${role} at ${co}.${hook ? ' Lead with this hook: ' + hook + '.' : ''} Requirements: references something specific about their delivery context (release frequency, compliance environment, team scale, known incident, engineering blog post). Demonstrates real understanding of what a TRM or Delivery Manager does on their specific team. Does not open with "I saw your role" or "I am interested in opportunities". Focuses on starting a conversation about delivery challenges. Warm, direct, concise for mobile. No em dashes. Include a subject line. End with a self-critique: would a VP of Engineering respond to this, and what feels generic or low-effort?`;
-      }
-      const t = await callProxy(ctx, prompt);
-      setOutput(os, panel, t, false);
-
-    } else if (panel === 'interview' && os !== 'np') {
-      setStatus(os, panel, true, 'Generating interview prep...');
-      const type  = chips(`${os}-int`) || (os === 'pm' ? 'Product sense' : 'Release scenario / go-no-go');
-      const q     = document.getElementById(`${os}-iq`).value;
-      const co    = document.getElementById(`${os}-ico`).value;
-      let prompt = '';
-      if (os === 'pm') {
-        prompt = `Generate interview prep for Chike for a ${type} interview${co ? ' at ' + co : ''}.${q ? ' Specifically prep for: ' + q + '.' : ''} Include: a structured repeatable framework, a STAR story mapped from his real background (RMD Center launch, DocuSign Automated Prefill, Salesforce API integration), and a sample answer. No em dashes. Flag where strong vs where to tighten.`;
-      } else {
-        const imode = chips('rmdm-imode') || 'Technical practitioner screen';
-        prompt = `Generate interview prep for Chike for a ${type} interview in ${imode} mode${co ? ' at ' + co : ''}.${q ? ' Specifically prep for this question: ' + q + '.' : ''} Include: a structured framework for this question type, a STAR story mapped from his real background (DocuSign platform releases, RMD Center DORA metrics, BioMarin FDA releases), and a sample answer calibrated for ${imode} (${imode.includes('Technical') ? 'name tools explicitly, describe exact actions in the pipeline, show mechanical knowledge of release execution' : 'lead with outcomes and risk reduction, demonstrate influence without authority, show program-level thinking'}). No em dashes. Flag where the answer is strong and where it needs tightening. No filler openers.`;
-      }
-      const t = await callProxy(ctx, prompt);
-      setOutput(os, panel, t, false);
+    } catch (err) {
+      setOutput(os, panel, 'Error: ' + err.message, true);
+      setStatus(os, panel, false, '');
     }
 
-    setStatus(os, panel, false, '');
-  } catch (err) {
-    setOutput(os, panel, 'Error: ' + err.message, true);
-    setStatus(os, panel, false, '');
-  }
-  document.querySelectorAll('.btn').forEach(b => b.disabled = false);
-}
-
-// ── Pipeline ─────────────────────────────────────────────────────────────────
-async function saveEntry(os) {
-  const co = document.getElementById(`${os}-nc`).value.trim();
-  if (!co) { alert('Company name is required.'); return; }
-  document.getElementById(`${os}-save-btn`).disabled = true;
-  document.getElementById(`${os}-save-status`).innerHTML = '<div class="spinner"></div><span>Saving...</span>';
-
-  const dbId = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
-  const today = new Date().toISOString().split('T')[0];
-  let entryLines = '';
-
-  if (os === 'pm') {
-    entryLines = `Company: ${co}, Role: ${document.getElementById('pm-nr').value||'Senior PM'}, Tier: ${document.getElementById('pm-nt').value}, Stage: ${document.getElementById('pm-ns').value}, Regulatory Complexity: ${document.getElementById('pm-nreg').value}, Source: ${document.getElementById('pm-nsrc').value}${document.getElementById('pm-nu').value ? ', Job URL: '+document.getElementById('pm-nu').value : ''}${document.getElementById('pm-nw').value ? ', Why I Win: '+document.getElementById('pm-nw').value : ''}, Last Activity: ${today}`;
-  } else {
-    entryLines = `Company: ${co}, Role Title: ${document.getElementById('rmdm-nr').value||'Senior Technical Release Manager'}, Role Type: ${document.getElementById('rmdm-ntype').value}, Tier: ${document.getElementById('rmdm-nt').value}, Stage: ${document.getElementById('rmdm-ns').value}, Regulatory Environment: ${document.getElementById('rmdm-nreg').value}, Source: ${document.getElementById('rmdm-nsrc').value}${document.getElementById('rmdm-nu').value ? ', Job URL: '+document.getElementById('rmdm-nu').value : ''}${document.getElementById('rmdm-nw').value ? ', Why I Win: '+document.getElementById('rmdm-nw').value : ''}, Last Activity: ${today}`;
+    document.querySelectorAll('.btn').forEach(function(b) { b.disabled = false; });
   }
 
-  if (os === 'np') {
-    entryLines = `Organization: ${document.getElementById('np-nc').value.trim()}, Role Title: ${document.getElementById('np-nr').value||'Senior PM'}, Role Type: ${document.getElementById('np-ntype').value}, Engagement Type: ${document.getElementById('np-nengage').value}, Mission Area: ${document.getElementById('np-nmission').value}, Tier: ${document.getElementById('np-nt').value}, Stage: ${document.getElementById('np-ns').value}, Source: ${document.getElementById('np-nsrc').value}${document.getElementById('np-nu').value ? ', Job URL: '+document.getElementById('np-nu').value : ''}${document.getElementById('np-nw').value ? ', Why This Matters to Me: '+document.getElementById('np-nw').value : ''}, Last Activity: ${new Date().toISOString().split('T')[0]}`;
-  }
-  const prompt = `Add this entry to the Notion database (collection ID: ${dbId}): ${entryLines}. Use the notion create-pages tool and confirm with "saved successfully".`;
-  const ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
+  async function saveEntry(os) {
+    var co = (document.getElementById(os + '-nc') ? document.getElementById(os + '-nc').value.trim() : '') || '';
+    if (!co) { alert('Company/organization name is required.'); return; }
+    document.getElementById(os + '-save-btn').disabled = true;
+    document.getElementById(os + '-save-status').innerHTML = '<div class="spinner"></div><span>Saving...</span>';
 
-  try {
-    const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt);
-    document.getElementById(`${os}-save-status`).innerHTML = text.toLowerCase().includes('saved')
-      ? `<span style="color:var(--green-text)">Saved. <a class="lnk" href="${hub}" target="_blank">View in Notion</a></span>`
-      : `<span>Attempted. <a class="lnk" href="${hub}" target="_blank">Verify in Notion</a></span>`;
-    [`${os}-nc`,`${os}-nr`,`${os}-nu`,`${os}-nw`].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  } catch (err) {
-    document.getElementById(`${os}-save-status`).innerHTML = `<span style="color:var(--red-text)">Error: ${err.message}</span>`;
-  }
-  document.getElementById(`${os}-save-btn`).disabled = false;
-}
+    var dbId  = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
+    var hub   = os === 'pm' ? PM_HUB : os === 'rmdm' ? RMDM_HUB : NP_HUB;
+    var today = new Date().toISOString().split('T')[0];
+    var entryLines = '';
 
-async function loadPipeline(os) {
-  const listEl = document.getElementById(`${os}-pipelist`);
-  listEl.innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
-  const dbId = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
-  const hub  = os === 'pm' ? PM_HUB : os === 'rmdm' ? RMDM_HUB : NP_HUB;
-  const prompt = `Query the Notion database with collection ID ${dbId} and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.`;
-  try {
-    const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt);
-    const match = text.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
-    const entries = match ? JSON.parse(match[0]) : [];
-    if (!entries.length) { listEl.innerHTML = '<div class="pipe-empty">No entries yet. Add companies using the form above.</div>'; return; }
-    const stageBg = s => ({'Targeting':'var(--gray-bg)','Researching':'var(--amber-bg)','Outreach Sent':'var(--amber-bg)','Responded':'var(--blue-bg)','Screening':'var(--purple-bg)','Interviewing':'var(--purple-bg)','Offer':'var(--green-bg)'}[s]||'var(--gray-bg)');
-    const stageColor = s => ({'Targeting':'var(--gray-text)','Researching':'var(--amber-text)','Outreach Sent':'var(--amber-text)','Responded':'var(--blue-text)','Screening':'var(--purple-text)','Interviewing':'var(--purple-text)','Offer':'var(--green-text)'}[s]||'var(--gray-text)');
-    const tierBg = t => t==='A'?'var(--green-bg)':t==='B'?'var(--blue-bg)':'var(--gray-bg)';
-    const tierColor = t => t==='A'?'var(--green-text)':t==='B'?'var(--blue-text)':'var(--gray-text)';
-    listEl.innerHTML = `<table class="pipe-table"><thead><tr><th style="width:22%">Company</th><th style="width:22%">Role</th><th style="width:8%">Tier</th><th style="width:20%">Stage</th><th style="width:16%">Source</th><th style="width:12%">Link</th></tr></thead><tbody>${entries.map(e=>`<tr><td style="font-weight:500">${e.company||''}</td><td style="color:var(--text2)">${e.role||''}</td><td><span class="sbadge" style="background:${tierBg(e.tier)};color:${tierColor(e.tier)}">${e.tier||''}</span></td><td><span class="sbadge" style="background:${stageBg(e.stage)};color:${stageColor(e.stage)}">${e.stage||'Targeting'}</span></td><td style="font-size:12px;color:var(--text2)">${e.source||''}</td><td>${e.jobUrl&&e.jobUrl!=='n/a'?`<a class="lnk" href="${e.jobUrl}" target="_blank">View</a>`:''}</td></tr>`).join('')}</tbody></table>`;
-  } catch (err) {
-    listEl.innerHTML = `<div class="pipe-empty">Could not load. <a class="lnk" href="${hub}" target="_blank">Open in Notion</a></div>`;
-  }
-}
+    function gv(id) { var el = document.getElementById(id); return el ? el.value : ''; }
 
-// ── Proxy health check ────────────────────────────────────────────────────────
-async function checkProxy(os) {
-  const el = document.getElementById(`proxy-status-${os}`);
-  try {
-    const r = await fetch(PROXY_URL, { method: 'OPTIONS' });
-    const ok = r.ok || r.status === 204;
-    el.textContent = ok ? 'proxy connected' : 'proxy error';
-    el.style.background = ok ? 'var(--green-bg)' : 'var(--red-bg)';
-    el.style.color = ok ? 'var(--green-text)' : 'var(--red-text)';
-    el.style.borderColor = ok ? 'var(--green-text)' : 'var(--red-text)';
-  } catch {
-    el.textContent = 'proxy not connected';
-    el.style.background = 'var(--amber-bg)';
-    el.style.color = 'var(--amber-text)';
-  }
-}
+    if (os === 'pm') {
+      entryLines = 'Company: ' + co + ', Role: ' + (gv('pm-nr') || 'Senior PM') + ', Tier: ' + gv('pm-nt') + ', Stage: ' + gv('pm-ns') + ', Regulatory Complexity: ' + gv('pm-nreg') + ', Source: ' + gv('pm-nsrc') + (gv('pm-nu') ? ', Job URL: ' + gv('pm-nu') : '') + (gv('pm-nw') ? ', Why I Win: ' + gv('pm-nw') : '') + ', Last Activity: ' + today;
+    } else if (os === 'rmdm') {
+      entryLines = 'Company: ' + co + ', Role Title: ' + (gv('rmdm-nr') || 'Senior Technical Release Manager') + ', Role Type: ' + gv('rmdm-ntype') + ', Tier: ' + gv('rmdm-nt') + ', Stage: ' + gv('rmdm-ns') + ', Regulatory Environment: ' + gv('rmdm-nreg') + ', Source: ' + gv('rmdm-nsrc') + (gv('rmdm-nu') ? ', Job URL: ' + gv('rmdm-nu') : '') + (gv('rmdm-nw') ? ', Why I Win: ' + gv('rmdm-nw') : '') + ', Last Activity: ' + today;
+    } else {
+      entryLines = 'Organization: ' + co + ', Role Title: ' + (gv('np-nr') || 'Senior PM') + ', Role Type: ' + gv('np-ntype') + ', Engagement Type: ' + gv('np-nengage') + ', Mission Area: ' + gv('np-nmission') + ', Tier: ' + gv('np-nt') + ', Stage: ' + gv('np-ns') + ', Source: ' + gv('np-nsrc') + (gv('np-nu') ? ', Job URL: ' + gv('np-nu') : '') + (gv('np-nw') ? ', Why This Matters to Me: ' + gv('np-nw') : '') + ', Last Activity: ' + today;
+    }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem('preferredOS') || 'pm';
-  setOS(saved);
-  checkProxy('pm');
-  checkProxy('rmdm');
-  checkProxy('np');
-});
+    var prompt = 'Add this entry to the Notion database (collection ID: ' + dbId + '): ' + entryLines + '. Use the notion create-pages tool and confirm with "saved successfully".';
+
+    try {
+      var text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt, false);
+      document.getElementById(os + '-save-status').innerHTML = text.toLowerCase().includes('saved')
+        ? '<span style="color:var(--green-text)">Saved. <a class="lnk" href="' + hub + '" target="_blank">View in Notion</a></span>'
+        : '<span>Attempted. <a class="lnk" href="' + hub + '" target="_blank">Verify in Notion</a></span>';
+      ['nc','nr','nu','nw'].forEach(function(f) { var el = document.getElementById(os + '-' + f); if (el) el.value = ''; });
+    } catch (err) {
+      document.getElementById(os + '-save-status').innerHTML = '<span style="color:var(--red-text)">Error: ' + err.message + '</span>';
+    }
+    document.getElementById(os + '-save-btn').disabled = false;
+  }
+
+  async function loadPipeline(os) {
+    var listEl = document.getElementById(os + '-pipelist');
+    listEl.innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
+    var dbId  = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
+    var hub   = os === 'pm' ? PM_HUB : os === 'rmdm' ? RMDM_HUB : NP_HUB;
+    var prompt = 'Query the Notion database with collection ID ' + dbId + ' and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.';
+    try {
+      var text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt, false);
+      var match = text.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
+      var entries = match ? JSON.parse(match[0]) : [];
+      if (!entries.length) { listEl.innerHTML = '<div class="pipe-empty">No entries yet. Add using the form above.</div>'; return; }
+      function sbg(s) { return ({'Targeting':'var(--gray-bg)','Researching':'var(--amber-bg)','Outreach Sent':'var(--amber-bg)','Responded':'var(--blue-bg)','Screening':'var(--purple-bg)','Interviewing':'var(--purple-bg)','Offer':'var(--green-bg)','Offer / Accepted':'var(--green-bg)'}[s]||'var(--gray-bg)'); }
+      function sbc(s) { return ({'Targeting':'var(--gray-text)','Researching':'var(--amber-text)','Outreach Sent':'var(--amber-text)','Responded':'var(--blue-text)','Screening':'var(--purple-text)','Interviewing':'var(--purple-text)','Offer':'var(--green-text)','Offer / Accepted':'var(--green-text)'}[s]||'var(--gray-text)'); }
+      function tbg(t) { return t==='A'?'var(--green-bg)':t==='B'?'var(--blue-bg)':'var(--gray-bg)'; }
+      function tbc(t) { return t==='A'?'var(--green-text)':t==='B'?'var(--blue-text)':'var(--gray-text)'; }
+      listEl.innerHTML = '<table class="pipe-table"><thead><tr><th style="width:22%">Company</th><th style="width:22%">Role</th><th style="width:8%">Tier</th><th style="width:20%">Stage</th><th style="width:16%">Source</th><th style="width:12%">Link</th></tr></thead><tbody>' +
+        entries.map(function(e) {
+          return '<tr><td style="font-weight:500">' + (e.company||'') + '</td><td style="color:var(--text2)">' + (e.role||'') + '</td><td><span class="sbadge" style="background:' + tbg(e.tier) + ';color:' + tbc(e.tier) + '">' + (e.tier||'') + '</span></td><td><span class="sbadge" style="background:' + sbg(e.stage) + ';color:' + sbc(e.stage) + '">' + (e.stage||'Targeting') + '</span></td><td style="font-size:12px;color:var(--text2)">' + (e.source||'') + '</td><td>' + (e.jobUrl && e.jobUrl !== 'n/a' ? '<a class="lnk" href="' + e.jobUrl + '" target="_blank">View</a>' : '') + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    } catch (err) {
+      listEl.innerHTML = '<div class="pipe-empty">Could not load. <a class="lnk" href="' + hub + '" target="_blank">Open in Notion</a></div>';
+    }
+  }
+
+  async function checkProxy(os) {
+    var el = document.getElementById('proxy-status-' + os);
+    if (!el) return;
+    try {
+      var r = await fetch(PROXY_URL, { method: 'OPTIONS' });
+      var ok = r.ok || r.status === 204;
+      el.textContent = ok ? 'proxy connected' : 'proxy error';
+      el.style.background = ok ? 'var(--green-bg)' : 'var(--red-bg)';
+      el.style.color = ok ? 'var(--green-text)' : 'var(--red-text)';
+      el.style.borderColor = ok ? 'var(--green-text)' : 'var(--red-text)';
+    } catch(e) {
+      el.textContent = 'proxy not connected';
+      el.style.background = 'var(--amber-bg)';
+      el.style.color = 'var(--amber-text)';
+    }
+  }
+
+  window.addEventListener('load', function() {
+    var saved = localStorage.getItem('preferredOS') || 'pm';
+    setOS(saved);
+    checkProxy('pm');
+    checkProxy('rmdm');
+    checkProxy('np');
+  });
 </script>
+
 </body>
 </html>
+  async function run(os, panel) {
+    document.querySelectorAll('.btn').forEach(b => b.disabled = true);
+    const ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
+    setOutput(os, panel, '', true);
+
+    try {
+
+      // ── PM and RMDM panels ───────────────────────────────────────────────
+      if (os !== 'np' && panel === 'targeting') {
+        const mode   = chips(os + '-tmode');
+        const focus  = chips(os + '-focus');
+        const reg    = document.getElementById(os + '-reg').value;
+        const cstage = document.getElementById(os + '-cstage').value;
+        const title  = document.getElementById(os + '-jobtitle').value.trim();
+        const tctx   = document.getElementById(os + '-tctx').value;
+        const doStrategy = mode !== 'Live job search only';
+        const doSearch   = mode !== 'Strategy only';
+        let combined = '';
+
+        if (doStrategy) {
+          setStatus(os, panel, true, 'Building target company strategy...');
+          const roleLabel = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+          let stratPrompt = '';
+          if (os === 'pm') {
+            stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across fintech, biotech, oil and gas, and public sector.") + ' Regulatory complexity: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here based on his actual background (DocuSign integrations, RMD Center 0-to-1 launch, API product management, digital transformation), suggested PM scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks.';
+          } else {
+            stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across financial services, life sciences, higher education, and energy.") + ' Regulatory environment: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), platform/product type, regulatory complexity, release and delivery context (cadence, team scale, known delivery challenges), 2-3 specific bullets on why Chike wins here (anchor to 120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain, multi-team program coordination), likely RM/DM ownership scope. At least 2 under-the-radar picks. End with a self-critique on the 2 weakest picks and better replacements.';
+          }
+          const t = await callProxy(ctx, stratPrompt);
+          combined += t;
+          setOutput(os, panel, combined, false);
+        }
+
+        if (doSearch) {
+          setStatus(os, panel, true, 'Searching live job market...');
+          const roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+          const searchPrompt = os === 'pm'
+            ? 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus on: ' + tctx : '') + " For each role: company name, exact role title, location or remote status, why it fits Chike's background (0-to-1 product builds, API product management, digital transformation, regulated environments), and direct job posting URL. Only list roles you can confirm are currently posted."
+            : 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus on: ' + tctx : '') + " For each role: company name, exact role title, location or remote status, why it fits Chike's background (120+ releases zero incidents, DORA metrics, Bamboo/Remedy/Splunk toolchain, SEC/FINRA/SOX/FDA regulated environments, multi-team program coordination), and direct job posting URL. Only list roles you can confirm are currently posted.";
+          const t2 = await callProxy(ctx, searchPrompt, true);
+          combined += (doStrategy ? '\n\n---\n\nJOB LEADS\n\n' : '') + t2;
+          setOutput(os, panel, combined, false);
+        }
+
+      } else if (os !== 'np' && panel === 'positioning') {
+        setStatus(os, panel, true, 'Building positioning...');
+        const outputs = chips(os + '-pos') || 'Positioning statement';
+        const co = document.getElementById(os + '-pco').value;
+        let prompt = '';
+        if (os === 'pm') {
+          const roleMap = { 'sr-pm':'Senior Product Manager','head-pm':'Head of Product','pm-fintech':'PM in fintech/regulated industry','fractional':'Fractional PM' };
+          const roleLabel = roleMap[document.getElementById('pm-prole').value] || 'Senior Product Manager';
+          prompt = 'Generate the following for Chike as a ' + roleLabel + ': ' + outputs + '.' + (co ? ' Tailor specifically for ' + co + '.' : '') + " Draw on his actual background: RMD Center 0-to-1 launch, DocuSign Automated Prefill, Salesforce API integration, crypto asset transfer product definition. Specific, no generic PM buzzwords, memorable within 10 seconds. No em dashes. End with a self-critique: does this sound like 100 other PMs, and what is unclear or weak?";
+        } else {
+          const roleMap = { 'trl':'Technical Release Manager','sr-trl':'Senior Technical Release Manager','dm':'Delivery Manager','tpm':'Technical Program Manager','fractional':'Fractional Release/Delivery Manager' };
+          const roleLabel = roleMap[document.getElementById('rmdm-prole').value] || 'Senior Technical Release Manager';
+          prompt = 'Generate the following for Chike as a ' + roleLabel + ': ' + outputs + '.' + (co ? ' Tailor specifically for ' + co + '.' : '') + " Draw on his actual release and delivery outcomes: 31+ DocuSign platform releases zero incidents, RMD Center 90+ releases change fail from 5% to 1.3%, FDA 21 CFR Part 11 compliant releases at BioMarin, Chevron global deployments. Every story must demonstrate ownership of a delivery outcome. Specific, no generic buzzwords. No em dashes. End with a self-critique: does this sound like every other release coordinator with a Scrum cert?";
+        }
+        const t = await callProxy(ctx, prompt);
+        setOutput(os, panel, t, false);
+
+      } else if (os !== 'np' && panel === 'outreach') {
+        setStatus(os, panel, true, 'Drafting outreach...');
+        const type = chips(os + '-out') || 'Cold outreach';
+        const co   = document.getElementById(os + '-oco').value || 'the target company';
+        const role = document.getElementById(os + '-orole').value || 'hiring manager';
+        const hook = document.getElementById(os + '-ohook').value;
+        let prompt = '';
+        if (os === 'pm') {
+          prompt = 'Draft a ' + type + ' message from Chike Ugbode to a ' + role + ' at ' + co + '.' + (hook ? ' Lead with: ' + hook + '.' : '') + " Insight-driven, specific to this company, demonstrates real product understanding, focuses on starting a conversation not asking for a job, warm and direct, concise for mobile. No em dashes. Include a subject line. End with a self-critique: would you respond to this, and what feels generic?";
+        } else {
+          prompt = 'Draft a ' + type + ' message from Chike Ugbode to a ' + role + ' at ' + co + '.' + (hook ? ' Lead with this hook: ' + hook + '.' : '') + " References something specific about their delivery context. Demonstrates real understanding of what a TRM or Delivery Manager does on their team. Does not open with 'I saw your role'. Focuses on starting a conversation about delivery challenges. Warm, direct, concise for mobile. No em dashes. Include a subject line. Self-critique at end.";
+        }
+        const t = await callProxy(ctx, prompt);
+        setOutput(os, panel, t, false);
+
+      } else if (os !== 'np' && panel === 'interview') {
+        setStatus(os, panel, true, 'Generating interview prep...');
+        const type = chips(os + '-int') || (os === 'pm' ? 'Product sense' : 'Release scenario / go-no-go');
+        const q    = document.getElementById(os + '-iq').value;
+        const co   = document.getElementById(os + '-ico').value;
+        let prompt = '';
+        if (os === 'pm') {
+          prompt = 'Generate interview prep for Chike for a ' + type + ' interview' + (co ? ' at ' + co : '') + '.' + (q ? ' Specifically prep for: ' + q + '.' : '') + " Include: a structured repeatable framework, a STAR story mapped from his real background (RMD Center launch, DocuSign Automated Prefill, Salesforce API integration), and a sample answer. No em dashes. Flag where strong vs where to tighten.";
+        } else {
+          const imode = chips('rmdm-imode') || 'Technical practitioner screen';
+          prompt = 'Generate interview prep for Chike for a ' + type + ' interview in ' + imode + ' mode' + (co ? ' at ' + co : '') + '.' + (q ? ' Specifically prep for: ' + q + '.' : '') + ' Include: a structured framework, a STAR story from his background (DocuSign platform releases, RMD Center DORA metrics, BioMarin FDA releases), and a sample answer calibrated for ' + imode + '. No em dashes. Flag where strong and where to tighten.';
+        }
+        const t = await callProxy(ctx, prompt);
+        setOutput(os, panel, t, false);
+
+      // ── NP panels ────────────────────────────────────────────────────────
+      } else if (os === 'np' && panel === 'targeting') {
+        const mission    = chips('np-mission') || 'any mission area';
+        const npRoles    = chips('np-role') || 'Product Manager, Scrum Master, Release Manager, Delivery Manager, Director of Technology';
+        const engage     = chips('np-engage') || 'Paid roles, Volunteer, Catchafire';
+        const boards     = chips('np-boards') || 'Idealist, Tech Jobs for Good, 80000 Hours, WorkForGood, Catchafire, LinkedIn Nonprofit';
+        const orgsize    = document.getElementById('np-orgsize') ? document.getElementById('np-orgsize').value : 'any';
+        const location   = document.getElementById('np-location') ? document.getElementById('np-location').value : 'remote';
+        const npTitle    = document.getElementById('np-jobtitle') ? document.getElementById('np-jobtitle').value.trim() : '';
+        const npWhy      = document.getElementById('np-why') ? document.getElementById('np-why').value : '';
+        const roleSearch = npTitle || npRoles;
+        setStatus('np', 'targeting', true, 'Searching nonprofit job boards...');
+        const t = await callProxy(NP_CONTEXT,
+          'Search the web right now for currently open opportunities matching "' + roleSearch + '" roles at nonprofit, social impact, and purpose-driven organizations in the ' + mission + ' space. Search specifically on these boards: ' + boards + '. Engagement types to include: ' + engage + '. Org size: ' + orgsize + '. Location: ' + location + '.' + (npWhy ? ' Context: ' + npWhy : '') + ' For each opportunity: org name and mission (1 sentence), role title, clearly label PAID or VOLUNTEER (unpaid/Catchafire), location or remote, why it fits Chike specifically (his product/delivery background applied to their context), direct URL. Only confirmed current opportunities. Never fabricate listings. If a board has no matches say so and give the direct board URL.',
+          true
+        );
+        setOutput('np', 'targeting', t, false);
+        setStatus('np', 'targeting', false, '');
+
+      } else if (os === 'np' && panel === 'positioning') {
+        setStatus('np', 'positioning', true, 'Building nonprofit positioning...');
+        const npPosOut  = chips('np-pos') || 'Positioning statement';
+        const npRoleMap = { pm:'Product Manager', sm:'Scrum Master / Agile Coach', rm:'Release / Delivery Manager', dir:'Director of Technology', vp:'VP of Technology', fractional:'Fractional / Embedded' };
+        const npRL      = npRoleMap[document.getElementById('np-prole') ? document.getElementById('np-prole').value : 'pm'] || 'Product Manager';
+        const npOrgCtx  = document.getElementById('np-pco') ? document.getElementById('np-pco').value : '';
+        const npPWhy    = document.getElementById('np-pwhy') ? document.getElementById('np-pwhy').value : '';
+        const t = await callProxy(NP_CONTEXT,
+          'Generate the following for Chike as a ' + npRL + ' in the nonprofit/social impact sector: ' + npPosOut + '.' + (npOrgCtx ? ' Tailor for ' + npOrgCtx + '.' : '') + (npPWhy ? ' His motivation: ' + npPWhy + '.' : '') + " Draw on his real background: RMD Center 1.6M users, DocuSign platform zero incidents, BioMarin FDA releases, Chevron global deployments. Connect his private sector track record to a genuine reason for nonprofit work. No em dashes. Avoid generic mission-wash. End with a self-critique: authentic or padding a resume?"
+        );
+        setOutput('np', 'positioning', t, false);
+        setStatus('np', 'positioning', false, '');
+
+      } else if (os === 'np' && panel === 'outreach') {
+        setStatus('np', 'outreach', true, 'Drafting outreach...');
+        const npOutType  = chips('np-out') || 'Cold outreach';
+        const npOrg      = document.getElementById('np-oco') ? document.getElementById('np-oco').value : 'the organization';
+        const npOutRole  = document.getElementById('np-orole') ? document.getElementById('np-orole').value : 'Executive Director';
+        const npHook     = document.getElementById('np-ohook') ? document.getElementById('np-ohook').value : '';
+        const npWhycare  = document.getElementById('np-owhycare') ? document.getElementById('np-owhycare').value : '';
+        const isCF       = npOutType.includes('Catchafire');
+        const t = await callProxy(NP_CONTEXT,
+          'Draft a ' + npOutType + ' message from Chike Ugbode to a ' + npOutRole + ' at ' + npOrg + '.' + (npHook ? ' Lead with: ' + npHook + '.' : '') + (npWhycare ? ' His motivation: ' + npWhycare + '.' : '') + ' ' + (isCF ? 'This is a Catchafire volunteer project proposal. Frame as a skilled volunteer offering a specific deliverable. Be concrete about what Chike delivers and in how many hours.' : "Frame around what Chike can do for the org's delivery or product challenges.") + " Warm, direct, genuine. No em dashes. Concise for mobile. Include a subject line. Self-critique at end: genuine mission alignment or resume-building?"
+        );
+        setOutput('np', 'outreach', t, false);
+        setStatus('np', 'outreach', false, '');
+
+      } else if (os === 'np' && panel === 'interview') {
+        setStatus('np', 'interview', true, 'Generating interview prep...');
+        const npIntType = chips('np-int') || 'Mission alignment and values fit';
+        const npIQ      = document.getElementById('np-iq') ? document.getElementById('np-iq').value : '';
+        const npICo     = document.getElementById('np-ico') ? document.getElementById('np-ico').value : '';
+        const t = await callProxy(NP_CONTEXT,
+          'Generate interview prep for Chike for a nonprofit interview focused on ' + npIntType + (npICo ? ' at ' + npICo : '') + '.' + (npIQ ? ' Prep for: ' + npIQ + '.' : '') + " Include: a framework for this question type in a nonprofit context, a STAR story from his background (RMD Center 1.6M users, DocuSign platform, BioMarin FDA compliance), and a sample answer. No em dashes. No filler openers. Flag where strong and where it could sound inauthentic."
+        );
+        setOutput('np', 'interview', t, false);
+        setStatus('np', 'interview', false, '');
+      }
+
+      if (os !== 'np') setStatus(os, panel, false, '');
+
+    } catch (err) {
+      const errPanel = panel;
+      setOutput(os, errPanel, 'Error: ' + err.message, true);
+      setStatus(os, errPanel, false, '');
+    }
+
+    document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+  }
