@@ -10,33 +10,30 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Test 1: plain call (no tools)
-  const plainResult = await makeRequest(apiKey, {
+  // Mimic exact request the agent sends for a live job search
+  const agentRequest = {
     model: 'claude-sonnet-4-6',
-    max_tokens: 10,
-    messages: [{ role: 'user', content: 'Say hi' }],
-  }, {});
+    max_tokens: 2000,
+    system: 'You are a job search agent for Chike Ugbode, a Senior Product Manager.',
+    messages: [{
+      role: 'user',
+      content: 'Search the web right now for currently open "Senior Product Manager" job postings at growth-stage companies in the Fintech space with high regulatory complexity. For each role found: company name, exact role title, location or remote status, why it fits, direct job URL. Return at least 6 roles.'
+    }],
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+  };
 
-  // Test 2: web search call — no beta header
-  const webSearchResult = await makeRequest(apiKey, {
-    model: 'claude-sonnet-4-6',
-    max_tokens: 100,
-    messages: [{ role: 'user', content: 'Search the web for the current date' }],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-  }, {});
-
-  // Test 3: web search call WITH beta header (old way)
-  const webSearchBetaResult = await makeRequest(apiKey, {
-    model: 'claude-sonnet-4-6',
-    max_tokens: 100,
-    messages: [{ role: 'user', content: 'Search the web for the current date' }],
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-  }, { 'anthropic-beta': 'web-search-2025-03-05' });
+  const result = await makeRequest(apiKey, agentRequest, {});
 
   res.status(200).json({
-    plain_call: { status: plainResult.status, ok: plainResult.status === 200 },
-    web_search_no_beta: { status: webSearchResult.status, ok: webSearchResult.status === 200, error: webSearchResult.status !== 200 ? webSearchResult.body : undefined },
-    web_search_with_beta: { status: webSearchBetaResult.status, ok: webSearchBetaResult.status === 200, error: webSearchBetaResult.status !== 200 ? webSearchBetaResult.body : undefined },
+    test: 'agent_mimic_web_search',
+    http_status: result.status,
+    ok: result.status === 200,
+    stop_reason: result.status === 200 ? result.body.stop_reason : undefined,
+    content_types: result.status === 200
+      ? result.body.content?.map(b => b.type)
+      : undefined,
+    error: result.status !== 200 ? result.body : undefined,
+    usage: result.status === 200 ? result.body.usage : undefined,
   });
 };
 
@@ -51,26 +48,27 @@ function makeRequest(apiKey, body, extraHeaders) {
       ...extraHeaders,
     };
 
-    const req = https.request({
+    const apiReq = https.request({
       hostname: 'api.anthropic.com',
       path: '/v1/messages',
       method: 'POST',
       headers,
-    }, (res) => {
+    }, (apiRes) => {
       const chunks = [];
-      res.on('data', c => chunks.push(c));
-      res.on('end', () => {
+      apiRes.on('data', c => chunks.push(c));
+      apiRes.on('end', () => {
+        const raw = Buffer.concat(chunks).toString('utf8');
         try {
-          resolve({ status: res.statusCode, body: JSON.parse(Buffer.concat(chunks).toString('utf8')) });
+          resolve({ status: apiRes.statusCode, body: JSON.parse(raw) });
         } catch (e) {
-          resolve({ status: res.statusCode, body: Buffer.concat(chunks).toString('utf8').slice(0, 300) });
+          resolve({ status: apiRes.statusCode, body: { parse_error: e.message, raw: raw.slice(0, 500) } });
         }
       });
     });
 
-    req.on('error', (e) => resolve({ status: 0, body: e.message }));
-    req.setTimeout(30000, () => { req.destroy(); resolve({ status: 0, body: 'timeout' }); });
-    req.write(payload);
-    req.end();
+    apiReq.on('error', (e) => resolve({ status: 0, body: { network_error: e.message } }));
+    apiReq.setTimeout(55000, () => { apiReq.destroy(); resolve({ status: 0, body: { error: 'timeout' } }); });
+    apiReq.write(payload);
+    apiReq.end();
   });
 }
