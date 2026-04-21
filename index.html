@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,144 +7,140 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-```
-/* ── PM theme (warm neutral) ── */
-:root[data-os="pm"] {
-  --accent: #6B5CFF;
-  --accent-bg: #F0EEFF;
-  --accent-text: #3D2FCC;
-  --toggle-bg: #6B5CFF;
-  --header-stripe: linear-gradient(135deg, #6B5CFF 0%, #9B8FFF 100%);
-}
-/* ── RM/DM theme (steel blue/slate) ── */
-:root[data-os="rmdm"] {
-  --accent: #0F7490;
-  --accent-bg: #E8F6FA;
-  --accent-text: #0A4F63;
-  --toggle-bg: #0F7490;
-  --header-stripe: linear-gradient(135deg, #0F7490 0%, #38A3C0 100%);
-}
-/* ── Nonprofit theme (warm green) ── */
-:root[data-os="np"] {
-  --accent: #2D7A3A;
-  --accent-bg: #EAF4EC;
-  --accent-text: #1A5226;
-  --toggle-bg: #2D7A3A;
-  --header-stripe: linear-gradient(135deg, #2D7A3A 0%, #52A860 100%);
-}
+    /* ── PM theme (warm neutral) ── */
+    :root[data-os="pm"] {
+      --accent: #6B5CFF;
+      --accent-bg: #F0EEFF;
+      --accent-text: #3D2FCC;
+      --toggle-bg: #6B5CFF;
+      --header-stripe: linear-gradient(135deg, #6B5CFF 0%, #9B8FFF 100%);
+    }
+    /* ── RM/DM theme (steel blue/slate) ── */
+    :root[data-os="rmdm"] {
+      --accent: #0F7490;
+      --accent-bg: #E8F6FA;
+      --accent-text: #0A4F63;
+      --toggle-bg: #0F7490;
+      --header-stripe: linear-gradient(135deg, #0F7490 0%, #38A3C0 100%);
+    }
+    /* ── Nonprofit theme (warm green) ── */
+    :root[data-os="np"] {
+      --accent: #2D7A3A;
+      --accent-bg: #EAF4EC;
+      --accent-text: #1A5226;
+      --toggle-bg: #2D7A3A;
+      --header-stripe: linear-gradient(135deg, #2D7A3A 0%, #52A860 100%);
+    }
 
-:root {
-  --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0efec;
-  --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
-  --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
-  --radius-md: 8px; --radius-lg: 12px;
-  --green-bg: #EAF3DE; --green-text: #3B6D11;
-  --blue-bg: #E6F1FB; --blue-text: #185FA5;
-  --amber-bg: #FAEEDA; --amber-text: #854F0B;
-  --gray-bg: #F1EFE8; --gray-text: #5F5E5A;
-  --red-bg: #FCEBEB; --red-text: #A32D2D;
-  --purple-bg: #EEEDFE; --purple-text: #3C3489;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --bg:#1a1a1a; --bg2:#222; --bg3:#2a2a2a; --text:#f0f0f0; --text2:#a0a0a0; --text3:#666; --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2); }
-}
+    :root {
+      --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0efec;
+      --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
+      --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+      --radius-md: 8px; --radius-lg: 12px;
+      --green-bg: #EAF3DE; --green-text: #3B6D11;
+      --blue-bg: #E6F1FB; --blue-text: #185FA5;
+      --amber-bg: #FAEEDA; --amber-text: #854F0B;
+      --gray-bg: #F1EFE8; --gray-text: #5F5E5A;
+      --red-bg: #FCEBEB; --red-text: #A32D2D;
+      --purple-bg: #EEEDFE; --purple-text: #3C3489;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#1a1a1a; --bg2:#222; --bg3:#2a2a2a; --text:#f0f0f0; --text2:#a0a0a0; --text3:#666; --border:rgba(255,255,255,0.1); --border2:rgba(255,255,255,0.2); }
+    }
 
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
 
-/* ── OS Toggle ── */
-.os-toggle-bar {
-  background: var(--header-stripe);
-  padding: 12px 1.25rem;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: background 0.3s;
-}
-.os-toggle-bar .bar-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
-.os-toggle-wrap { display: flex; align-items: center; gap: 12px; }
-.os-label { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; }
-.os-label.active { color: #fff; font-weight: 700; }
-/* 3-dot OS selector */
-.os-dots { display: flex; align-items: center; gap: 8px; }
-.os-dot {
-  width: 12px; height: 12px; border-radius: 50%;
-  background: rgba(255,255,255,0.3);
-  border: 2px solid rgba(255,255,255,0.5);
-  cursor: pointer; transition: all 0.2s;
-  flex-shrink: 0;
-}
-.os-dot:hover { background: rgba(255,255,255,0.55); transform: scale(1.15); }
-.os-dot.active {
-  background: #fff;
-  border-color: #fff;
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
-  transform: scale(1.1);
-}
+    /* ── OS Toggle ── */
+    .os-toggle-bar {
+      background: var(--header-stripe);
+      padding: 12px 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s;
+    }
+    .os-toggle-bar .bar-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
+    .os-toggle-wrap { display: flex; align-items: center; gap: 12px; }
+    .os-label { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; }
+    .os-label.active { color: #fff; font-weight: 700; }
+    /* 3-dot OS selector */
+    .os-dots { display: flex; align-items: center; gap: 8px; }
+    .os-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: 2px solid rgba(255,255,255,0.5);
+      cursor: pointer; transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .os-dot:hover { background: rgba(255,255,255,0.55); transform: scale(1.15); }
+    .os-dot.active {
+      background: #fff;
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
+      transform: scale(1.1);
+    }
 
-.wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.25rem; }
-h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-.subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.badge { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-md); border: 0.5px solid var(--border); color: var(--text2); background: var(--bg2); }
-.badge-accent { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-text); }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.25rem; }
+    h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .subtitle { font-size: 13px; color: var(--text2); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-md); border: 0.5px solid var(--border); color: var(--text2); background: var(--bg2); }
+    .badge-accent { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent-text); }
 
-.tabs { display: flex; gap: 5px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-.tab { font-size: 13px; padding: 6px 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.12s; }
-.tab:hover { background: var(--bg2); color: var(--text); }
-.tab.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent-text); font-weight: 500; }
+    .tabs { display: flex; gap: 5px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .tab { font-size: 13px; padding: 6px 13px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; transition: all 0.12s; }
+    .tab:hover { background: var(--bg2); color: var(--text); }
+    .tab.active { background: var(--accent-bg); border-color: var(--accent); color: var(--accent-text); font-weight: 500; }
 
-.panel { display: none; }
-.panel.active { display: block; }
-.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
-label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 5px; }
-select, input[type=text], textarea { width: 100%; font-size: 14px; padding: 8px 10px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: inherit; transition: border-color 0.12s; }
-select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent); }
-textarea { resize: vertical; min-height: 68px; }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-.field { margin-bottom: 12px; position: relative; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 5px; }
+    select, input[type=text], textarea { width: 100%; font-size: 14px; padding: 8px 10px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-family: inherit; transition: border-color 0.12s; }
+    select:focus, input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 68px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .field { margin-bottom: 12px; position: relative; }
 
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--accent); border-radius: var(--radius-md); background: transparent; color: var(--accent-text); cursor: pointer; transition: all 0.12s; font-family: inherit; }
-.btn:hover { background: var(--accent-bg); }
-.btn:active { transform: scale(0.98); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.btn-sm { font-size: 12px; padding: 5px 12px; }
-.btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--accent); border-radius: var(--radius-md); background: transparent; color: var(--accent-text); cursor: pointer; transition: all 0.12s; font-family: inherit; }
+    .btn:hover { background: var(--accent-bg); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-sm { font-size: 12px; padding: 5px 12px; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
-.slabel { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 7px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-.chip { font-size: 12px; padding: 4px 10px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg2); color: var(--text2); cursor: pointer; user-select: none; transition: all 0.12s; }
-.chip.on { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); font-weight: 500; }
+    .slabel { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 7px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .chip { font-size: 12px; padding: 4px 10px; border-radius: var(--radius-md); border: 0.5px solid var(--border); background: var(--bg2); color: var(--text2); cursor: pointer; user-select: none; transition: all 0.12s; }
+    .chip.on { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-text); font-weight: 500; }
 
-.output-area { background: var(--bg2); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 1rem 1.25rem; min-height: 120px; font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; margin-top: 1rem; font-family: inherit; }
-.output-area.empty { color: var(--text3); font-style: italic; }
-.status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); margin-top: 8px; min-height: 20px; }
-.spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-@keyframes spin { to { transform: rotate(360deg); } }
+    .output-area { background: var(--bg2); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 1rem 1.25rem; min-height: 120px; font-size: 13.5px; line-height: 1.75; color: var(--text); white-space: pre-wrap; margin-top: 1rem; font-family: inherit; }
+    .output-area.empty { color: var(--text3); font-style: italic; }
+    .status-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); margin-top: 8px; min-height: 20px; }
+    .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-.pipe-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
-.pipe-table th { text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); padding: 7px 8px; border-bottom: 0.5px solid var(--border); }
-.pipe-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sbadge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 500; }
-.pipe-empty { text-align: center; padding: 2rem; color: var(--text3); font-style: italic; font-size: 13px; }
-.lnk { font-size: 12px; color: var(--text2); text-decoration: none; }
-.lnk:hover { color: var(--text); }
-.vol-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #FEF3C7; color: #92400E; border: 0.5px solid #D97706; vertical-align: middle; margin-left: 4px; white-space: nowrap; }
-.add-form { display: none; }
-.add-form.open { display: block; }
-.divider { border: none; border-top: 0.5px solid var(--border); margin: 12px 0; }
+    .pipe-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+    .pipe-table th { text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); padding: 7px 8px; border-bottom: 0.5px solid var(--border); }
+    .pipe-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sbadge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 500; }
+    .pipe-empty { text-align: center; padding: 2rem; color: var(--text3); font-style: italic; font-size: 13px; }
+    .lnk { font-size: 12px; color: var(--text2); text-decoration: none; }
+    .lnk:hover { color: var(--text); }
+    .vol-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #FEF3C7; color: #92400E; border: 0.5px solid #D97706; vertical-align: middle; margin-left: 4px; white-space: nowrap; }
+    .add-form { display: none; }
+    .add-form.open { display: block; }
+    .divider { border: none; border-top: 0.5px solid var(--border); margin: 12px 0; }
 
-.autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-.autocomplete-item { padding: 8px 10px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.1s; }
-.autocomplete-item:hover, .autocomplete-item.active { background: var(--accent-bg); color: var(--accent-text); }
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; z-index: 100; background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .autocomplete-item { padding: 8px 10px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.1s; }
+    .autocomplete-item:hover, .autocomplete-item.active { background: var(--accent-bg); color: var(--accent-text); }
 
-/* OS panels */
-.os-content { display: none; }
-.os-content.active { display: block; }
-```
-
+    /* OS panels */
+    .os-content { display: none; }
+    .os-content.active { display: block; }
   </style>
 </head>
 <body>
 
 <!-- ── OS TOGGLE BAR ── -->
-
 <div class="os-toggle-bar">
   <span class="bar-title" id="bar-title">Product Manager Job Search OS</span>
   <div class="os-toggle-wrap">
@@ -165,7 +160,6 @@ textarea { resize: vertical; min-height: 68px; }
   <!-- ════════════════════════════════════════════
        PM OS
   ════════════════════════════════════════════ -->
-
   <div class="os-content active" id="os-pm">
     <h1>Job Search Agent</h1>
     <div class="subtitle">
@@ -175,170 +169,167 @@ textarea { resize: vertical; min-height: 68px; }
       <span id="proxy-status-pm" class="badge">checking proxy...</span>
     </div>
 
-```
-<div class="tabs">
-  <button class="tab active" onclick="swTab('pm','targeting',this)">Target companies</button>
-  <button class="tab" onclick="swTab('pm','positioning',this)">Positioning</button>
-  <button class="tab" onclick="swTab('pm','outreach',this)">Outreach</button>
-  <button class="tab" onclick="swTab('pm','interview',this)">Interview prep</button>
-  <button class="tab" onclick="swTab('pm','pipeline',this)">Pipeline tracker</button>
-</div>
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('pm','targeting',this)">Target companies</button>
+      <button class="tab" onclick="swTab('pm','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('pm','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('pm','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('pm','pipeline',this)">Pipeline tracker</button>
+    </div>
 
-<!-- PM: TARGET -->
-<div id="pm-targeting" class="panel active">
-  <div class="card">
-    <div class="slabel">Focus area</div>
-    <div class="chips">
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Fintech</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Enterprise SaaS</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Capital markets</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Payments</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Regtech</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Digital banking</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Biotech / Life sciences</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Healthcare</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Climate / Energy</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Oil &amp; gas</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Public sector / Govtech</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">AI / ML products</span>
-      <span class="chip" data-g="pm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+    <!-- PM: TARGET -->
+    <div id="pm-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Focus area</div>
+        <div class="chips">
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Fintech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Enterprise SaaS</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Capital markets</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Payments</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Regtech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Digital banking</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Biotech / Life sciences</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Healthcare</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Climate / Energy</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Oil &amp; gas</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Public sector / Govtech</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">AI / ML products</span>
+          <span class="chip" data-g="pm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+        </div>
+        <div class="slabel">Mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy + live jobs</span>
+          <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy only</span>
+          <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Live job search only</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Regulatory complexity</label><select id="pm-reg"><option value="high" selected>High (preferred)</option><option value="medium">Medium+</option><option value="any">Any</option></select></div>
+          <div class="field"><label>Company stage</label><select id="pm-cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Location preference</label><select id="pm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
+          <div class="field"></div>
+        </div>
+        <div class="field" id="pm-jobtitle-field">
+          <label>Role title to search</label>
+          <input type="text" id="pm-jobtitle" placeholder="e.g. Senior Product Manager, Head of Product..." autocomplete="off" oninput="showAC('pm',this.value)" onkeydown="handleKey(event,'pm')" />
+          <div class="autocomplete-list" id="pm-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field"><label>Specific angle (optional)</label><textarea id="pm-tctx" placeholder="e.g. API-first platforms, compliance workflow, 0-to-1 builds..."></textarea></div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="pm-applied" placeholder="e.g. Stripe, Plaid, Brex — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','targeting')">Run search</button></div>
+      </div>
+      <div id="pm-status-targeting" class="status-row"></div>
+      <div id="pm-output-targeting" class="output-area empty">Results will appear here...</div>
     </div>
-    <div class="slabel">Mode</div>
-    <div class="chips">
-      <span class="chip on" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy + live jobs</span>
-      <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Strategy only</span>
-      <span class="chip" data-g="pm-tmode" onclick="excl(this,'pm-tmode')">Live job search only</span>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Regulatory complexity</label><select id="pm-reg"><option value="high" selected>High (preferred)</option><option value="medium">Medium+</option><option value="any">Any</option></select></div>
-      <div class="field"><label>Company stage</label><select id="pm-cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Location preference</label><select id="pm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
-      <div class="field"></div>
-    </div>
-    <div class="field" id="pm-jobtitle-field">
-      <label>Role title to search</label>
-      <input type="text" id="pm-jobtitle" placeholder="e.g. Senior Product Manager, Head of Product..." autocomplete="off" oninput="showAC('pm',this.value)" onkeydown="handleKey(event,'pm')" />
-      <div class="autocomplete-list" id="pm-ac-list" style="display:none;"></div>
-    </div>
-    <div class="field"><label>Specific angle (optional)</label><textarea id="pm-tctx" placeholder="e.g. API-first platforms, compliance workflow, 0-to-1 builds..."></textarea></div>
-    <div class="field">
-      <label>Already applied to (exclude from results)</label>
-      <input type="text" id="pm-applied" placeholder="e.g. Stripe, Plaid, Brex — comma separated" />
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
-    </div>
-    <div class="btn-row"><button class="btn" onclick="run('pm','targeting')">Run search</button></div>
-  </div>
-  <div id="pm-status-targeting" class="status-row"></div>
-  <div id="pm-output-targeting" class="output-area empty">Results will appear here...</div>
-</div>
 
-<!-- PM: POSITIONING -->
-<div id="pm-positioning" class="panel">
-  <div class="card">
-    <div class="slabel">Output needed</div>
-    <div class="chips">
-      <span class="chip on" data-g="pm-pos" onclick="tog(this)">Positioning statement</span>
-      <span class="chip" data-g="pm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
-      <span class="chip" data-g="pm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
-      <span class="chip" data-g="pm-pos" onclick="tog(this)">Differentiation critique</span>
+    <!-- PM: POSITIONING -->
+    <div id="pm-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="pm-pos" onclick="tog(this)">Differentiation critique</span>
+        </div>
+        <div class="field"><label>Target role</label><select id="pm-prole"><option value="sr-pm">Senior Product Manager</option><option value="head-pm">Head of Product</option><option value="pm-fintech">PM, Fintech / Regulated Industry</option><option value="fractional">Fractional PM</option></select></div>
+        <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="pm-pco" placeholder="e.g. Stripe, Plaid, Brex" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','positioning')">Build positioning</button></div>
+      </div>
+      <div id="pm-status-positioning" class="status-row"></div>
+      <div id="pm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
     </div>
-    <div class="field"><label>Target role</label><select id="pm-prole"><option value="sr-pm">Senior Product Manager</option><option value="head-pm">Head of Product</option><option value="pm-fintech">PM, Fintech / Regulated Industry</option><option value="fractional">Fractional PM</option></select></div>
-    <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="pm-pco" placeholder="e.g. Stripe, Plaid, Brex" /></div>
-    <div class="btn-row"><button class="btn" onclick="run('pm','positioning')">Build positioning</button></div>
-  </div>
-  <div id="pm-status-positioning" class="status-row"></div>
-  <div id="pm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
-</div>
 
-<!-- PM: OUTREACH -->
-<div id="pm-outreach" class="panel">
-  <div class="card">
-    <div class="slabel">Outreach type</div>
-    <div class="chips">
-      <span class="chip on" data-g="pm-out" onclick="tog(this)">Cold outreach</span>
-      <span class="chip" data-g="pm-out" onclick="tog(this)">Warm intro request</span>
-      <span class="chip" data-g="pm-out" onclick="tog(this)">Follow-up</span>
-      <span class="chip" data-g="pm-out" onclick="tog(this)">Hiring manager DM</span>
+    <!-- PM: OUTREACH -->
+    <div id="pm-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="pm-out" onclick="tog(this)">Hiring manager DM</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Target company</label><input type="text" id="pm-oco" placeholder="e.g. Brex, Marqeta, Affirm" /></div>
+          <div class="field"><label>Contact role</label><input type="text" id="pm-orole" placeholder="e.g. VP Product, Head of PM" /></div>
+        </div>
+        <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="pm-ohook" placeholder="e.g. I saw they just launched X..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="pm-status-outreach" class="status-row"></div>
+      <div id="pm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Target company</label><input type="text" id="pm-oco" placeholder="e.g. Brex, Marqeta, Affirm" /></div>
-      <div class="field"><label>Contact role</label><input type="text" id="pm-orole" placeholder="e.g. VP Product, Head of PM" /></div>
-    </div>
-    <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="pm-ohook" placeholder="e.g. I saw they just launched X..."></textarea></div>
-    <div class="btn-row"><button class="btn" onclick="run('pm','outreach')">Draft outreach</button></div>
-  </div>
-  <div id="pm-status-outreach" class="status-row"></div>
-  <div id="pm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
-</div>
 
-<!-- PM: INTERVIEW -->
-<div id="pm-interview" class="panel">
-  <div class="card">
-    <div class="slabel">Interview type</div>
-    <div class="chips">
-      <span class="chip on" data-g="pm-int" onclick="tog(this)">Product sense</span>
-      <span class="chip" data-g="pm-int" onclick="tog(this)">Execution and delivery</span>
-      <span class="chip" data-g="pm-int" onclick="tog(this)">Metrics and data</span>
-      <span class="chip" data-g="pm-int" onclick="tog(this)">Stakeholder management</span>
-      <span class="chip" data-g="pm-int" onclick="tog(this)">Leadership</span>
-      <span class="chip" data-g="pm-int" onclick="tog(this)">Technical depth</span>
+    <!-- PM: INTERVIEW -->
+    <div id="pm-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview type</div>
+        <div class="chips">
+          <span class="chip on" data-g="pm-int" onclick="tog(this)">Product sense</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Execution and delivery</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Metrics and data</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Stakeholder management</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Leadership</span>
+          <span class="chip" data-g="pm-int" onclick="tog(this)">Technical depth</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="pm-iq" placeholder="e.g. Tell me about a 0-to-1 product you launched..." /></div>
+        <div class="field"><label>Company context (optional)</label><input type="text" id="pm-ico" placeholder="e.g. Stripe, API-first payments infrastructure" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('pm','interview')">Generate prep</button></div>
+      </div>
+      <div id="pm-status-interview" class="status-row"></div>
+      <div id="pm-output-interview" class="output-area empty">Interview prep will appear here...</div>
     </div>
-    <div class="field"><label>Specific question (optional)</label><input type="text" id="pm-iq" placeholder="e.g. Tell me about a 0-to-1 product you launched..." /></div>
-    <div class="field"><label>Company context (optional)</label><input type="text" id="pm-ico" placeholder="e.g. Stripe, API-first payments infrastructure" /></div>
-    <div class="btn-row"><button class="btn" onclick="run('pm','interview')">Generate prep</button></div>
-  </div>
-  <div id="pm-status-interview" class="status-row"></div>
-  <div id="pm-output-interview" class="output-area empty">Interview prep will appear here...</div>
-</div>
 
-<!-- PM: PIPELINE -->
-<div id="pm-pipeline" class="panel">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div>
-        <div class="slabel" style="margin-bottom:0">Pipeline</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6" target="_blank">Open hub</a></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-sm" onclick="loadPipeline('pm')">Refresh</button>
-        <button class="btn btn-sm" onclick="togAdd('pm')">+ Add entry</button>
+    <!-- PM: PIPELINE -->
+    <div id="pm-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('pm')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('pm')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="pm-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Company</label><input type="text" id="pm-nc" placeholder="e.g. Plaid" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="pm-nr" placeholder="e.g. Senior PM" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="pm-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Stage</label><select id="pm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Reg. complexity</label><select id="pm-nreg"><option>High</option><option>Medium</option><option>Low</option></select></div>
+            <div class="field"><label>Source</label><select id="pm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
+          </div>
+          <div class="field"><label>Job URL (optional)</label><input type="text" id="pm-nu" placeholder="https://..." /></div>
+          <div class="field"><label>Why I win (optional)</label><textarea id="pm-nw" style="min-height:50px;"></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="pm-save-btn" onclick="saveEntry('pm')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('pm')">Cancel</button>
+          </div>
+          <div id="pm-save-status" class="status-row"></div>
+        </div>
+        <div id="pm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
       </div>
     </div>
-    <div class="add-form" id="pm-addform">
-      <hr class="divider">
-      <div class="row2">
-        <div class="field"><label>Company</label><input type="text" id="pm-nc" placeholder="e.g. Plaid" /></div>
-        <div class="field"><label>Role title</label><input type="text" id="pm-nr" placeholder="e.g. Senior PM" /></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Tier</label><select id="pm-nt"><option>A</option><option>B</option><option>C</option></select></div>
-        <div class="field"><label>Stage</label><select id="pm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Reg. complexity</label><select id="pm-nreg"><option>High</option><option>Medium</option><option>Low</option></select></div>
-        <div class="field"><label>Source</label><select id="pm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
-      </div>
-      <div class="field"><label>Job URL (optional)</label><input type="text" id="pm-nu" placeholder="https://..." /></div>
-      <div class="field"><label>Why I win (optional)</label><textarea id="pm-nw" style="min-height:50px;"></textarea></div>
-      <div class="btn-row">
-        <button class="btn" id="pm-save-btn" onclick="saveEntry('pm')">Save to Notion</button>
-        <button class="btn" style="border-color:transparent;" onclick="togAdd('pm')">Cancel</button>
-      </div>
-      <div id="pm-save-status" class="status-row"></div>
-    </div>
-    <div id="pm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
-  </div>
-</div>
-```
-
   </div><!-- /os-pm -->
+
 
   <!-- ════════════════════════════════════════════
        RM/DM OS
   ════════════════════════════════════════════ -->
-
   <div class="os-content" id="os-rmdm">
     <h1>Job Search Agent</h1>
     <div class="subtitle">
@@ -348,181 +339,177 @@ textarea { resize: vertical; min-height: 68px; }
       <span id="proxy-status-rmdm" class="badge">checking proxy...</span>
     </div>
 
-```
-<div class="tabs">
-  <button class="tab active" onclick="swTab('rmdm','targeting',this)">Target companies</button>
-  <button class="tab" onclick="swTab('rmdm','positioning',this)">Positioning</button>
-  <button class="tab" onclick="swTab('rmdm','outreach',this)">Outreach</button>
-  <button class="tab" onclick="swTab('rmdm','interview',this)">Interview prep</button>
-  <button class="tab" onclick="swTab('rmdm','pipeline',this)">Pipeline tracker</button>
-</div>
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('rmdm','targeting',this)">Target companies</button>
+      <button class="tab" onclick="swTab('rmdm','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('rmdm','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('rmdm','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('rmdm','pipeline',this)">Pipeline tracker</button>
+    </div>
 
-<!-- RMDM: TARGET -->
-<div id="rmdm-targeting" class="panel active">
-  <div class="card">
-    <div class="slabel">Industry focus</div>
-    <div class="chips">
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fintech / Financial services</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Enterprise SaaS</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Biotech / Life sciences</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Healthcare / Health tech</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Climate / Energy</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Oil &amp; gas</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Public sector / Govtech</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">DevOps / Platform engineering</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Clinical / Pharma software</span>
-      <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+    <!-- RMDM: TARGET -->
+    <div id="rmdm-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Industry focus</div>
+        <div class="chips">
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fintech / Financial services</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Enterprise SaaS</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Biotech / Life sciences</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Healthcare / Health tech</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Climate / Energy</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Oil &amp; gas</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Public sector / Govtech</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">DevOps / Platform engineering</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Clinical / Pharma software</span>
+          <span class="chip" data-g="rmdm-focus" onclick="tog(this)">Fractional / Cross-industry</span>
+        </div>
+        <div class="slabel">Mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy + live jobs</span>
+          <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy only</span>
+          <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Live job search only</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Regulatory environment</label><select id="rmdm-reg"><option value="high" selected>High (SOX / FDA / HIPAA)</option><option value="medium">Medium</option><option value="any">Any</option></select></div>
+          <div class="field"><label>Company stage</label><select id="rmdm-cstage"><option value="enterprise" selected>Enterprise</option><option value="growth">Growth-stage</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Location preference</label><select id="rmdm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
+          <div class="field"></div>
+        </div>
+        <div class="field" id="rmdm-jobtitle-field">
+          <label>Role title to search</label>
+          <input type="text" id="rmdm-jobtitle" placeholder="e.g. Senior Technical Release Manager, Delivery Manager..." autocomplete="off" oninput="showAC('rmdm',this.value)" onkeydown="handleKey(event,'rmdm')" />
+          <div class="autocomplete-list" id="rmdm-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field"><label>Specific angle (optional)</label><textarea id="rmdm-tctx" placeholder="e.g. CI/CD pipeline ownership, DORA metrics, multi-team program coordination, FDA compliance..."></textarea></div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="rmdm-applied" placeholder="e.g. Veeva, Workday, ServiceNow — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','targeting')">Run search</button></div>
+      </div>
+      <div id="rmdm-status-targeting" class="status-row"></div>
+      <div id="rmdm-output-targeting" class="output-area empty">Results will appear here...</div>
     </div>
-    <div class="slabel">Mode</div>
-    <div class="chips">
-      <span class="chip on" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy + live jobs</span>
-      <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Strategy only</span>
-      <span class="chip" data-g="rmdm-tmode" onclick="excl(this,'rmdm-tmode')">Live job search only</span>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Regulatory environment</label><select id="rmdm-reg"><option value="high" selected>High (SOX / FDA / HIPAA)</option><option value="medium">Medium</option><option value="any">Any</option></select></div>
-      <div class="field"><label>Company stage</label><select id="rmdm-cstage"><option value="enterprise" selected>Enterprise</option><option value="growth">Growth-stage</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label>Location preference</label><select id="rmdm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
-      <div class="field"></div>
-    </div>
-    <div class="field" id="rmdm-jobtitle-field">
-      <label>Role title to search</label>
-      <input type="text" id="rmdm-jobtitle" placeholder="e.g. Senior Technical Release Manager, Delivery Manager..." autocomplete="off" oninput="showAC('rmdm',this.value)" onkeydown="handleKey(event,'rmdm')" />
-      <div class="autocomplete-list" id="rmdm-ac-list" style="display:none;"></div>
-    </div>
-    <div class="field"><label>Specific angle (optional)</label><textarea id="rmdm-tctx" placeholder="e.g. CI/CD pipeline ownership, DORA metrics, multi-team program coordination, FDA compliance..."></textarea></div>
-    <div class="field">
-      <label>Already applied to (exclude from results)</label>
-      <input type="text" id="rmdm-applied" placeholder="e.g. Veeva, Workday, ServiceNow — comma separated" />
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
-    </div>
-    <div class="btn-row"><button class="btn" onclick="run('rmdm','targeting')">Run search</button></div>
-  </div>
-  <div id="rmdm-status-targeting" class="status-row"></div>
-  <div id="rmdm-output-targeting" class="output-area empty">Results will appear here...</div>
-</div>
 
-<!-- RMDM: POSITIONING -->
-<div id="rmdm-positioning" class="panel">
-  <div class="card">
-    <div class="slabel">Output needed</div>
-    <div class="chips">
-      <span class="chip on" data-g="rmdm-pos" onclick="tog(this)">Positioning statement</span>
-      <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
-      <span class="chip" data-g="rmdm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
-      <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Differentiation critique</span>
+    <!-- RMDM: POSITIONING -->
+    <div id="rmdm-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="rmdm-pos" onclick="tog(this)">Differentiation critique</span>
+        </div>
+        <div class="field"><label>Target role</label><select id="rmdm-prole">
+          <option value="trl">Technical Release Manager</option>
+          <option value="sr-trl">Senior Technical Release Manager</option>
+          <option value="dm">Delivery Manager</option>
+          <option value="tpm">Technical Program Manager (TPM)</option>
+          <option value="fractional">Fractional Release / Delivery Manager</option>
+        </select></div>
+        <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="rmdm-pco" placeholder="e.g. Veeva, Workday, ServiceNow" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','positioning')">Build positioning</button></div>
+      </div>
+      <div id="rmdm-status-positioning" class="status-row"></div>
+      <div id="rmdm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
     </div>
-    <div class="field"><label>Target role</label><select id="rmdm-prole">
-      <option value="trl">Technical Release Manager</option>
-      <option value="sr-trl">Senior Technical Release Manager</option>
-      <option value="dm">Delivery Manager</option>
-      <option value="tpm">Technical Program Manager (TPM)</option>
-      <option value="fractional">Fractional Release / Delivery Manager</option>
-    </select></div>
-    <div class="field"><label>Tailor for specific company? (optional)</label><input type="text" id="rmdm-pco" placeholder="e.g. Veeva, Workday, ServiceNow" /></div>
-    <div class="btn-row"><button class="btn" onclick="run('rmdm','positioning')">Build positioning</button></div>
-  </div>
-  <div id="rmdm-status-positioning" class="status-row"></div>
-  <div id="rmdm-output-positioning" class="output-area empty">Positioning output will appear here...</div>
-</div>
 
-<!-- RMDM: OUTREACH -->
-<div id="rmdm-outreach" class="panel">
-  <div class="card">
-    <div class="slabel">Outreach type</div>
-    <div class="chips">
-      <span class="chip on" data-g="rmdm-out" onclick="tog(this)">Cold outreach</span>
-      <span class="chip" data-g="rmdm-out" onclick="tog(this)">Warm intro request</span>
-      <span class="chip" data-g="rmdm-out" onclick="tog(this)">Follow-up</span>
-      <span class="chip" data-g="rmdm-out" onclick="tog(this)">Hiring manager DM</span>
+    <!-- RMDM: OUTREACH -->
+    <div id="rmdm-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="rmdm-out" onclick="tog(this)">Hiring manager DM</span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Target company</label><input type="text" id="rmdm-oco" placeholder="e.g. Veeva, Palantir, Workday" /></div>
+          <div class="field"><label>Contact role (their title)</label><input type="text" id="rmdm-orole" placeholder="e.g. VP Engineering, Director of DevOps" /></div>
+        </div>
+        <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="rmdm-ohook" placeholder="e.g. I saw their incident post-mortem blog, their compliance certification, their release cadence..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="rmdm-status-outreach" class="status-row"></div>
+      <div id="rmdm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Target company</label><input type="text" id="rmdm-oco" placeholder="e.g. Veeva, Palantir, Workday" /></div>
-      <div class="field"><label>Contact role (their title)</label><input type="text" id="rmdm-orole" placeholder="e.g. VP Engineering, Director of DevOps" /></div>
-    </div>
-    <div class="field"><label>Hook or insight to lead with (optional)</label><textarea id="rmdm-ohook" placeholder="e.g. I saw their incident post-mortem blog, their compliance certification, their release cadence..."></textarea></div>
-    <div class="btn-row"><button class="btn" onclick="run('rmdm','outreach')">Draft outreach</button></div>
-  </div>
-  <div id="rmdm-status-outreach" class="status-row"></div>
-  <div id="rmdm-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
-</div>
 
-<!-- RMDM: INTERVIEW -->
-<div id="rmdm-interview" class="panel">
-  <div class="card">
-    <div class="slabel">Interview type</div>
-    <div class="chips">
-      <span class="chip on" data-g="rmdm-int" onclick="tog(this)">Release scenario / go-no-go</span>
-      <span class="chip" data-g="rmdm-int" onclick="tog(this)">Post-release incident and RCA</span>
-      <span class="chip" data-g="rmdm-int" onclick="tog(this)">CI/CD and tooling depth</span>
-      <span class="chip" data-g="rmdm-int" onclick="tog(this)">Program delivery and coordination</span>
-      <span class="chip" data-g="rmdm-int" onclick="tog(this)">DORA metrics and process improvement</span>
-      <span class="chip" data-g="rmdm-int" onclick="tog(this)">Leadership / VP round</span>
+    <!-- RMDM: INTERVIEW -->
+    <div id="rmdm-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview type</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-int" onclick="tog(this)">Release scenario / go-no-go</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Post-release incident and RCA</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">CI/CD and tooling depth</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Program delivery and coordination</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">DORA metrics and process improvement</span>
+          <span class="chip" data-g="rmdm-int" onclick="tog(this)">Leadership / VP round</span>
+        </div>
+        <div class="slabel">Interview mode</div>
+        <div class="chips">
+          <span class="chip on" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Technical practitioner screen</span>
+          <span class="chip" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Leadership round (VP/Director)</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="rmdm-iq" placeholder="e.g. Walk me through a go/no-go decision where you pushed back..." /></div>
+        <div class="field"><label>Company context (optional)</label><input type="text" id="rmdm-ico" placeholder="e.g. Veeva Systems, life sciences SaaS, FDA-regulated" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('rmdm','interview')">Generate prep</button></div>
+      </div>
+      <div id="rmdm-status-interview" class="status-row"></div>
+      <div id="rmdm-output-interview" class="output-area empty">Interview prep will appear here...</div>
     </div>
-    <div class="slabel">Interview mode</div>
-    <div class="chips">
-      <span class="chip on" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Technical practitioner screen</span>
-      <span class="chip" data-g="rmdm-imode" onclick="excl(this,'rmdm-imode')">Leadership round (VP/Director)</span>
-    </div>
-    <div class="field"><label>Specific question (optional)</label><input type="text" id="rmdm-iq" placeholder="e.g. Walk me through a go/no-go decision where you pushed back..." /></div>
-    <div class="field"><label>Company context (optional)</label><input type="text" id="rmdm-ico" placeholder="e.g. Veeva Systems, life sciences SaaS, FDA-regulated" /></div>
-    <div class="btn-row"><button class="btn" onclick="run('rmdm','interview')">Generate prep</button></div>
-  </div>
-  <div id="rmdm-status-interview" class="status-row"></div>
-  <div id="rmdm-output-interview" class="output-area empty">Interview prep will appear here...</div>
-</div>
 
-<!-- RMDM: PIPELINE -->
-<div id="rmdm-pipeline" class="panel">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div>
-        <div class="slabel" style="margin-bottom:0">RM/DM Pipeline</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34862cd4a7c5814181c8c872da969822" target="_blank">Open hub</a></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-sm" onclick="loadPipeline('rmdm')">Refresh</button>
-        <button class="btn btn-sm" onclick="togAdd('rmdm')">+ Add entry</button>
+    <!-- RMDM: PIPELINE -->
+    <div id="rmdm-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">RM/DM Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34862cd4a7c5814181c8c872da969822" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('rmdm')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('rmdm')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="rmdm-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Company</label><input type="text" id="rmdm-nc" placeholder="e.g. Veeva Systems" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="rmdm-nr" placeholder="e.g. Senior Technical Release Manager" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Role type</label><select id="rmdm-ntype"><option>Technical Release Manager</option><option>Delivery Manager</option><option>TPM</option><option>Scrum Master</option><option>Fractional RM/DM</option><option>DevOps/Platform</option></select></div>
+            <div class="field"><label>Stage</label><select id="rmdm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="rmdm-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Regulatory env</label><select id="rmdm-nreg"><option>SEC/FINRA + SOX</option><option>FDA 21 CFR Part 11</option><option>HIPAA</option><option>FedRAMP/Govtech</option><option>GxP</option><option>Standard SaaS</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Source</label><select id="rmdm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
+            <div class="field"><label>Job URL (optional)</label><input type="text" id="rmdm-nu" placeholder="https://..." /></div>
+          </div>
+          <div class="field"><label>Why I win (optional)</label><textarea id="rmdm-nw" style="min-height:50px;"></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="rmdm-save-btn" onclick="saveEntry('rmdm')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('rmdm')">Cancel</button>
+          </div>
+          <div id="rmdm-save-status" class="status-row"></div>
+        </div>
+        <div id="rmdm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
       </div>
     </div>
-    <div class="add-form" id="rmdm-addform">
-      <hr class="divider">
-      <div class="row2">
-        <div class="field"><label>Company</label><input type="text" id="rmdm-nc" placeholder="e.g. Veeva Systems" /></div>
-        <div class="field"><label>Role title</label><input type="text" id="rmdm-nr" placeholder="e.g. Senior Technical Release Manager" /></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Role type</label><select id="rmdm-ntype"><option>Technical Release Manager</option><option>Delivery Manager</option><option>TPM</option><option>Scrum Master</option><option>Fractional RM/DM</option><option>DevOps/Platform</option></select></div>
-        <div class="field"><label>Stage</label><select id="rmdm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Tier</label><select id="rmdm-nt"><option>A</option><option>B</option><option>C</option></select></div>
-        <div class="field"><label>Regulatory env</label><select id="rmdm-nreg"><option>SEC/FINRA + SOX</option><option>FDA 21 CFR Part 11</option><option>HIPAA</option><option>FedRAMP/Govtech</option><option>GxP</option><option>Standard SaaS</option></select></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Source</label><select id="rmdm-nsrc"><option>Agent Search</option><option>LinkedIn</option><option>Referral</option><option>Direct</option><option>Job Board</option></select></div>
-        <div class="field"><label>Job URL (optional)</label><input type="text" id="rmdm-nu" placeholder="https://..." /></div>
-      </div>
-      <div class="field"><label>Why I win (optional)</label><textarea id="rmdm-nw" style="min-height:50px;"></textarea></div>
-      <div class="btn-row">
-        <button class="btn" id="rmdm-save-btn" onclick="saveEntry('rmdm')">Save to Notion</button>
-        <button class="btn" style="border-color:transparent;" onclick="togAdd('rmdm')">Cancel</button>
-      </div>
-      <div id="rmdm-save-status" class="status-row"></div>
-    </div>
-    <div id="rmdm-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
-  </div>
-</div>
-```
-
   </div><!-- /os-rmdm -->
 
   <!-- ════════════════════════════════════════════
        NONPROFIT / SOCIAL IMPACT OS
   ════════════════════════════════════════════ -->
-
   <div class="os-content" id="os-np">
     <h1>Job Search Agent</h1>
     <div class="subtitle">
@@ -532,211 +519,208 @@ textarea { resize: vertical; min-height: 68px; }
       <span id="proxy-status-np" class="badge">checking proxy...</span>
     </div>
 
-```
-<div class="tabs">
-  <button class="tab active" onclick="swTab('np','targeting',this)">Find opportunities</button>
-  <button class="tab" onclick="swTab('np','positioning',this)">Positioning</button>
-  <button class="tab" onclick="swTab('np','outreach',this)">Outreach</button>
-  <button class="tab" onclick="swTab('np','interview',this)">Interview prep</button>
-  <button class="tab" onclick="swTab('np','pipeline',this)">Pipeline tracker</button>
-</div>
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('np','targeting',this)">Find opportunities</button>
+      <button class="tab" onclick="swTab('np','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('np','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('np','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('np','pipeline',this)">Pipeline tracker</button>
+    </div>
 
-<!-- NP: FIND OPPORTUNITIES -->
-<div id="np-targeting" class="panel active">
-  <div class="card">
-    <div class="slabel">Mission area</div>
-    <div class="chips">
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Education</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Climate / Environment</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Global Health</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Economic Mobility</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Civic Tech / Govtech</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Human Rights</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Food Security</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Arts / Culture</span>
-      <span class="chip" data-g="np-mission" onclick="tog(this)">Cross-mission / Any</span>
-    </div>
-    <div class="slabel">Role type</div>
-    <div class="chips">
-      <span class="chip" data-g="np-role" onclick="tog(this)">Product Manager</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">Scrum Master / Agile Coach</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">Release Manager</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">Delivery Manager</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">Director of Technology</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">VP of Technology</span>
-      <span class="chip" data-g="np-role" onclick="tog(this)">Fractional / Embedded</span>
-    </div>
-    <div class="slabel">Engagement type</div>
-    <div class="chips">
-      <span class="chip on" data-g="np-engage" onclick="tog(this)">Paid roles</span>
-      <span class="chip on" data-g="np-engage" onclick="tog(this)">Volunteer <span class="vol-badge">💵🚫</span></span>
-      <span class="chip on" data-g="np-engage" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
-      <span class="chip" data-g="np-engage" onclick="tog(this)">Contract</span>
-      <span class="chip" data-g="np-engage" onclick="tog(this)">Fractional retainer</span>
-    </div>
-    <div class="slabel">Job boards to search</div>
-    <div class="chips">
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">Idealist</span>
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">Tech Jobs for Good</span>
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">80,000 Hours</span>
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">WorkForGood</span>
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
-      <span class="chip on" data-g="np-boards" onclick="tog(this)">LinkedIn Nonprofit</span>
-    </div>
-    <div class="row2">
-      <div class="field">
-        <label>Org size</label>
-        <select id="np-orgsize">
-          <option value="any" selected>Any size</option>
-          <option value="small">Small (under 50 staff)</option>
-          <option value="mid">Mid-size (50-500)</option>
-          <option value="large">Large (500+)</option>
-        </select>
+    <!-- NP: FIND OPPORTUNITIES -->
+    <div id="np-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Mission area</div>
+        <div class="chips">
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Education</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Climate / Environment</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Global Health</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Economic Mobility</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Civic Tech / Govtech</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Human Rights</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Food Security</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Arts / Culture</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Cross-mission / Any</span>
+        </div>
+        <div class="slabel">Role type</div>
+        <div class="chips">
+          <span class="chip" data-g="np-role" onclick="tog(this)">Product Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Scrum Master / Agile Coach</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Release Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Delivery Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Director of Technology</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">VP of Technology</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Fractional / Embedded</span>
+        </div>
+        <div class="slabel">Engagement type</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Paid roles</span>
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Volunteer <span class="vol-badge">💵🚫</span></span>
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
+          <span class="chip" data-g="np-engage" onclick="tog(this)">Contract</span>
+          <span class="chip" data-g="np-engage" onclick="tog(this)">Fractional retainer</span>
+        </div>
+        <div class="slabel">Job boards to search</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Idealist</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Tech Jobs for Good</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">80,000 Hours</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">WorkForGood</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">LinkedIn Nonprofit</span>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Org size</label>
+            <select id="np-orgsize">
+              <option value="any" selected>Any size</option>
+              <option value="small">Small (under 50 staff)</option>
+              <option value="mid">Mid-size (50-500)</option>
+              <option value="large">Large (500+)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Location preference</label>
+            <select id="np-location">
+              <option value="remote" selected>Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="bay-area">Bay Area</option>
+              <option value="any">Any</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="np-jobtitle-field">
+          <label>Role title to search (optional — overrides role type chips above)</label>
+          <input type="text" id="np-jobtitle" placeholder="e.g. Director of Product, Head of Technology..." autocomplete="off" oninput="showAC('np',this.value)" onkeydown="handleKey(event,'np')" />
+          <div class="autocomplete-list" id="np-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field">
+          <label>Why this matters to you (optional — personalizes outreach)</label>
+          <textarea id="np-why" placeholder="e.g. I want to apply my fintech delivery background to orgs modernizing economic access tools..."></textarea>
+        </div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="np-applied" placeholder="e.g. Code for America, Feeding America — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Orgs you've already applied to or engaged with — agent will skip these.</div>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="run('np','targeting')">Search opportunities</button></div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.5;">
+          <span class="vol-badge" style="font-size:10px;">💵🚫</span> indicates volunteer or unpaid opportunities. Catchafire engagements are project-based, typically 5-15 hours, and can lead to paid roles or board positions.
+        </div>
       </div>
-      <div class="field">
-        <label>Location preference</label>
-        <select id="np-location">
-          <option value="remote" selected>Remote</option>
-          <option value="hybrid">Hybrid</option>
-          <option value="bay-area">Bay Area</option>
-          <option value="any">Any</option>
-        </select>
-      </div>
+      <div id="np-status-targeting" class="status-row"></div>
+      <div id="np-output-targeting" class="output-area empty">Opportunities will appear here...</div>
     </div>
-    <div class="field" id="np-jobtitle-field">
-      <label>Role title to search (optional — overrides role type chips above)</label>
-      <input type="text" id="np-jobtitle" placeholder="e.g. Director of Product, Head of Technology..." autocomplete="off" oninput="showAC('np',this.value)" onkeydown="handleKey(event,'np')" />
-      <div class="autocomplete-list" id="np-ac-list" style="display:none;"></div>
-    </div>
-    <div class="field">
-      <label>Why this matters to you (optional — personalizes outreach)</label>
-      <textarea id="np-why" placeholder="e.g. I want to apply my fintech delivery background to orgs modernizing economic access tools..."></textarea>
-    </div>
-    <div class="field">
-      <label>Already applied to (exclude from results)</label>
-      <input type="text" id="np-applied" placeholder="e.g. Code for America, Feeding America — comma separated" />
-      <div style="font-size:11px;color:var(--text3);margin-top:4px;">Orgs you've already applied to or engaged with — agent will skip these.</div>
-    </div>
-    <div class="btn-row"><button class="btn" onclick="run('np','targeting')">Search opportunities</button></div>
-    <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.5;">
-      <span class="vol-badge" style="font-size:10px;">💵🚫</span> indicates volunteer or unpaid opportunities. Catchafire engagements are project-based, typically 5-15 hours, and can lead to paid roles or board positions.
-    </div>
-  </div>
-  <div id="np-status-targeting" class="status-row"></div>
-  <div id="np-output-targeting" class="output-area empty">Opportunities will appear here...</div>
-</div>
 
-<!-- NP: POSITIONING -->
-<div id="np-positioning" class="panel">
-  <div class="card">
-    <div class="slabel">Output needed</div>
-    <div class="chips">
-      <span class="chip on" data-g="np-pos" onclick="tog(this)">Positioning statement</span>
-      <span class="chip" data-g="np-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
-      <span class="chip" data-g="np-pos" onclick="tog(this)">3 signature wins (STAR)</span>
-      <span class="chip" data-g="np-pos" onclick="tog(this)">Mission alignment narrative</span>
+    <!-- NP: POSITIONING -->
+    <div id="np-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">Mission alignment narrative</span>
+        </div>
+        <div class="field"><label>Target role type</label><select id="np-prole">
+          <option value="pm">Product Manager</option>
+          <option value="sm">Scrum Master / Agile Coach</option>
+          <option value="rm">Release / Delivery Manager</option>
+          <option value="dir">Director of Technology</option>
+          <option value="vp">VP of Technology</option>
+          <option value="fractional">Fractional / Embedded</option>
+        </select></div>
+        <div class="field"><label>Mission area or specific org (optional)</label><input type="text" id="np-pco" placeholder="e.g. Code for America, climate tech nonprofit, global health NGO" /></div>
+        <div class="field"><label>Why this matters to you (helps the agent write authentic mission alignment)</label><textarea id="np-pwhy" placeholder="e.g. After years in financial services I want to bring the same delivery rigor to orgs that don't have access to it..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','positioning')">Build positioning</button></div>
+      </div>
+      <div id="np-status-positioning" class="status-row"></div>
+      <div id="np-output-positioning" class="output-area empty">Positioning output will appear here...</div>
     </div>
-    <div class="field"><label>Target role type</label><select id="np-prole">
-      <option value="pm">Product Manager</option>
-      <option value="sm">Scrum Master / Agile Coach</option>
-      <option value="rm">Release / Delivery Manager</option>
-      <option value="dir">Director of Technology</option>
-      <option value="vp">VP of Technology</option>
-      <option value="fractional">Fractional / Embedded</option>
-    </select></div>
-    <div class="field"><label>Mission area or specific org (optional)</label><input type="text" id="np-pco" placeholder="e.g. Code for America, climate tech nonprofit, global health NGO" /></div>
-    <div class="field"><label>Why this matters to you (helps the agent write authentic mission alignment)</label><textarea id="np-pwhy" placeholder="e.g. After years in financial services I want to bring the same delivery rigor to orgs that don't have access to it..."></textarea></div>
-    <div class="btn-row"><button class="btn" onclick="run('np','positioning')">Build positioning</button></div>
-  </div>
-  <div id="np-status-positioning" class="status-row"></div>
-  <div id="np-output-positioning" class="output-area empty">Positioning output will appear here...</div>
-</div>
 
-<!-- NP: OUTREACH -->
-<div id="np-outreach" class="panel">
-  <div class="card">
-    <div class="slabel">Outreach type</div>
-    <div class="chips">
-      <span class="chip on" data-g="np-out" onclick="tog(this)">Cold outreach</span>
-      <span class="chip" data-g="np-out" onclick="tog(this)">Warm intro request</span>
-      <span class="chip" data-g="np-out" onclick="tog(this)">Follow-up</span>
-      <span class="chip" data-g="np-out" onclick="tog(this)">Catchafire project proposal <span class="vol-badge">💵🚫</span></span>
+    <!-- NP: OUTREACH -->
+    <div id="np-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Catchafire project proposal <span class="vol-badge">💵🚫</span></span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Organization</label><input type="text" id="np-oco" placeholder="e.g. Code for America, Feeding America" /></div>
+          <div class="field"><label>Contact role (their title)</label><input type="text" id="np-orole" placeholder="e.g. Executive Director, Director of Technology" /></div>
+        </div>
+        <div class="field"><label>Hook or insight (optional)</label><textarea id="np-ohook" placeholder="e.g. I saw their annual report mentioned struggles with digital service delivery..."></textarea></div>
+        <div class="field"><label>Why this mission matters to you</label><textarea id="np-owhycare" placeholder="Be specific — nonprofits can tell the difference between genuine interest and resume building..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="np-status-outreach" class="status-row"></div>
+      <div id="np-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
     </div>
-    <div class="row2">
-      <div class="field"><label>Organization</label><input type="text" id="np-oco" placeholder="e.g. Code for America, Feeding America" /></div>
-      <div class="field"><label>Contact role (their title)</label><input type="text" id="np-orole" placeholder="e.g. Executive Director, Director of Technology" /></div>
-    </div>
-    <div class="field"><label>Hook or insight (optional)</label><textarea id="np-ohook" placeholder="e.g. I saw their annual report mentioned struggles with digital service delivery..."></textarea></div>
-    <div class="field"><label>Why this mission matters to you</label><textarea id="np-owhycare" placeholder="Be specific — nonprofits can tell the difference between genuine interest and resume building..."></textarea></div>
-    <div class="btn-row"><button class="btn" onclick="run('np','outreach')">Draft outreach</button></div>
-  </div>
-  <div id="np-status-outreach" class="status-row"></div>
-  <div id="np-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
-</div>
 
-<!-- NP: INTERVIEW -->
-<div id="np-interview" class="panel">
-  <div class="card">
-    <div class="slabel">Interview focus</div>
-    <div class="chips">
-      <span class="chip on" data-g="np-int" onclick="tog(this)">Mission alignment and values fit</span>
-      <span class="chip" data-g="np-int" onclick="tog(this)">Product or delivery impact</span>
-      <span class="chip" data-g="np-int" onclick="tog(this)">Resource-constrained execution</span>
-      <span class="chip" data-g="np-int" onclick="tog(this)">Stakeholder management (board, volunteers)</span>
-      <span class="chip" data-g="np-int" onclick="tog(this)">Technical leadership in low-tech org</span>
+    <!-- NP: INTERVIEW -->
+    <div id="np-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview focus</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-int" onclick="tog(this)">Mission alignment and values fit</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Product or delivery impact</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Resource-constrained execution</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Stakeholder management (board, volunteers)</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Technical leadership in low-tech org</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="np-iq" placeholder="e.g. Why are you leaving fintech for nonprofit work?" /></div>
+        <div class="field"><label>Organization context (optional)</label><input type="text" id="np-ico" placeholder="e.g. Code for America, civic tech, government digital services" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','interview')">Generate prep</button></div>
+      </div>
+      <div id="np-status-interview" class="status-row"></div>
+      <div id="np-output-interview" class="output-area empty">Interview prep will appear here...</div>
     </div>
-    <div class="field"><label>Specific question (optional)</label><input type="text" id="np-iq" placeholder="e.g. Why are you leaving fintech for nonprofit work?" /></div>
-    <div class="field"><label>Organization context (optional)</label><input type="text" id="np-ico" placeholder="e.g. Code for America, civic tech, government digital services" /></div>
-    <div class="btn-row"><button class="btn" onclick="run('np','interview')">Generate prep</button></div>
-  </div>
-  <div id="np-status-interview" class="status-row"></div>
-  <div id="np-output-interview" class="output-area empty">Interview prep will appear here...</div>
-</div>
 
-<!-- NP: PIPELINE -->
-<div id="np-pipeline" class="panel">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div>
-        <div class="slabel" style="margin-bottom:0">Nonprofit Pipeline</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35" target="_blank">Open hub</a></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-sm" onclick="loadPipeline('np')">Refresh</button>
-        <button class="btn btn-sm" onclick="togAdd('np')">+ Add entry</button>
+    <!-- NP: PIPELINE -->
+    <div id="np-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">Nonprofit Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('np')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('np')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="np-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Organization</label><input type="text" id="np-nc" placeholder="e.g. Code for America" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="np-nr" placeholder="e.g. Senior PM" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Role type</label><select id="np-ntype"><option>Product Manager</option><option>Scrum Master / Agile Coach</option><option>Release Manager</option><option>Delivery Manager</option><option>Director of Technology</option><option>VP of Technology</option><option>Fractional / Embedded</option></select></div>
+            <div class="field"><label>Engagement type</label><select id="np-nengage"><option>Paid</option><option>Volunteer - Catchafire</option><option>Volunteer - Other</option><option>Contract</option><option>Fractional Retainer</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Mission area</label><select id="np-nmission"><option>Education</option><option>Climate / Environment</option><option>Global Health</option><option>Economic Mobility</option><option>Civic Tech / Govtech</option><option>Human Rights</option><option>Food Security</option><option>Arts / Culture</option><option>Cross-mission</option></select></div>
+            <div class="field"><label>Stage</label><select id="np-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer / Accepted</option><option>Closed</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="np-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Source</label><select id="np-nsrc"><option>Idealist</option><option>Tech Jobs for Good</option><option>80000 Hours</option><option>WorkForGood</option><option>Catchafire</option><option>LinkedIn</option><option>Referral</option><option>Direct</option></select></div>
+          </div>
+          <div class="field"><label>Job / opportunity URL</label><input type="text" id="np-nu" placeholder="https://..." /></div>
+          <div class="field"><label>Why this matters to me</label><textarea id="np-nw" style="min-height:50px;" placeholder="My personal motivation for this org..."></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="np-save-btn" onclick="saveEntry('np')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('np')">Cancel</button>
+          </div>
+          <div id="np-save-status" class="status-row"></div>
+        </div>
+        <div id="np-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
       </div>
     </div>
-    <div class="add-form" id="np-addform">
-      <hr class="divider">
-      <div class="row2">
-        <div class="field"><label>Organization</label><input type="text" id="np-nc" placeholder="e.g. Code for America" /></div>
-        <div class="field"><label>Role title</label><input type="text" id="np-nr" placeholder="e.g. Senior PM" /></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Role type</label><select id="np-ntype"><option>Product Manager</option><option>Scrum Master / Agile Coach</option><option>Release Manager</option><option>Delivery Manager</option><option>Director of Technology</option><option>VP of Technology</option><option>Fractional / Embedded</option></select></div>
-        <div class="field"><label>Engagement type</label><select id="np-nengage"><option>Paid</option><option>Volunteer - Catchafire</option><option>Volunteer - Other</option><option>Contract</option><option>Fractional Retainer</option></select></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Mission area</label><select id="np-nmission"><option>Education</option><option>Climate / Environment</option><option>Global Health</option><option>Economic Mobility</option><option>Civic Tech / Govtech</option><option>Human Rights</option><option>Food Security</option><option>Arts / Culture</option><option>Cross-mission</option></select></div>
-        <div class="field"><label>Stage</label><select id="np-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer / Accepted</option><option>Closed</option></select></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Tier</label><select id="np-nt"><option>A</option><option>B</option><option>C</option></select></div>
-        <div class="field"><label>Source</label><select id="np-nsrc"><option>Idealist</option><option>Tech Jobs for Good</option><option>80000 Hours</option><option>WorkForGood</option><option>Catchafire</option><option>LinkedIn</option><option>Referral</option><option>Direct</option></select></div>
-      </div>
-      <div class="field"><label>Job / opportunity URL</label><input type="text" id="np-nu" placeholder="https://..." /></div>
-      <div class="field"><label>Why this matters to me</label><textarea id="np-nw" style="min-height:50px;" placeholder="My personal motivation for this org..."></textarea></div>
-      <div class="btn-row">
-        <button class="btn" id="np-save-btn" onclick="saveEntry('np')">Save to Notion</button>
-        <button class="btn" style="border-color:transparent;" onclick="togAdd('np')">Cancel</button>
-      </div>
-      <div id="np-save-status" class="status-row"></div>
-    </div>
-    <div id="np-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
-  </div>
-</div>
-```
-
   </div><!-- /os-np -->
 
 </div><!-- /wrap -->
