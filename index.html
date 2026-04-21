@@ -137,6 +137,16 @@
     .job-table-divider { border: none; border-top: 0.5px solid var(--border); margin: 16px 0 8px; }
     .job-strategy-text { font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
     .job-empty { font-size: 13px; color: var(--text3); font-style: italic; padding: 12px 0; }
+    .jt-track { width: 9%; }
+    .jt-analyze { width: 9%; }
+    .jt-track-cell { background: var(--bg2); padding: 12px 14px !important; }
+    .jt-track-form { display: flex; flex-direction: column; gap: 10px; }
+    .jt-track-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .jt-track-field { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+    .jt-track-field label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); }
+    .jt-track-field select { font-size: 13px; padding: 6px 8px; }
+    .jt-track-actions { display: flex; align-items: center; flex-wrap: wrap; }
+    .jt-track-status { font-size: 12px; }
     /* Override output-area for job table mode */
     .output-area { white-space: normal; }
     .lnk { font-size: 12px; color: var(--text2); text-decoration: none; }
@@ -1086,21 +1096,39 @@
     if (!jobs.length) {
       html += '<div class="job-empty">No confirmed live postings found. Try Strategy only mode or check careers pages directly.</div>';
     } else {
-      html += '<div class="job-table-header">Live Job Leads — click Analyze for why-you-win detail on any role</div>';
-      html += '<table class="job-results-table"><thead><tr><th>Company</th><th>Role</th><th>Location</th><th>Link</th><th>Analysis</th></tr></thead><tbody>';
+      html += '<div class="job-table-header">Live Job Leads &mdash; Analyze any role or add it directly to your Notion pipeline</div>';
+      html += '<table class="job-results-table"><thead><tr><th>Company</th><th>Role</th><th>Location</th><th>Link</th><th>Analyze</th><th>Track</th></tr></thead><tbody>';
       jobs.forEach(function(job, idx) {
-        var safeCompany = (job.company || '').replace(/</g,'&lt;');
-        var safeRole    = (job.role || '').replace(/</g,'&lt;');
-        var safeLoc     = (job.location || '').replace(/</g,'&lt;');
-        var safeUrl     = job.url || '';
+        var safeCompany = (job.company || '').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+        var safeRole    = (job.role || '').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+        var safeLoc     = (job.location || '').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+        var safeUrl     = (job.url || '').replace(/"/g,'&quot;');
         html += '<tr id="job-row-' + os + '-' + idx + '">';
         html += '<td class="jt-company">' + safeCompany + '</td>';
         html += '<td class="jt-role">' + safeRole + '</td>';
         html += '<td class="jt-loc">' + safeLoc + '</td>';
         html += '<td class="jt-link">' + (safeUrl ? '<a href="' + safeUrl + '" target="_blank" class="lnk">View</a>' : '') + '</td>';
         html += '<td class="jt-analyze"><button class="btn btn-sm analyze-btn" data-os="' + os + '" data-idx="' + idx + '" data-company="' + safeCompany + '" data-role="' + safeRole + '" data-loc="' + safeLoc + '" onclick="analyzeJob(this.dataset.os,this.dataset.idx,this.dataset.company,this.dataset.role,this.dataset.loc)">Analyze</button></td>';
+        html += '<td class="jt-track"><button class="btn btn-sm track-btn" data-os="' + os + '" data-idx="' + idx + '" data-company="' + safeCompany + '" data-role="' + safeRole + '" data-url="' + safeUrl + '" onclick="toggleTrackForm(this.dataset.os,this.dataset.idx,this.dataset.company,this.dataset.role,this.dataset.url)">+ Track</button></td>';
         html += '</tr>';
-        html += '<tr id="job-analysis-' + os + '-' + idx + '" style="display:none"><td colspan="5" class="jt-analysis-cell"><div class="jt-analysis-content" id="job-analysis-text-' + os + '-' + idx + '">Loading...</div></td></tr>';
+        // Analysis expansion row
+        html += '<tr id="job-analysis-' + os + '-' + idx + '" style="display:none"><td colspan="6" class="jt-analysis-cell"><div class="jt-analysis-content" id="job-analysis-text-' + os + '-' + idx + '">Loading...</div></td></tr>';
+        // Track mini-form row
+        var tierOpts = ['A','B','C'].map(function(t){return '<option value="'+t+'">Tier '+t+'</option>';}).join('');
+        var stageOpts = ['Targeting','Researching','Outreach Sent','Responded','Screening','Interviewing','Applied','Offer','Closed'].map(function(s){return '<option value="'+s+'"'+(s==='Targeting'?' selected':'')+'>'+s+'</option>';}).join('');
+        var regOpts = ['High','Medium','Low'].map(function(r){return '<option value="'+r+'"'+(r==='Medium'?' selected':'')+'>'+r+'</option>';}).join('');
+        html += '<tr id="job-track-' + os + '-' + idx + '" style="display:none"><td colspan="6" class="jt-track-cell">';
+        html += '<div class="jt-track-form">';
+        html += '<div class="jt-track-row">';
+        html += '<div class="jt-track-field"><label>Tier</label><select id="track-tier-' + os + '-' + idx + '">' + tierOpts + '</select></div>';
+        html += '<div class="jt-track-field"><label>Stage</label><select id="track-stage-' + os + '-' + idx + '">' + stageOpts + '</select></div>';
+        html += '<div class="jt-track-field"><label>Reg. complexity</label><select id="track-reg-' + os + '-' + idx + '">' + regOpts + '</select></div>';
+        html += '</div>';
+        html += '<div class="jt-track-actions">';
+        html += '<button class="btn btn-sm" style="background:var(--accent-bg);color:var(--accent-text);border-color:var(--accent)" data-os="' + os + '" data-idx="' + idx + '" data-company="' + safeCompany + '" data-role="' + safeRole + '" data-url="' + safeUrl + '" onclick="saveToTracker(this.dataset.os,this.dataset.idx,this.dataset.company,this.dataset.role,this.dataset.url)">Save to Notion</button>';
+        html += '<button class="btn btn-sm" style="border-color:transparent;margin-left:6px" data-os="' + os + '" data-idx="' + idx + '" onclick="toggleTrackForm(this.dataset.os,this.dataset.idx,null,null,null)">Cancel</button>';
+        html += '<span id="track-status-' + os + '-' + idx + '" class="jt-track-status"></span>';
+        html += '</div></div></td></tr>';
       });
       html += '</tbody></table>';
     }
@@ -1145,6 +1173,56 @@
       textEl.textContent = 'Analysis failed: ' + err.message;
     }
     if (btn) btn.disabled = false;
+  }
+
+  function toggleTrackForm(os, idx, company, role, url) {
+    var row = document.getElementById('job-track-' + os + '-' + idx);
+    if (!row) return;
+    var isOpen = row.style.display !== 'none';
+    if (isOpen) {
+      row.style.display = 'none';
+    } else {
+      row.style.display = 'table-row';
+    }
+  }
+
+  async function saveToTracker(os, idx, company, role, url) {
+    var statusEl = document.getElementById('track-status-' + os + '-' + idx);
+    var tier  = document.getElementById('track-tier-'  + os + '-' + idx) ? document.getElementById('track-tier-'  + os + '-' + idx).value : 'B';
+    var stage = document.getElementById('track-stage-' + os + '-' + idx) ? document.getElementById('track-stage-' + os + '-' + idx).value : 'Targeting';
+    var reg   = document.getElementById('track-reg-'   + os + '-' + idx) ? document.getElementById('track-reg-'   + os + '-' + idx).value : 'Medium';
+    var today = new Date().toISOString().split('T')[0];
+
+    if (statusEl) statusEl.innerHTML = '<span style="color:var(--text3);font-size:12px;margin-left:8px">Saving...</span>';
+
+    var dbId = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
+    var hub  = os === 'pm' ? PM_HUB : os === 'rmdm' ? RMDM_HUB : NP_HUB;
+
+    var entryLines;
+    if (os === 'rmdm') {
+      entryLines = 'Company: ' + company + ', Role Title: ' + role + ', Tier: ' + tier + ', Stage: ' + stage + ', Regulatory Environment: ' + reg + ', Source: Agent Search' + (url ? ', Job URL: ' + url : '') + ', Last Activity: ' + today;
+    } else if (os === 'np') {
+      entryLines = 'Organization: ' + company + ', Role Title: ' + role + ', Engagement Type: Paid, Tier: ' + tier + ', Stage: ' + stage + ', Source: Agent Search' + (url ? ', Job URL: ' + url : '') + ', Last Activity: ' + today;
+    } else {
+      entryLines = 'Company: ' + company + ', Role: ' + role + ', Tier: ' + tier + ', Stage: ' + stage + ', Regulatory Complexity: ' + reg + ', Source: Agent Search' + (url ? ', Job URL: ' + url : '') + ', Last Activity: ' + today;
+    }
+
+    var ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
+    var prompt = 'Add this entry to the Notion database (collection ID: ' + dbId + '): ' + entryLines + '. Use the notion create-pages tool and confirm with "saved successfully".';
+
+    try {
+      var result = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt, false);
+      if (result.toLowerCase().includes('saved')) {
+        if (statusEl) statusEl.innerHTML = '<span style="color:var(--green-text);font-size:12px;margin-left:8px">Saved to Notion <a class="lnk" href="' + hub + '" target="_blank">View</a></span>';
+        // Change Track button to checkmark
+        var trackBtn = document.querySelector('#job-row-' + os + '-' + idx + ' .track-btn');
+        if (trackBtn) { trackBtn.textContent = 'Tracked'; trackBtn.disabled = true; trackBtn.style.opacity = '0.5'; }
+      } else {
+        if (statusEl) statusEl.innerHTML = '<span style="color:var(--amber-text);font-size:12px;margin-left:8px">Check <a class="lnk" href="' + hub + '" target="_blank">Notion</a> to verify</span>';
+      }
+    } catch(err) {
+      if (statusEl) statusEl.innerHTML = '<span style="color:var(--red-text);font-size:12px;margin-left:8px">Error: ' + err.message + '</span>';
+    }
   }
 
   async function saveEntry(os) {
