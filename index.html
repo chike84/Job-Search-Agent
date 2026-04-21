@@ -753,7 +753,8 @@
 </div><!-- /wrap -->
 
 <script>
-  const PROXY_URL    = 'https://job-search-agent-tau.vercel.app/api/proxy';
+  const PROXY_URL       = 'https://job-search-agent-tau.vercel.app/api/proxy';
+  const NOTION_SAVE_URL = 'https://job-search-agent-tau.vercel.app/api/notion-save';
   const PM_NOTION_DB   = '45ecc169-634b-49c2-9042-9e4fee1c0750';
   const RMDM_NOTION_DB = '831f5122-169b-462e-bb34-fb55a4400582';
   const NP_NOTION_DB   = '8927f682-8c46-4c46-b54e-fe9280229c05';
@@ -1207,22 +1208,28 @@
       entryLines = 'Company: ' + company + ', Role: ' + role + ', Tier: ' + tier + ', Stage: ' + stage + ', Regulatory Complexity: ' + reg + ', Source: Agent Search' + (url ? ', Job URL: ' + url : '') + ', Last Activity: ' + today;
     }
 
-    var ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
-    var prompt = 'Add this entry to the Notion database (collection ID: ' + dbId + '): ' + entryLines + '. Use the notion create-pages tool and confirm with "saved successfully".';
-
     try {
-      var result = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt, false);
-      if (result.toLowerCase().includes('saved')) {
-        if (statusEl) statusEl.innerHTML = '<span style="color:var(--green-text);font-size:12px;margin-left:8px">Saved to Notion <a class="lnk" href="' + hub + '" target="_blank">View</a></span>';
-        // Change Track button to checkmark
-        var trackBtn = document.querySelector('#job-row-' + os + '-' + idx + ' .track-btn');
-        if (trackBtn) { trackBtn.textContent = 'Tracked'; trackBtn.disabled = true; trackBtn.style.opacity = '0.5'; }
-      } else {
-        if (statusEl) statusEl.innerHTML = '<span style="color:var(--amber-text);font-size:12px;margin-left:8px">Check <a class="lnk" href="' + hub + '" target="_blank">Notion</a> to verify</span>';
-      }
+      await notionSave(os, company, role, tier, stage, reg, url);
+      if (statusEl) statusEl.innerHTML = '<span style="color:var(--green-text);font-size:12px;margin-left:8px">Saved ✔ <a class="lnk" href="' + hub + '" target="_blank">View in Notion</a></span>';
+      var trackBtn = document.querySelector('#job-row-' + os + '-' + idx + ' .track-btn');
+      if (trackBtn) { trackBtn.textContent = 'Tracked ✔'; trackBtn.disabled = true; trackBtn.style.opacity = '0.6'; }
     } catch(err) {
       if (statusEl) statusEl.innerHTML = '<span style="color:var(--red-text);font-size:12px;margin-left:8px">Error: ' + err.message + '</span>';
     }
+  }
+
+  async function notionSave(os, company, role, tier, stage, reg, url) {
+    var today = new Date().toISOString().split('T')[0];
+    var res = await fetch(NOTION_SAVE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ os: os, company: company, role: role, tier: tier, stage: stage, reg: reg, url: url, today: today }),
+    });
+    if (!res.ok) {
+      var err = await res.json().catch(() => ({}));
+      throw new Error(err.error || ('Notion save failed: ' + res.status));
+    }
+    return await res.json();
   }
 
   async function saveEntry(os) {
@@ -1246,13 +1253,16 @@
       entryLines = 'Organization: ' + co + ', Role Title: ' + (gv('np-nr') || 'Senior PM') + ', Role Type: ' + gv('np-ntype') + ', Engagement Type: ' + gv('np-nengage') + ', Mission Area: ' + gv('np-nmission') + ', Tier: ' + gv('np-nt') + ', Stage: ' + gv('np-ns') + ', Source: ' + gv('np-nsrc') + (gv('np-nu') ? ', Job URL: ' + gv('np-nu') : '') + (gv('np-nw') ? ', Why This Matters to Me: ' + gv('np-nw') : '') + ', Last Activity: ' + today;
     }
 
-    var prompt = 'Add this entry to the Notion database (collection ID: ' + dbId + '): ' + entryLines + '. Use the notion create-pages tool and confirm with "saved successfully".';
+    var co   = gv(os + '-nc');
+    var role = gv(os + '-nr') || (os === 'rmdm' ? 'Senior Technical Release Manager' : 'Senior PM');
+    var tier = gv(os + '-nt') || 'B';
+    var stage= gv(os + '-ns') || 'Targeting';
+    var reg  = gv(os + (os === 'rmdm' ? '-nreg' : '-nreg')) || (os === 'rmdm' ? 'Standard SaaS' : 'Medium');
+    var jobUrl = gv(os + '-nu');
 
     try {
-      var text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt, false);
-      document.getElementById(os + '-save-status').innerHTML = text.toLowerCase().includes('saved')
-        ? '<span style="color:var(--green-text)">Saved. <a class="lnk" href="' + hub + '" target="_blank">View in Notion</a></span>'
-        : '<span>Attempted. <a class="lnk" href="' + hub + '" target="_blank">Verify in Notion</a></span>';
+      await notionSave(os, co, role, tier, stage, reg, jobUrl);
+      document.getElementById(os + '-save-status').innerHTML = '<span style="color:var(--green-text)">✔ Saved. <a class="lnk" href="' + hub + '" target="_blank">View in Notion</a></span>';
       ['nc','nr','nu','nw'].forEach(function(f) { var el = document.getElementById(os + '-' + f); if (el) el.value = ''; });
     } catch (err) {
       document.getElementById(os + '-save-status').innerHTML = '<span style="color:var(--red-text)">Error: ' + err.message + '</span>';
