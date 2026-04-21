@@ -204,7 +204,11 @@
         </div>
         <div class="row2">
           <div class="field"><label>Regulatory complexity</label><select id="pm-reg"><option value="high" selected>High (preferred)</option><option value="medium">Medium+</option><option value="any">Any</option></select></div>
-          <div class="field"><label>Company stage</label><select id="pm-cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="both">Both</option><option value="fractional">Fractional / Embedded</option></select></div>
+          <div class="field"><label>Company stage</label><select id="pm-cstage"><option value="growth" selected>Growth-stage</option><option value="enterprise">Enterprise</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Location preference</label><select id="pm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
+          <div class="field"></div>
         </div>
         <div class="field" id="pm-jobtitle-field">
           <label>Role title to search</label>
@@ -212,6 +216,11 @@
           <div class="autocomplete-list" id="pm-ac-list" style="display:none;"></div>
         </div>
         <div class="field"><label>Specific angle (optional)</label><textarea id="pm-tctx" placeholder="e.g. API-first platforms, compliance workflow, 0-to-1 builds..."></textarea></div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="pm-applied" placeholder="e.g. Stripe, Plaid, Brex — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
+        </div>
         <div class="btn-row"><button class="btn" onclick="run('pm','targeting')">Run search</button></div>
       </div>
       <div id="pm-status-targeting" class="status-row"></div>
@@ -298,7 +307,7 @@
           </div>
           <div class="row2">
             <div class="field"><label>Tier</label><select id="pm-nt"><option>A</option><option>B</option><option>C</option></select></div>
-            <div class="field"><label>Stage</label><select id="pm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer</option></select></div>
+            <div class="field"><label>Stage</label><select id="pm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
           </div>
           <div class="row2">
             <div class="field"><label>Reg. complexity</label><select id="pm-nreg"><option>High</option><option>Medium</option><option>Low</option></select></div>
@@ -362,7 +371,11 @@
         </div>
         <div class="row2">
           <div class="field"><label>Regulatory environment</label><select id="rmdm-reg"><option value="high" selected>High (SOX / FDA / HIPAA)</option><option value="medium">Medium</option><option value="any">Any</option></select></div>
-          <div class="field"><label>Company stage</label><select id="rmdm-cstage"><option value="enterprise" selected>Enterprise</option><option value="growth">Growth-stage</option><option value="both">Both</option><option value="fractional">Fractional / Embedded</option></select></div>
+          <div class="field"><label>Company stage</label><select id="rmdm-cstage"><option value="enterprise" selected>Enterprise</option><option value="growth">Growth-stage</option><option value="all">All</option><option value="fractional">Fractional / Embedded</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Location preference</label><select id="rmdm-location"><option value="remote" selected>Remote</option><option value="hybrid">Hybrid</option><option value="bay-area">Bay Area</option><option value="new-york">New York</option><option value="any">Any location</option></select></div>
+          <div class="field"></div>
         </div>
         <div class="field" id="rmdm-jobtitle-field">
           <label>Role title to search</label>
@@ -370,6 +383,11 @@
           <div class="autocomplete-list" id="rmdm-ac-list" style="display:none;"></div>
         </div>
         <div class="field"><label>Specific angle (optional)</label><textarea id="rmdm-tctx" placeholder="e.g. CI/CD pipeline ownership, DORA metrics, multi-team program coordination, FDA compliance..."></textarea></div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="rmdm-applied" placeholder="e.g. Veeva, Workday, ServiceNow — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Companies you've already applied to — agent will skip these in job leads.</div>
+        </div>
         <div class="btn-row"><button class="btn" onclick="run('rmdm','targeting')">Run search</button></div>
       </div>
       <div id="rmdm-status-targeting" class="status-row"></div>
@@ -467,7 +485,7 @@
           </div>
           <div class="row2">
             <div class="field"><label>Role type</label><select id="rmdm-ntype"><option>Technical Release Manager</option><option>Delivery Manager</option><option>TPM</option><option>Scrum Master</option><option>Fractional RM/DM</option><option>DevOps/Platform</option></select></div>
-            <div class="field"><label>Stage</label><select id="rmdm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer</option></select></div>
+            <div class="field"><label>Stage</label><select id="rmdm-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer</option><option>Closed</option></select></div>
           </div>
           <div class="row2">
             <div class="field"><label>Tier</label><select id="rmdm-nt"><option>A</option><option>B</option><option>C</option></select></div>
@@ -580,6 +598,11 @@
           <label>Why this matters to you (optional — personalizes outreach)</label>
           <textarea id="np-why" placeholder="e.g. I want to apply my fintech delivery background to orgs modernizing economic access tools..."></textarea>
         </div>
+        <div class="field">
+          <label>Already applied to (exclude from results)</label>
+          <input type="text" id="np-applied" placeholder="e.g. Code for America, Feeding America — comma separated" />
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Orgs you've already applied to or engaged with — agent will skip these.</div>
+        </div>
         <div class="btn-row"><button class="btn" onclick="run('np','targeting')">Search opportunities</button></div>
         <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.5;">
           <span class="vol-badge" style="font-size:10px;">💵🚫</span> indicates volunteer or unpaid opportunities. Catchafire engagements are project-based, typically 5-15 hours, and can lead to paid roles or board positions.
@@ -681,7 +704,7 @@
           </div>
           <div class="row2">
             <div class="field"><label>Mission area</label><select id="np-nmission"><option>Education</option><option>Climate / Environment</option><option>Global Health</option><option>Economic Mobility</option><option>Civic Tech / Govtech</option><option>Human Rights</option><option>Food Security</option><option>Arts / Culture</option><option>Cross-mission</option></select></div>
-            <div class="field"><label>Stage</label><select id="np-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer / Accepted</option></select></div>
+            <div class="field"><label>Stage</label><select id="np-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Applied ✓</option><option>Offer / Accepted</option><option>Closed</option></select></div>
           </div>
           <div class="row2">
             <div class="field"><label>Tier</label><select id="np-nt"><option>A</option><option>B</option><option>C</option></select></div>
@@ -818,7 +841,7 @@
   async function callProxy(systemPrompt, userPrompt, useWebSearch) {
     var body = {
       model: 'claude-sonnet-4-6',
-      max_tokens: 1200,
+      max_tokens: 2000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     };
@@ -848,6 +871,8 @@
           var focus   = chips(os + '-focus');
           var reg     = document.getElementById(os + '-reg').value;
           var cstage  = document.getElementById(os + '-cstage').value;
+          var location= document.getElementById(os + '-location') ? document.getElementById(os + '-location').value : 'any';
+          var applied = document.getElementById(os + '-applied') ? document.getElementById(os + '-applied').value.trim() : '';
           var title   = document.getElementById(os + '-jobtitle').value.trim();
           var tctx    = document.getElementById(os + '-tctx').value;
           var doStrat = mode !== 'Live job search only';
@@ -859,9 +884,9 @@
             var roleLabel = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
             var stratPrompt;
             if (os === 'pm') {
-              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across fintech, biotech, oil and gas, and public sector.") + ' Regulatory complexity: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here, suggested PM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest picks.';
+              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across fintech, biotech, oil and gas, and public sector.") + ' Regulatory complexity: ' + reg + '. Company stage: ' + cstage + '. Location preference: ' + location + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), product type, regulatory complexity, 2 specific bullets on why Chike wins here, suggested PM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest picks.';
             } else {
-              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across financial services, life sciences, higher education, and energy.") + ' Regulatory environment: ' + reg + '. Company stage: ' + cstage + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), platform type, regulatory complexity, release and delivery context, 2-3 bullets on why Chike wins (120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain), likely RM/DM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest.';
+              stratPrompt = 'Generate 8 target companies for ' + roleLabel + ' roles.' + (focus ? ' Industry focus: ' + focus + '.' : " Be cross-industry, drawing on Chike's background across financial services, life sciences, higher education, and energy.") + ' Regulatory environment: ' + reg + '. Company stage: ' + cstage + '. Location preference: ' + location + '.' + (tctx ? ' Angle: ' + tctx : '') + ' For each company: name, tier (A/B/C), platform type, regulatory complexity, release and delivery context, 2-3 bullets on why Chike wins (120+ releases, zero incidents, DORA metrics, Bamboo/Remedy toolchain), likely RM/DM scope. At least 2 under-the-radar picks. Self-critique on 2 weakest.';
             }
             var t1 = await callProxy(ctx, stratPrompt, false);
             combined += t1;
@@ -871,9 +896,10 @@
           if (doSearch) {
             setStatus(os, panel, true, 'Searching live job market...');
             var roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
+            var appliedExclude = applied ? ' Exclude these companies Chike has already applied to: ' + applied + '.' : '';
             var searchPrompt = os === 'pm'
-              ? 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus: ' + tctx : '') + " For each role: company name, exact role title, location or remote, why it fits Chike's background, direct job URL. Only confirmed current postings."
-              : 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity.' + (tctx ? ' Focus: ' + tctx : '') + " For each role: company name, role title, location or remote, why it fits Chike's background (120+ releases zero incidents, DORA, Bamboo/Remedy/Splunk, SEC/FINRA/SOX/FDA), direct job URL. Only confirmed current postings.";
+              ? 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity. Location preference: ' + location + '.' + (tctx ? ' Focus: ' + tctx : '') + appliedExclude + " For each role found: company name, exact role title, location or remote status, why it specifically fits Chike's background, direct job posting URL. Return at least 6 roles. Only confirmed current postings."
+              : 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity. Location preference: ' + location + '.' + (tctx ? ' Focus: ' + tctx : '') + appliedExclude + " For each role found: company name, role title, location or remote status, why it specifically fits Chike's background (120+ releases zero incidents, DORA, Bamboo/Remedy/Splunk, SEC/FINRA/SOX/FDA), direct job posting URL. Return at least 6 roles. Only confirmed current postings.";
             var t2 = await callProxy(ctx, searchPrompt, true);
             combined += (doStrat ? '\n\n---\n\nJOB LEADS\n\n' : '') + t2;
             setOutput(os, panel, combined, false);
@@ -940,10 +966,11 @@
           var npLoc     = document.getElementById('np-location') ? document.getElementById('np-location').value : 'remote';
           var npTitle   = document.getElementById('np-jobtitle') ? document.getElementById('np-jobtitle').value.trim() : '';
           var npWhy     = document.getElementById('np-why') ? document.getElementById('np-why').value : '';
+          var npApplied = document.getElementById('np-applied') ? document.getElementById('np-applied').value.trim() : '';
           var npSearch  = npTitle || npRoles;
           setStatus('np', 'targeting', true, 'Searching nonprofit job boards...');
           var npt = await callProxy(NP_CONTEXT,
-            'Search the web right now for currently open opportunities matching "' + npSearch + '" roles at nonprofit, social impact, and purpose-driven organizations in the ' + npMission + ' space. Search specifically on these boards: ' + npBoards + '. Engagement types to include: ' + npEngage + '. Org size: ' + npSize + '. Location: ' + npLoc + '.' + (npWhy ? ' Context on why this matters to Chike: ' + npWhy : '') + ' For each opportunity: org name and mission (1 sentence), role title, clearly label PAID or VOLUNTEER (unpaid/Catchafire), location or remote, why it fits Chike specifically (his product/delivery background applied to their context), direct URL. Only confirmed current opportunities. Never fabricate listings. If a board has no current matches say so and give the direct board URL.',
+            'Search the web right now for currently open opportunities matching "' + npSearch + '" roles at nonprofit, social impact, and purpose-driven organizations in the ' + npMission + ' space. Search specifically on these boards: ' + npBoards + '. Engagement types to include: ' + npEngage + '. Org size: ' + npSize + '. Location: ' + npLoc + '.' + (npWhy ? ' Context on why this matters to Chike: ' + npWhy : '') + (npApplied ? ' Exclude these orgs Chike has already applied to or engaged with: ' + npApplied + '.' : '') + ' For each opportunity found: org name and mission (1 sentence), role title, clearly label PAID or VOLUNTEER (unpaid/Catchafire), location or remote, why it specifically fits Chike (his product/delivery background applied to their context), direct URL. List at least 6 opportunities across the boards searched. Only confirmed current opportunities. Never fabricate listings. If a board has no current matches say so and give the direct board URL.',
             true
           );
           setOutput('np', 'targeting', npt, false);
