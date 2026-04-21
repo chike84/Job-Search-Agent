@@ -58,24 +58,25 @@
       transition: background 0.3s;
     }
     .os-toggle-bar .bar-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
-    .os-toggle-wrap { display: flex; align-items: center; gap: 10px; }
+    .os-toggle-wrap { display: flex; align-items: center; gap: 12px; }
     .os-label { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; }
     .os-label.active { color: #fff; font-weight: 700; }
-    .toggle-switch {
-      position: relative; width: 84px; height: 28px; cursor: pointer;
-      background: rgba(255,255,255,0.25); border-radius: 14px;
+    /* 3-dot OS selector */
+    .os-dots { display: flex; align-items: center; gap: 8px; }
+    .os-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(255,255,255,0.3);
       border: 2px solid rgba(255,255,255,0.5);
-      transition: background 0.2s;
+      cursor: pointer; transition: all 0.2s;
       flex-shrink: 0;
     }
-    .toggle-switch::after {
-      content: ''; position: absolute; top: 2px; left: 2px;
-      width: 20px; height: 20px; border-radius: 50%;
-      background: #fff; transition: transform 0.22s cubic-bezier(.4,0,.2,1);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    .os-dot:hover { background: rgba(255,255,255,0.55); transform: scale(1.15); }
+    .os-dot.active {
+      background: #fff;
+      border-color: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.25);
+      transform: scale(1.1);
     }
-    :root[data-os="rmdm"] .toggle-switch::after { transform: translateX(28px); }
-    :root[data-os="np"] .toggle-switch::after { transform: translateX(56px); }
 
     .wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.25rem; }
     h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
@@ -143,9 +144,14 @@
 <div class="os-toggle-bar">
   <span class="bar-title" id="bar-title">Product Manager Job Search OS</span>
   <div class="os-toggle-wrap">
-    <span class="os-label active" id="label-pm">PM OS</span>
-    <div class="toggle-switch" onclick="toggleOS()" role="switch" aria-label="Switch between PM and RM/DM OS"></div>
-    <span class="os-label" id="label-rmdm">RM/DM OS</span>
+    <span class="os-label active" id="label-pm" style="cursor:pointer" onclick="setOS('pm');localStorage.setItem('preferredOS','pm')">PM</span>
+    <div class="os-dots">
+      <div class="os-dot active" id="dot-pm"   onclick="setOS('pm');localStorage.setItem('preferredOS','pm')"   title="Product Manager OS"></div>
+      <div class="os-dot"        id="dot-rmdm" onclick="setOS('rmdm');localStorage.setItem('preferredOS','rmdm')" title="Release / Delivery Manager OS"></div>
+      <div class="os-dot"        id="dot-np"   onclick="setOS('np');localStorage.setItem('preferredOS','np')"   title="Nonprofit and Social Impact OS"></div>
+    </div>
+    <span class="os-label" id="label-rmdm" style="cursor:pointer" onclick="setOS('rmdm');localStorage.setItem('preferredOS','rmdm')">RM/DM</span>
+    <span class="os-label" id="label-np"   style="cursor:pointer;margin-left:2px;" onclick="setOS('np');localStorage.setItem('preferredOS','np')">🌱 NP</span>
   </div>
 </div>
 
@@ -772,9 +778,10 @@ function setOS(os) {
   document.getElementById('os-np').classList.toggle('active', os === 'np');
   const titles = { pm: 'Product Manager Job Search OS', rmdm: 'Release Manager and Delivery Manager Job Search OS', np: 'Nonprofit and Social Impact Job Search OS' };
   document.getElementById('bar-title').textContent = titles[os];
-  document.getElementById('label-pm').classList.toggle('active', os === 'pm');
-  document.getElementById('label-rmdm').classList.toggle('active', os === 'rmdm');
-  document.getElementById('label-np').classList.toggle('active', os === 'np');
+  ['pm','rmdm','np'].forEach(id => {
+    document.getElementById('label-' + id).classList.toggle('active', id === os);
+    document.getElementById('dot-' + id).classList.toggle('active', id === os);
+  });
 }
 
 // ── Tab switching ────────────────────────────────────────────────────────────
@@ -865,7 +872,7 @@ async function run(os, panel) {
   setOutput(os, panel, '', true);
 
   try {
-    if (panel === 'targeting') {
+    if (panel === 'targeting' && os !== 'np') {
       const focus = chips(`${os}-focus`);
       const reg   = document.getElementById(`${os}-reg`).value;
       const cstage = document.getElementById(`${os}-cstage`).value;
@@ -900,7 +907,7 @@ async function run(os, panel) {
         setOutput(os, panel, combined, false);
       }
 
-    } else if (panel === 'positioning') {
+    } else if (panel === 'positioning' && os !== 'np') {
       setStatus(os, panel, true, 'Building positioning...');
       const outputs   = chips(`${os}-pos`) || 'Positioning statement';
       const co        = document.getElementById(`${os}-pco`).value;
@@ -917,7 +924,7 @@ async function run(os, panel) {
       const t = await callProxy(ctx, prompt);
       setOutput(os, panel, t, false);
 
-    } else if (panel === 'outreach') {
+    } else if (panel === 'outreach' && os !== 'np') {
       setStatus(os, panel, true, 'Drafting outreach...');
       const type = chips(`${os}-out`) || 'Cold outreach';
       const co   = document.getElementById(`${os}-oco`).value || 'the target company';
@@ -932,7 +939,7 @@ async function run(os, panel) {
       const t = await callProxy(ctx, prompt);
       setOutput(os, panel, t, false);
 
-    } else if (panel === 'interview') {
+    } else if (panel === 'interview' && os !== 'np') {
       setStatus(os, panel, true, 'Generating interview prep...');
       const type  = chips(`${os}-int`) || (os === 'pm' ? 'Product sense' : 'Release scenario / go-no-go');
       const q     = document.getElementById(`${os}-iq`).value;
