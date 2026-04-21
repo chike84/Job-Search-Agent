@@ -122,6 +122,23 @@
     .pipe-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .sbadge { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 500; }
     .pipe-empty { text-align: center; padding: 2rem; color: var(--text3); font-style: italic; font-size: 13px; }
+    /* Job results table */
+    .job-results-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    .job-results-table th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); padding: 7px 8px; border-bottom: 0.5px solid var(--border); }
+    .job-results-table td { padding: 9px 8px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+    .jt-company { font-weight: 500; color: var(--text); width: 20%; }
+    .jt-role { color: var(--text2); width: 28%; }
+    .jt-loc { color: var(--text3); font-size: 12px; width: 18%; }
+    .jt-link { width: 8%; }
+    .jt-analyze { width: 10%; }
+    .jt-analysis-cell { background: var(--accent-bg); padding: 10px 12px !important; }
+    .jt-analysis-content { font-size: 13px; line-height: 1.65; color: var(--accent-text); white-space: pre-wrap; }
+    .job-table-header { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 6px; margin-top: 12px; }
+    .job-table-divider { border: none; border-top: 0.5px solid var(--border); margin: 16px 0 8px; }
+    .job-strategy-text { font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+    .job-empty { font-size: 13px; color: var(--text3); font-style: italic; padding: 12px 0; }
+    /* Override output-area for job table mode */
+    .output-area { white-space: normal; }
     .lnk { font-size: 12px; color: var(--text2); text-decoration: none; }
     .lnk:hover { color: var(--text); }
     .vol-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #FEF3C7; color: #92400E; border: 0.5px solid #D97706; vertical-align: middle; margin-left: 4px; white-space: nowrap; }
@@ -734,11 +751,11 @@
   const RMDM_HUB = 'https://www.notion.so/34862cd4a7c5814181c8c872da969822';
   const NP_HUB   = 'https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35';
 
-  const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries. Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp. Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities. Open to fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products. Communication rules: No em dashes. No AI tells. Practical and direct. Conversational tone. No filler content. Never hallucinate facts. If partial information, give what you can and ask for the rest.`;
+  const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries. Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp. Target roles: Senior PM, Head of Product, PM in technically complex or regulated environments, and Fractional PM opportunities. Open to fintech, biotech/life sciences, healthcare, climate/energy, oil and gas, public sector/govtech, and AI-enhanced products. Communication rules: No em dashes. No AI tells. Practical and direct. Conversational tone. No filler content. Never hallucinate facts. If partial information, give what you can and ask for the rest. Do not end responses with follow-up offers, next-step questions, or prompts like 'Want me to...' or 'Let me know if...' — just deliver the output and stop.`;
 
-  const RMDM_CONTEXT = `You are a job search agent for Chike Ugbode, a Technical Release Manager and Delivery Manager with 10+ years driving predictable, zero-incident software delivery in regulated enterprise SaaS environments. Charles Schwab (2023-2025): Senior Scrum Master and Technical Release Manager for DocuSign API integration platform serving 4,000+ financial reps across 400 branches. Owned Bamboo CI/CD pipeline oversight, Remedy/JDAS change management, go/no-go facilitation, Scrum of Scrums across 11 integration partner teams. 31+ releases, zero major incidents, 32% digital adoption increase, 24% error reduction, 99.99% availability. Charles Schwab (2019-2023): Senior Scrum Master for RMD Center (1.6M users). Built DORA metrics framework from scratch, drove change failure rate from 5% to 1.3%, coordinated 4 concurrent scrum teams, led disaster recovery dry runs. 90+ releases. BioMarin Pharmaceuticals (2017): FDA 21 CFR Part 11. Chevron Corporation (2014-2017): global deployments across Americas, EMEA, and Asia-Pacific. Total: 120+ production releases, zero major production incidents. Toolchain: Bamboo CI/CD, JIRA, Confluence, Remedy/JDAS, Git/Bitbucket, SonarQube, Splunk, Moogsoft, xMatters, Grafana, InfluxDB, Kibana, AWS. Regulated environments: SEC/FINRA, SOX, FDA 21 CFR Part 11, GxP. Target roles: Senior Technical Release Manager, Senior Delivery Manager, TPM, Scrum Master, Fractional Release/Delivery Manager. Open to fintech, biotech/life sciences, healthcare, govtech, climate/energy, enterprise SaaS, clinical/pharma software, DevOps/platform engineering. Communication rules: No em dashes. No AI tells. Lead with practitioner specificity in technical screens. Lead with outcomes in leadership rounds. Never hallucinate.`;
+  const RMDM_CONTEXT = `You are a job search agent for Chike Ugbode, a Technical Release Manager and Delivery Manager with 10+ years driving predictable, zero-incident software delivery in regulated enterprise SaaS environments. Charles Schwab (2023-2025): Senior Scrum Master and Technical Release Manager for DocuSign API integration platform serving 4,000+ financial reps across 400 branches. Owned Bamboo CI/CD pipeline oversight, Remedy/JDAS change management, go/no-go facilitation, Scrum of Scrums across 11 integration partner teams. 31+ releases, zero major incidents, 32% digital adoption increase, 24% error reduction, 99.99% availability. Charles Schwab (2019-2023): Senior Scrum Master for RMD Center (1.6M users). Built DORA metrics framework from scratch, drove change failure rate from 5% to 1.3%, coordinated 4 concurrent scrum teams, led disaster recovery dry runs. 90+ releases. BioMarin Pharmaceuticals (2017): FDA 21 CFR Part 11. Chevron Corporation (2014-2017): global deployments across Americas, EMEA, and Asia-Pacific. Total: 120+ production releases, zero major production incidents. Toolchain: Bamboo CI/CD, JIRA, Confluence, Remedy/JDAS, Git/Bitbucket, SonarQube, Splunk, Moogsoft, xMatters, Grafana, InfluxDB, Kibana, AWS. Regulated environments: SEC/FINRA, SOX, FDA 21 CFR Part 11, GxP. Target roles: Senior Technical Release Manager, Senior Delivery Manager, TPM, Scrum Master, Fractional Release/Delivery Manager. Open to fintech, biotech/life sciences, healthcare, govtech, climate/energy, enterprise SaaS, clinical/pharma software, DevOps/platform engineering. Communication rules: No em dashes. No AI tells. Lead with practitioner specificity in technical screens. Lead with outcomes in leadership rounds. Never hallucinate. Do not end responses with follow-up offers, next-step questions, or prompts like 'Want me to...' or 'Let me know if...' — just deliver the output and stop.`;
 
-  const NP_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager and Technical Release/Delivery Manager with 10+ years of experience, now exploring purpose-driven roles in the nonprofit and social impact sector. Background summary: Led DocuSign API integration platform at Charles Schwab serving 4,000+ field advisors. Built the RMD Center 0-to-1 serving 1.6M+ users. Coordinated 120+ production releases with zero major incidents. Drove change failure rate from 5% to 1.3%. Experience spans fintech, life sciences (BioMarin FDA-regulated software), higher education (UC Office of the President), and energy (Chevron global deployments). Why nonprofits: Chike is genuinely interested in applying his delivery and product rigor to organizations working on meaningful problems. He brings skills most nonprofits cannot afford to hire internally: API product management, release discipline, Agile transformation, digital adoption strategy. Open to paid roles, Director/VP-level titles, fractional engagements, and volunteer opportunities via Catchafire that could lead to something greater. Job boards in scope: Idealist (idealist.org), Tech Jobs for Good (techjobsforgood.com), 80,000 Hours (80000hours.org/job-board), WorkForGood (workforgood.org), Catchafire (catchafire.org - volunteer/project-based), LinkedIn Nonprofit filter. Volunteer opportunities: Catchafire engagements are unpaid but project-based and should be surfaced alongside paid roles, clearly labeled as volunteer. They are legitimate strategic moves. Communication rules: No em dashes. No AI tells. Conversational and direct. When writing mission alignment content, be genuine and specific. Never hallucinate org names or mission details.`;
+  const NP_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager and Technical Release/Delivery Manager with 10+ years of experience, now exploring purpose-driven roles in the nonprofit and social impact sector. Background summary: Led DocuSign API integration platform at Charles Schwab serving 4,000+ field advisors. Built the RMD Center 0-to-1 serving 1.6M+ users. Coordinated 120+ production releases with zero major incidents. Drove change failure rate from 5% to 1.3%. Experience spans fintech, life sciences (BioMarin FDA-regulated software), higher education (UC Office of the President), and energy (Chevron global deployments). Why nonprofits: Chike is genuinely interested in applying his delivery and product rigor to organizations working on meaningful problems. He brings skills most nonprofits cannot afford to hire internally: API product management, release discipline, Agile transformation, digital adoption strategy. Open to paid roles, Director/VP-level titles, fractional engagements, and volunteer opportunities via Catchafire that could lead to something greater. Job boards in scope: Idealist (idealist.org), Tech Jobs for Good (techjobsforgood.com), 80,000 Hours (80000hours.org/job-board), WorkForGood (workforgood.org), Catchafire (catchafire.org - volunteer/project-based), LinkedIn Nonprofit filter. Volunteer opportunities: Catchafire engagements are unpaid but project-based and should be surfaced alongside paid roles, clearly labeled as volunteer. They are legitimate strategic moves. Communication rules: No em dashes. No AI tells. Conversational and direct. When writing mission alignment content, be genuine and specific. Never hallucinate org names or mission details. Do not end responses with follow-up offers or prompts like 'Want me to...' — just deliver the output and stop.`;
 
   const PM_ROLES   = ['Senior Product Manager','Senior PM, Platform','Senior PM, API Products','Senior PM, Fintech','Head of Product','Director of Product Management','Principal Product Manager','Product Manager, Growth','PM, Regulated Products','PM, Digital Transformation','Fractional Product Manager','Embedded PM','VP of Product','Group Product Manager','PM, Open Banking','PM, Payments'];
   const RMDM_ROLES = ['Senior Technical Release Manager','Technical Release Manager','Senior Delivery Manager','Delivery Manager','Technical Program Manager','Senior TPM','Senior Scrum Master','Release and Delivery Manager','DevOps Delivery Lead','Engineering Program Manager','Fractional Release Manager','Fractional Delivery Manager','Director of Release Engineering','Head of Delivery','Release Train Engineer','Program Manager, Regulated SaaS'];
@@ -903,13 +920,27 @@
           if (doSearch) {
             setStatus(os, panel, true, 'Searching live job market...');
             var roleSearch = title || (os === 'pm' ? 'Senior Product Manager' : 'Senior Technical Release Manager');
-            var appliedExclude = applied ? ' Exclude these companies Chike has already applied to: ' + applied + '.' : '';
-            var searchPrompt = os === 'pm'
-              ? 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity. Location preference: ' + location + '.' + (tctx ? ' Focus: ' + tctx : '') + appliedExclude + " For each role found: company name, exact role title, location or remote status, why it specifically fits Chike's background, direct job posting URL. Return at least 6 roles. Only confirmed current postings."
-              : 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity. Location preference: ' + location + '.' + (tctx ? ' Focus: ' + tctx : '') + appliedExclude + " For each role found: company name, role title, location or remote status, why it specifically fits Chike's background (120+ releases zero incidents, DORA, Bamboo/Remedy/Splunk, SEC/FINRA/SOX/FDA), direct job posting URL. Return at least 6 roles. Only confirmed current postings.";
-            var t2 = await callProxy(ctx, searchPrompt, true);
-            combined += (doStrat ? '\n\n---\n\nJOB LEADS\n\n' : '') + t2;
-            setOutput(os, panel, combined, false);
+            var appliedExclude = applied ? ' Exclude these companies (already applied): ' + applied + '.' : '';
+            // Lightweight prompt: returns JSON only — company, role, location, url
+            // Much lower token usage than full analysis
+            var searchPrompt = 'Search the web right now for currently open "' + roleSearch + '" job postings at ' + cstage + ' companies' + (focus ? ' in the ' + focus + ' space' : '') + ' with ' + reg + ' regulatory complexity. Location: ' + location + '.' + appliedExclude + (tctx ? ' Focus: ' + tctx : '') + ' Return ONLY a JSON array — no explanation, no markdown fences. Each item must have exactly these fields: company (string), role (string), location (string), url (string). Return 8-10 results. Only confirmed current postings. Example format: [{"company":"Stripe","role":"Senior PM","location":"Remote","url":"https://stripe.com/jobs/123"}]';
+            try {
+              var t2raw = await callProxy(ctx, searchPrompt, true);
+              var jsonMatch = t2raw.replace(/```json|```/g, '').trim().match(/\[[\s\S]*\]/);
+              var jobResults = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+              renderJobTable(os, panel, jobResults, combined, ctx);
+            } catch(searchErr) {
+              var existingOutput2 = document.getElementById(os + '-output-' + panel);
+              var hasContent2 = existingOutput2 && !existingOutput2.classList.contains('empty') && existingOutput2.textContent.trim().length > 0;
+              if (hasContent2) {
+                existingOutput2.textContent = existingOutput2.textContent + '\n\n---\n\nNote: Live job search could not complete. ' + searchErr.message;
+              } else {
+                setOutput(os, panel, 'Error: ' + searchErr.message, true);
+              }
+            }
+            setStatus(os, panel, false, '');
+            document.querySelectorAll('.btn').forEach(function(b) { b.disabled = false; });
+            return; // exit early — renderJobTable handles display
           }
 
         } else if (panel === 'positioning') {
@@ -1029,11 +1060,91 @@
       }
 
     } catch (err) {
-      setOutput(os, panel, 'Error: ' + err.message, true);
+      var existingOutput = document.getElementById(os + '-output-' + panel);
+      var hasContent = existingOutput && !existingOutput.classList.contains('empty') && existingOutput.textContent.trim().length > 0;
+      if (hasContent) {
+        existingOutput.textContent = existingOutput.textContent + ["", "", "---", "", "Note: Live job search could not complete. "].join("\n") + err.message;
+        existingOutput.textContent = existingOutput.textContent + "\n\n---\n\nNote: Live job search could not complete. " + err.message;
+        setOutput(os, panel, 'Error: ' + err.message, true);
+      }
       setStatus(os, panel, false, '');
     }
 
     document.querySelectorAll('.btn').forEach(function(b) { b.disabled = false; });
+  }
+
+  function renderJobTable(os, panel, jobs, strategyText, ctx) {
+    var outputEl = document.getElementById(os + '-output-' + panel);
+    if (!outputEl) return;
+
+    // Build HTML: strategy text (if any) + interactive job table
+    var html = '';
+    if (strategyText && strategyText.trim()) {
+      html += '<div class="job-strategy-text">' + strategyText.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') + '</div><hr class="job-table-divider">';
+    }
+
+    if (!jobs.length) {
+      html += '<div class="job-empty">No confirmed live postings found. Try Strategy only mode or check careers pages directly.</div>';
+    } else {
+      html += '<div class="job-table-header">Live Job Leads — click Analyze for why-you-win detail on any role</div>';
+      html += '<table class="job-results-table"><thead><tr><th>Company</th><th>Role</th><th>Location</th><th>Link</th><th>Analysis</th></tr></thead><tbody>';
+      jobs.forEach(function(job, idx) {
+        var safeCompany = (job.company || '').replace(/</g,'&lt;');
+        var safeRole    = (job.role || '').replace(/</g,'&lt;');
+        var safeLoc     = (job.location || '').replace(/</g,'&lt;');
+        var safeUrl     = job.url || '';
+        html += '<tr id="job-row-' + os + '-' + idx + '">';
+        html += '<td class="jt-company">' + safeCompany + '</td>';
+        html += '<td class="jt-role">' + safeRole + '</td>';
+        html += '<td class="jt-loc">' + safeLoc + '</td>';
+        html += '<td class="jt-link">' + (safeUrl ? '<a href="' + safeUrl + '" target="_blank" class="lnk">View</a>' : '') + '</td>';
+        html += '<td class="jt-analyze"><button class="btn btn-sm analyze-btn" data-os="' + os + '" data-idx="' + idx + '" data-company="' + safeCompany + '" data-role="' + safeRole + '" data-loc="' + safeLoc + '" onclick="analyzeJob(this.dataset.os,this.dataset.idx,this.dataset.company,this.dataset.role,this.dataset.loc)">Analyze</button></td>';
+        html += '</tr>';
+        html += '<tr id="job-analysis-' + os + '-' + idx + '" style="display:none"><td colspan="5" class="jt-analysis-cell"><div class="jt-analysis-content" id="job-analysis-text-' + os + '-' + idx + '">Loading...</div></td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+
+    outputEl.classList.remove('empty');
+    outputEl.innerHTML = html;
+
+    // Store ctx on the element for analyzeJob to use
+    outputEl._jobCtx = ctx;
+    outputEl._jobOs  = os;
+  }
+
+  async function analyzeJob(os, idx, company, role, loc) {
+    var row = document.getElementById('job-analysis-' + os + '-' + idx);
+    var textEl = document.getElementById('job-analysis-text-' + os + '-' + idx);
+    var btn = document.querySelector('#job-row-' + os + '-' + idx + ' .analyze-btn');
+
+    if (!row || !textEl) return;
+
+    // Toggle off if already open
+    if (row.style.display !== 'none' && textEl.textContent !== 'Loading...') {
+      row.style.display = 'none';
+      if (btn) btn.textContent = 'Analyze';
+      return;
+    }
+
+    row.style.display = 'table-row';
+    textEl.textContent = 'Analyzing...';
+    if (btn) { btn.textContent = 'Close'; btn.disabled = true; }
+
+    var ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
+    var analyzePrompt = os === 'pm'
+      ? 'Analyze this specific role for Chike: ' + role + ' at ' + company + ' (' + loc + '). In 3-4 focused sentences: why does his background (RMD Center 0-to-1, DocuSign integrations, API product management, regulated fintech) make him a strong candidate? What is the one gap to address? No em dashes. No follow-up offers.'
+      : os === 'rmdm'
+      ? 'Analyze this specific role for Chike: ' + role + ' at ' + company + ' (' + loc + '). In 3-4 focused sentences: why does his background (120+ releases zero incidents, DORA metrics, Bamboo/Remedy toolchain, SEC/FINRA/SOX/FDA regulated environments) make him a strong candidate? What is the one gap to address? No em dashes. No follow-up offers.'
+      : 'Analyze this specific opportunity for Chike: ' + role + ' at ' + company + ' (' + loc + '). In 3-4 focused sentences: why does his background (product/delivery rigor, 1.6M user platform, digital transformation) make him a strong candidate for nonprofit work here? What is the one gap to address? No em dashes. No follow-up offers.';
+
+    try {
+      var result = await callProxy(ctx, analyzePrompt, false);
+      textEl.textContent = result;
+    } catch(err) {
+      textEl.textContent = 'Analysis failed: ' + err.message;
+    }
+    if (btn) btn.disabled = false;
   }
 
   async function saveEntry(os) {
