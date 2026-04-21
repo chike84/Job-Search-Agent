@@ -23,6 +23,14 @@
       --toggle-bg: #0F7490;
       --header-stripe: linear-gradient(135deg, #0F7490 0%, #38A3C0 100%);
     }
+    /* ── Nonprofit theme (warm green) ── */
+    :root[data-os="np"] {
+      --accent: #2D7A3A;
+      --accent-bg: #EAF4EC;
+      --accent-text: #1A5226;
+      --toggle-bg: #2D7A3A;
+      --header-stripe: linear-gradient(135deg, #2D7A3A 0%, #52A860 100%);
+    }
 
     :root {
       --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0efec;
@@ -54,7 +62,7 @@
     .os-label { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 500; }
     .os-label.active { color: #fff; font-weight: 700; }
     .toggle-switch {
-      position: relative; width: 56px; height: 28px; cursor: pointer;
+      position: relative; width: 84px; height: 28px; cursor: pointer;
       background: rgba(255,255,255,0.25); border-radius: 14px;
       border: 2px solid rgba(255,255,255,0.5);
       transition: background 0.2s;
@@ -67,6 +75,7 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
     :root[data-os="rmdm"] .toggle-switch::after { transform: translateX(28px); }
+    :root[data-os="np"] .toggle-switch::after { transform: translateX(56px); }
 
     .wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1.25rem; }
     h1 { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
@@ -114,6 +123,7 @@
     .pipe-empty { text-align: center; padding: 2rem; color: var(--text3); font-style: italic; font-size: 13px; }
     .lnk { font-size: 12px; color: var(--text2); text-decoration: none; }
     .lnk:hover { color: var(--text); }
+    .vol-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: #FEF3C7; color: #92400E; border: 0.5px solid #D97706; vertical-align: middle; margin-left: 4px; white-space: nowrap; }
     .add-form { display: none; }
     .add-form.open { display: block; }
     .divider { border: none; border-top: 0.5px solid var(--border); margin: 12px 0; }
@@ -473,6 +483,217 @@
     </div>
   </div><!-- /os-rmdm -->
 
+  <!-- ════════════════════════════════════════════
+       NONPROFIT / SOCIAL IMPACT OS
+  ════════════════════════════════════════════ -->
+  <div class="os-content" id="os-np">
+    <h1>Job Search Agent</h1>
+    <div class="subtitle">
+      Nonprofit and Social Impact Job Search OS
+      <span class="badge">Notion pipeline</span>
+      <span class="badge">Live job search</span>
+      <span id="proxy-status-np" class="badge">checking proxy...</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="swTab('np','targeting',this)">Find opportunities</button>
+      <button class="tab" onclick="swTab('np','positioning',this)">Positioning</button>
+      <button class="tab" onclick="swTab('np','outreach',this)">Outreach</button>
+      <button class="tab" onclick="swTab('np','interview',this)">Interview prep</button>
+      <button class="tab" onclick="swTab('np','pipeline',this)">Pipeline tracker</button>
+    </div>
+
+    <!-- NP: FIND OPPORTUNITIES -->
+    <div id="np-targeting" class="panel active">
+      <div class="card">
+        <div class="slabel">Mission area</div>
+        <div class="chips">
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Education</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Climate / Environment</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Global Health</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Economic Mobility</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Civic Tech / Govtech</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Human Rights</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Food Security</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Arts / Culture</span>
+          <span class="chip" data-g="np-mission" onclick="tog(this)">Cross-mission / Any</span>
+        </div>
+        <div class="slabel">Role type</div>
+        <div class="chips">
+          <span class="chip" data-g="np-role" onclick="tog(this)">Product Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Scrum Master / Agile Coach</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Release Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Delivery Manager</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Director of Technology</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">VP of Technology</span>
+          <span class="chip" data-g="np-role" onclick="tog(this)">Fractional / Embedded</span>
+        </div>
+        <div class="slabel">Engagement type</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Paid roles</span>
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Volunteer <span class="vol-badge">💵🚫</span></span>
+          <span class="chip on" data-g="np-engage" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
+          <span class="chip" data-g="np-engage" onclick="tog(this)">Contract</span>
+          <span class="chip" data-g="np-engage" onclick="tog(this)">Fractional retainer</span>
+        </div>
+        <div class="slabel">Job boards to search</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Idealist</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Tech Jobs for Good</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">80,000 Hours</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">WorkForGood</span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">Catchafire <span class="vol-badge">💵🚫</span></span>
+          <span class="chip on" data-g="np-boards" onclick="tog(this)">LinkedIn Nonprofit</span>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Org size</label>
+            <select id="np-orgsize">
+              <option value="any" selected>Any size</option>
+              <option value="small">Small (under 50 staff)</option>
+              <option value="mid">Mid-size (50-500)</option>
+              <option value="large">Large (500+)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Location preference</label>
+            <select id="np-location">
+              <option value="remote" selected>Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="bay-area">Bay Area</option>
+              <option value="any">Any</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="np-jobtitle-field">
+          <label>Role title to search (optional — overrides role type chips above)</label>
+          <input type="text" id="np-jobtitle" placeholder="e.g. Director of Product, Head of Technology..." autocomplete="off" oninput="showAC('np',this.value)" onkeydown="handleKey(event,'np')" />
+          <div class="autocomplete-list" id="np-ac-list" style="display:none;"></div>
+        </div>
+        <div class="field">
+          <label>Why this matters to you (optional — personalizes outreach)</label>
+          <textarea id="np-why" placeholder="e.g. I want to apply my fintech delivery background to orgs modernizing economic access tools..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn" onclick="run('np','targeting')">Search opportunities</button></div>
+        <div style="margin-top:10px;font-size:12px;color:var(--text3);line-height:1.5;">
+          <span class="vol-badge" style="font-size:10px;">💵🚫</span> indicates volunteer or unpaid opportunities. Catchafire engagements are project-based, typically 5-15 hours, and can lead to paid roles or board positions.
+        </div>
+      </div>
+      <div id="np-status-targeting" class="status-row"></div>
+      <div id="np-output-targeting" class="output-area empty">Opportunities will appear here...</div>
+    </div>
+
+    <!-- NP: POSITIONING -->
+    <div id="np-positioning" class="panel">
+      <div class="card">
+        <div class="slabel">Output needed</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-pos" onclick="tog(this)">Positioning statement</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">Tell me about yourself (90s)</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">3 signature wins (STAR)</span>
+          <span class="chip" data-g="np-pos" onclick="tog(this)">Mission alignment narrative</span>
+        </div>
+        <div class="field"><label>Target role type</label><select id="np-prole">
+          <option value="pm">Product Manager</option>
+          <option value="sm">Scrum Master / Agile Coach</option>
+          <option value="rm">Release / Delivery Manager</option>
+          <option value="dir">Director of Technology</option>
+          <option value="vp">VP of Technology</option>
+          <option value="fractional">Fractional / Embedded</option>
+        </select></div>
+        <div class="field"><label>Mission area or specific org (optional)</label><input type="text" id="np-pco" placeholder="e.g. Code for America, climate tech nonprofit, global health NGO" /></div>
+        <div class="field"><label>Why this matters to you (helps the agent write authentic mission alignment)</label><textarea id="np-pwhy" placeholder="e.g. After years in financial services I want to bring the same delivery rigor to orgs that don't have access to it..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','positioning')">Build positioning</button></div>
+      </div>
+      <div id="np-status-positioning" class="status-row"></div>
+      <div id="np-output-positioning" class="output-area empty">Positioning output will appear here...</div>
+    </div>
+
+    <!-- NP: OUTREACH -->
+    <div id="np-outreach" class="panel">
+      <div class="card">
+        <div class="slabel">Outreach type</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-out" onclick="tog(this)">Cold outreach</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Warm intro request</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Follow-up</span>
+          <span class="chip" data-g="np-out" onclick="tog(this)">Catchafire project proposal <span class="vol-badge">💵🚫</span></span>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Organization</label><input type="text" id="np-oco" placeholder="e.g. Code for America, Feeding America" /></div>
+          <div class="field"><label>Contact role (their title)</label><input type="text" id="np-orole" placeholder="e.g. Executive Director, Director of Technology" /></div>
+        </div>
+        <div class="field"><label>Hook or insight (optional)</label><textarea id="np-ohook" placeholder="e.g. I saw their annual report mentioned struggles with digital service delivery..."></textarea></div>
+        <div class="field"><label>Why this mission matters to you</label><textarea id="np-owhycare" placeholder="Be specific — nonprofits can tell the difference between genuine interest and resume building..."></textarea></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','outreach')">Draft outreach</button></div>
+      </div>
+      <div id="np-status-outreach" class="status-row"></div>
+      <div id="np-output-outreach" class="output-area empty">Outreach draft will appear here...</div>
+    </div>
+
+    <!-- NP: INTERVIEW -->
+    <div id="np-interview" class="panel">
+      <div class="card">
+        <div class="slabel">Interview focus</div>
+        <div class="chips">
+          <span class="chip on" data-g="np-int" onclick="tog(this)">Mission alignment and values fit</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Product or delivery impact</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Resource-constrained execution</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Stakeholder management (board, volunteers)</span>
+          <span class="chip" data-g="np-int" onclick="tog(this)">Technical leadership in low-tech org</span>
+        </div>
+        <div class="field"><label>Specific question (optional)</label><input type="text" id="np-iq" placeholder="e.g. Why are you leaving fintech for nonprofit work?" /></div>
+        <div class="field"><label>Organization context (optional)</label><input type="text" id="np-ico" placeholder="e.g. Code for America, civic tech, government digital services" /></div>
+        <div class="btn-row"><button class="btn" onclick="run('np','interview')">Generate prep</button></div>
+      </div>
+      <div id="np-status-interview" class="status-row"></div>
+      <div id="np-output-interview" class="output-area empty">Interview prep will appear here...</div>
+    </div>
+
+    <!-- NP: PIPELINE -->
+    <div id="np-pipeline" class="panel">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div class="slabel" style="margin-bottom:0">Nonprofit Pipeline</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Notion synced &middot; <a class="lnk" href="https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35" target="_blank">Open hub</a></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-sm" onclick="loadPipeline('np')">Refresh</button>
+            <button class="btn btn-sm" onclick="togAdd('np')">+ Add entry</button>
+          </div>
+        </div>
+        <div class="add-form" id="np-addform">
+          <hr class="divider">
+          <div class="row2">
+            <div class="field"><label>Organization</label><input type="text" id="np-nc" placeholder="e.g. Code for America" /></div>
+            <div class="field"><label>Role title</label><input type="text" id="np-nr" placeholder="e.g. Senior PM" /></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Role type</label><select id="np-ntype"><option>Product Manager</option><option>Scrum Master / Agile Coach</option><option>Release Manager</option><option>Delivery Manager</option><option>Director of Technology</option><option>VP of Technology</option><option>Fractional / Embedded</option></select></div>
+            <div class="field"><label>Engagement type</label><select id="np-nengage"><option>Paid</option><option>Volunteer - Catchafire</option><option>Volunteer - Other</option><option>Contract</option><option>Fractional Retainer</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Mission area</label><select id="np-nmission"><option>Education</option><option>Climate / Environment</option><option>Global Health</option><option>Economic Mobility</option><option>Civic Tech / Govtech</option><option>Human Rights</option><option>Food Security</option><option>Arts / Culture</option><option>Cross-mission</option></select></div>
+            <div class="field"><label>Stage</label><select id="np-ns"><option>Targeting</option><option>Researching</option><option>Outreach Sent</option><option>Responded</option><option>Screening</option><option>Interviewing</option><option>Offer / Accepted</option></select></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Tier</label><select id="np-nt"><option>A</option><option>B</option><option>C</option></select></div>
+            <div class="field"><label>Source</label><select id="np-nsrc"><option>Idealist</option><option>Tech Jobs for Good</option><option>80000 Hours</option><option>WorkForGood</option><option>Catchafire</option><option>LinkedIn</option><option>Referral</option><option>Direct</option></select></div>
+          </div>
+          <div class="field"><label>Job / opportunity URL</label><input type="text" id="np-nu" placeholder="https://..." /></div>
+          <div class="field"><label>Why this matters to me</label><textarea id="np-nw" style="min-height:50px;" placeholder="My personal motivation for this org..."></textarea></div>
+          <div class="btn-row">
+            <button class="btn" id="np-save-btn" onclick="saveEntry('np')">Save to Notion</button>
+            <button class="btn" style="border-color:transparent;" onclick="togAdd('np')">Cancel</button>
+          </div>
+          <div id="np-save-status" class="status-row"></div>
+        </div>
+        <div id="np-pipelist" style="margin-top:12px;overflow-x:auto;"><div class="pipe-empty">Click refresh to load your pipeline from Notion.</div></div>
+      </div>
+    </div>
+  </div><!-- /os-np -->
+
 </div><!-- /wrap -->
 
 <script>
@@ -482,8 +703,22 @@ const PM_NOTION_DB   = '45ecc169-634b-49c2-9042-9e4fee1c0750';
 const RMDM_NOTION_DB = '831f5122-169b-462e-bb34-fb55a4400582';
 const PM_HUB   = 'https://app.notion.com/p/34262cd4a7c581df9b17e0b907877dc6';
 const RMDM_HUB = 'https://www.notion.so/34862cd4a7c5814181c8c872da969822';
+const NP_NOTION_DB = '8927f682-8c46-4c46-b54e-fe9280229c05';
+const NP_HUB   = 'https://www.notion.so/34962cd4a7c5810faa5ae1b2f4b1fd35';
 
 // ── OS Context ──────────────────────────────────────────────────────────────
+const NP_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager and Technical Release/Delivery Manager with 10+ years of experience, now exploring purpose-driven roles in the nonprofit and social impact sector.
+
+Background summary: Led DocuSign API integration platform at Charles Schwab serving 4,000+ field advisors. Built the RMD Center 0-to-1 serving 1.6M+ users. Coordinated 120+ production releases with zero major incidents. Drove change failure rate from 5% to 1.3%. Experience spans fintech, life sciences (BioMarin FDA-regulated software), higher education (UC Office of the President), and energy (Chevron global deployments).
+
+Why nonprofits: Chike is genuinely interested in applying his delivery and product rigor to organizations working on meaningful problems — not just adding nonprofit to a resume. He brings skills that most nonprofits cannot afford to hire internally: API product management, release discipline, Agile transformation, digital adoption strategy. Open to paid roles, Director/VP-level titles, fractional engagements, and volunteer opportunities via Catchafire that could lead to something greater.
+
+Job boards in scope: Idealist (idealist.org), Tech Jobs for Good (techjobsforgood.com), 80,000 Hours (80000hours.org/job-board), WorkForGood (workforgood.org), Catchafire (catchafire.org — volunteer/project-based), LinkedIn Nonprofit filter.
+
+Volunteer opportunities: Catchafire engagements are unpaid but project-based (typically 5-15 hours) and should be surfaced alongside paid roles, clearly labeled as volunteer. They are legitimate strategic moves, not charity — many lead to board positions, consulting relationships, or paid roles.
+
+Communication rules: No em dashes. No AI tells. Conversational and direct. When writing mission alignment content, be genuine and specific — not generic nonprofit enthusiasm. Never hallucinate org names, leaders, or mission details. If partial information, give what you can and ask for the rest.`;
+
 const PM_CONTEXT = `You are a job search agent for Chike Ugbode, a Senior Product Manager with 6+ years building consumer financial platforms and API-driven integrations in regulated industries.
 
 Background: Most recently Sr. PM at Charles Schwab (ended January 2026): led DocuSign Envelope Integrations (MVP to GA), drove 32% digital adoption increase, 24% NIGO reduction via Salesforce API integration, shipped e-signature across 31+ forms serving 2,500+ field advisors. Concurrent PM for Project O (Crypto Asset Transfer): greenfield platform, 37+ integration points, KYC/AML compliance, wallet APIs. PM for RMD Center (2019-2023): 0-to-1 MVP launch serving 1.6M+ eligible clients, 50% digital adoption, 4.5/5 Client Ease Score, saved 750K customer service minutes. Prior: Scrum Master/Product Analyst at Schwab, Business Analyst at UC Office of the President, BioMarin Pharmaceuticals, Chevron Corp.
@@ -515,6 +750,7 @@ Communication rules: No em dashes. No AI tells. Lead with practitioner specifici
 // ── Role suggestions ─────────────────────────────────────────────────────────
 const PM_ROLES = ['Senior Product Manager','Senior PM, Platform','Senior PM, API Products','Senior PM, Fintech','Head of Product','Director of Product Management','Principal Product Manager','Product Manager, Growth','PM, Regulated Products','PM, Digital Transformation','Fractional Product Manager','Embedded PM','VP of Product','Group Product Manager','PM, Open Banking','PM, Payments'];
 const RMDM_ROLES = ['Senior Technical Release Manager','Technical Release Manager','Senior Delivery Manager','Delivery Manager','Technical Program Manager','Senior TPM','Senior Scrum Master','Release and Delivery Manager','DevOps Delivery Lead','Engineering Program Manager','Fractional Release Manager','Fractional Delivery Manager','Director of Release Engineering','Head of Delivery','Release Train Engineer','Program Manager, Regulated SaaS'];
+const NP_ROLES = ['Senior Product Manager','Director of Product','Head of Product','Director of Technology','VP of Technology','Chief Technology Officer','Chief Product Officer','Agile Coach','Senior Scrum Master','Program Manager','Delivery Manager','Technical Program Manager','Fractional PM','Fractional CTO','Head of Digital Transformation','Director of Engineering'];
 
 let acIndexes = { pm: -1, rmdm: -1 };
 
@@ -522,7 +758,8 @@ let acIndexes = { pm: -1, rmdm: -1 };
 function toggleOS() {
   const root = document.documentElement;
   const current = root.getAttribute('data-os') || 'pm';
-  const next = current === 'pm' ? 'rmdm' : 'pm';
+  const cycle = { pm: 'rmdm', rmdm: 'np', np: 'pm' };
+  const next = cycle[current];
   setOS(next);
   localStorage.setItem('preferredOS', next);
 }
@@ -532,9 +769,12 @@ function setOS(os) {
   root.setAttribute('data-os', os);
   document.getElementById('os-pm').classList.toggle('active', os === 'pm');
   document.getElementById('os-rmdm').classList.toggle('active', os === 'rmdm');
-  document.getElementById('bar-title').textContent = os === 'pm' ? 'Product Manager Job Search OS' : 'Release Manager and Delivery Manager Job Search OS';
+  document.getElementById('os-np').classList.toggle('active', os === 'np');
+  const titles = { pm: 'Product Manager Job Search OS', rmdm: 'Release Manager and Delivery Manager Job Search OS', np: 'Nonprofit and Social Impact Job Search OS' };
+  document.getElementById('bar-title').textContent = titles[os];
   document.getElementById('label-pm').classList.toggle('active', os === 'pm');
   document.getElementById('label-rmdm').classList.toggle('active', os === 'rmdm');
+  document.getElementById('label-np').classList.toggle('active', os === 'np');
 }
 
 // ── Tab switching ────────────────────────────────────────────────────────────
@@ -572,7 +812,7 @@ function setOutput(os, panel, text, empty) {
 // ── Autocomplete ─────────────────────────────────────────────────────────────
 function showAC(os, val) {
   const list = document.getElementById(`${os}-ac-list`);
-  const roles = os === 'pm' ? PM_ROLES : RMDM_ROLES;
+  const roles = os === 'pm' ? PM_ROLES : os === 'rmdm' ? RMDM_ROLES : NP_ROLES;
   if (!val.trim()) { list.style.display = 'none'; acIndexes[os] = -1; return; }
   const matches = roles.filter(s => s.toLowerCase().includes(val.toLowerCase()));
   if (!matches.length) { list.style.display = 'none'; return; }
@@ -620,7 +860,7 @@ async function callProxy(systemPrompt, userPrompt, useWebSearch = false) {
 // ── Run agent ────────────────────────────────────────────────────────────────
 async function run(os, panel) {
   document.querySelectorAll('.btn').forEach(b => b.disabled = true);
-  const ctx = os === 'pm' ? PM_CONTEXT : RMDM_CONTEXT;
+  const ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
   const mode = chips(`${os}-tmode`);
   setOutput(os, panel, '', true);
 
@@ -723,7 +963,7 @@ async function saveEntry(os) {
   document.getElementById(`${os}-save-btn`).disabled = true;
   document.getElementById(`${os}-save-status`).innerHTML = '<div class="spinner"></div><span>Saving...</span>';
 
-  const dbId = os === 'pm' ? PM_NOTION_DB : RMDM_NOTION_DB;
+  const dbId = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
   const today = new Date().toISOString().split('T')[0];
   let entryLines = '';
 
@@ -733,9 +973,11 @@ async function saveEntry(os) {
     entryLines = `Company: ${co}, Role Title: ${document.getElementById('rmdm-nr').value||'Senior Technical Release Manager'}, Role Type: ${document.getElementById('rmdm-ntype').value}, Tier: ${document.getElementById('rmdm-nt').value}, Stage: ${document.getElementById('rmdm-ns').value}, Regulatory Environment: ${document.getElementById('rmdm-nreg').value}, Source: ${document.getElementById('rmdm-nsrc').value}${document.getElementById('rmdm-nu').value ? ', Job URL: '+document.getElementById('rmdm-nu').value : ''}${document.getElementById('rmdm-nw').value ? ', Why I Win: '+document.getElementById('rmdm-nw').value : ''}, Last Activity: ${today}`;
   }
 
+  if (os === 'np') {
+    entryLines = `Organization: ${document.getElementById('np-nc').value.trim()}, Role Title: ${document.getElementById('np-nr').value||'Senior PM'}, Role Type: ${document.getElementById('np-ntype').value}, Engagement Type: ${document.getElementById('np-nengage').value}, Mission Area: ${document.getElementById('np-nmission').value}, Tier: ${document.getElementById('np-nt').value}, Stage: ${document.getElementById('np-ns').value}, Source: ${document.getElementById('np-nsrc').value}${document.getElementById('np-nu').value ? ', Job URL: '+document.getElementById('np-nu').value : ''}${document.getElementById('np-nw').value ? ', Why This Matters to Me: '+document.getElementById('np-nw').value : ''}, Last Activity: ${new Date().toISOString().split('T')[0]}`;
+  }
   const prompt = `Add this entry to the Notion database (collection ID: ${dbId}): ${entryLines}. Use the notion create-pages tool and confirm with "saved successfully".`;
-  const hub = os === 'pm' ? PM_HUB : RMDM_HUB;
-  const ctx = os === 'pm' ? PM_CONTEXT : RMDM_CONTEXT;
+  const ctx = os === 'pm' ? PM_CONTEXT : os === 'rmdm' ? RMDM_CONTEXT : NP_CONTEXT;
 
   try {
     const text = await callProxy('You are a Notion assistant. Use the Notion API to save the database entry. Reply with "saved successfully" when done.', prompt);
@@ -752,8 +994,8 @@ async function saveEntry(os) {
 async function loadPipeline(os) {
   const listEl = document.getElementById(`${os}-pipelist`);
   listEl.innerHTML = '<div class="pipe-empty"><div class="spinner" style="display:inline-block;margin-right:8px;"></div>Loading from Notion...</div>';
-  const dbId = os === 'pm' ? PM_NOTION_DB : RMDM_NOTION_DB;
-  const hub  = os === 'pm' ? PM_HUB : RMDM_HUB;
+  const dbId = os === 'pm' ? PM_NOTION_DB : os === 'rmdm' ? RMDM_NOTION_DB : NP_NOTION_DB;
+  const hub  = os === 'pm' ? PM_HUB : os === 'rmdm' ? RMDM_HUB : NP_HUB;
   const prompt = `Query the Notion database with collection ID ${dbId} and return all entries as a JSON array. Each item: company, role, tier, stage, source, jobUrl. Return ONLY a valid JSON array, no markdown, no explanation.`;
   try {
     const text = await callProxy('You are a Notion assistant. Query the database and return results as a raw JSON array only.', prompt);
@@ -793,6 +1035,7 @@ window.addEventListener('load', () => {
   setOS(saved);
   checkProxy('pm');
   checkProxy('rmdm');
+  checkProxy('np');
 });
 </script>
 </body>
