@@ -851,7 +851,14 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error('Proxy returned ' + res.status);
+    if (!res.ok) {
+      var errData = await res.json().catch(() => ({}));
+      var errMsg = (errData.error && errData.error.message) ? errData.error.message : ('Proxy returned ' + res.status);
+      // Surface rate limit clearly
+      if (res.status === 429) throw new Error('Rate limit hit — wait 60 seconds and try again. (30,000 tokens/min limit on your current plan)');
+      if (res.status === 500) throw new Error('Server error: ' + (errMsg || 'unknown'));
+      throw new Error(errMsg);
+    }
     var data = await res.json();
     if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
     return (data.content || []).filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('') || 'No response.';
