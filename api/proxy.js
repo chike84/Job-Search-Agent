@@ -22,17 +22,28 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Read the full request body with a size limit
     const body = await new Promise((resolve, reject) => {
-      let data = '';
-      req.on('data', chunk => { data += chunk; });
+      const chunks = [];
+      let totalSize = 0;
+      req.on('data', chunk => {
+        totalSize += chunk.length;
+        if (totalSize > 5 * 1024 * 1024) {
+          reject(new Error('Request body too large'));
+          return;
+        }
+        chunks.push(chunk);
+      });
       req.on('end', () => {
-        try { resolve(JSON.parse(data)); }
-        catch (e) { reject(new Error('Invalid JSON body')); }
+        try {
+          resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+        } catch (e) {
+          reject(new Error('Invalid JSON body'));
+        }
       });
       req.on('error', reject);
     });
 
-    // Detect whether this request uses the web search tool
     const usesWebSearch = Array.isArray(body.tools) &&
       body.tools.some(t => t.type === 'web_search_20250305');
 
@@ -45,12 +56,11 @@ module.exports = async function handler(req, res) {
       'Content-Length': Buffer.byteLength(payload),
     };
 
-    // Only send the beta header when the request actually uses web search
     if (usesWebSearch) {
       requestHeaders['anthropic-beta'] = 'web-search-2025-03-05';
     }
 
-    const data = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve, reject) => {
       const options = {
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
@@ -59,15 +69,30 @@ module.exports = async function handler(req, res) {
       };
 
       const apiReq = https.request(options, (apiRes) => {
-        let responseData = '';
-        apiRes.on('data', chunk => { responseData += chunk; });
+        // Collect chunks into a buffer array instead of string concat
+        // This handles large web search responses correctly
+        const chunks = [];
+        apiRes.on('data', chunk => chunks.push(chunk));
         apiRes.on('end', () => {
+          const rawBody = Buffer.concat(chunks).toString('utf8');
           try {
-            resolve({ status: apiRes.statusCode, body: JSON.parse(responseData) });
+            resolve({
+              status: apiRes.statusCode,
+              body: JSON.parse(rawBody),
+            });
           } catch (e) {
-            reject(new Error('Failed to parse Anthropic response'));
+            // If JSON parse fails, return the raw body for debugging
+            resolve({
+              status: 500,
+              body: {
+                error: 'Failed to parse Anthropic response as JSON',
+                _debug: rawBody.slice(0, 500),
+                _parseError: e.message,
+              },
+            });
           }
         });
+        apiRes.on('error', reject);
       });
 
       apiReq.on('error', reject);
@@ -78,19 +103,21 @@ module.exports = async function handler(req, res) {
       apiReq.end();
     });
 
-    // Surface Anthropic errors clearly for debugging
-    if (data.status >= 400) {
-      res.status(data.status).json({
-        error: data.body.error || data.body,
+    if (result.status >= 400) {
+      res.status(result.status).json({
+        error: result.body.error || result.body,
         _debug: 'Anthropic API error',
         _usesWebSearch: usesWebSearch,
       });
       return;
     }
 
-    res.status(200).json(data.body);
+    res.status(200).json(result.body);
 
   } catch (err) {
-    res.status(500).json({ error: err.message, _debug: 'Proxy exception' });
+    res.status(500).json({
+      error: err.message,
+      _debug: 'Proxy exception',
+    });
   }
 };
